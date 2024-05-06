@@ -145,20 +145,10 @@ final class WeatherViewController: UIViewController {
     
     private func setupDayTempView() {
         contentView.addSubview(dayTempView)
-        dayTempView.setup([DayTempView.InputData(icon: setHourIcon(currentHour), temp: 25, time: "Сейчас"),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[0]) ?? 0), temp: 25, time: hours[0]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[1]) ?? 0), temp: 24, time: hours[1]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[2]) ?? 0), temp: 24, time: hours[2]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[3]) ?? 0), temp: 22, time: hours[3]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[4]) ?? 0), temp: 20, time: hours[4]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[5]) ?? 0), temp: 19, time: hours[5]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[6]) ?? 0), temp: 18, time: hours[6]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[7]) ?? 0), temp: 17, time: hours[7]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[8]) ?? 0), temp: 17, time: hours[8]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[9]) ?? 0), temp: 16, time: hours[9]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[10]) ?? 0), temp: 16, time: hours[10]),
-                           DayTempView.InputData(icon: setHourIcon(Int(hours[11]) ?? 0), temp: 16, time: hours[11])]
-        )
+        dayTempView.setupDayTemp([DayTempView.InputData(icon: setHourIcon(currentHour), temp: 25, time: "Сейчас")])
+        for hourIndex in 0...11 {
+            dayTempView.setupDayTemp([DayTempView.InputData(icon: setHourIcon(Int(hours[hourIndex]) ?? 0), temp: setHourTemp(Int(hours[hourIndex]) ?? 0), time: hours[hourIndex])])
+        }
         
         dayTempView.snp.makeConstraints { make in
             make.top.equalTo(currentWeatherView.snp.bottom).offset(16)
