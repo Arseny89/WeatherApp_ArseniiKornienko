@@ -32,10 +32,10 @@ final class DayTempView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup(_ data: [InputData]) {
+    func setupDayTemp(_ data: [InputData]) {
         data.enumerated().forEach { index, data in
             let view = HourWeatherView()
-            view.setup(data)
+            view.setupHourWeather(data)
             stackView.addArrangedSubview(view)
             if index == 0 {
                 stackView.setCustomSpacing(10, after: view)
@@ -84,7 +84,7 @@ extension DayTempView {
             fatalError("init(coder:) has not been implemented")
         }
         
-        func setup(_ data: InputData) {
+        func setupHourWeather(_ data: InputData) {
             timeLabel.text = data.time
             icon.image = data.icon
             tempLabel.text = "\(data.temp)º"

@@ -40,6 +40,14 @@ final class CurrentWeatherView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setupCurrentWeather(_ data: InputData) {
+        titleLabel.text = data.title
+        city.text = data.subtitle
+        descriptionLabel.text = data.description
+        currentTemp.text = "\(data.currentTemp)º"
+        tempLimits.text = "Макс.: \(data.maxTemp)º, Мин.: \(data.minTemp)º"
+    }
+    
     private func setupStackView() {
         addSubview(stackView)
         stackView.axis = .vertical
@@ -49,14 +57,6 @@ final class CurrentWeatherView: UIView {
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-    }
-    
-    func setup(_ data: InputData) {
-        titleLabel.text = data.title
-        city.text = data.subtitle
-        descriptionLabel.text = data.description
-        currentTemp.text = "\(data.currentTemp)º"
-        tempLimits.text = "Макс.: \(data.maxTemp)º, Мин.: \(data.minTemp)º"
     }
     
     private func setupTitleLabel() {
