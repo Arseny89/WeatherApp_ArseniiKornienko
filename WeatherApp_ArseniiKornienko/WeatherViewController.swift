@@ -75,7 +75,6 @@ final class WeatherViewController: UIViewController {
         }
     }
     
-    
     private func setHours() {
         for i in 1...12 {
             if 1...9 ~= (currentHour + i) {

@@ -61,8 +61,7 @@ final class DayTempView: UIView {
     }
 }
 
-extension DayTempView {
-    
+extension DayTempView {    
     final class HourWeatherView: UIView {
         
         private let timeLabel = UILabel()
@@ -89,6 +88,7 @@ extension DayTempView {
             icon.image = data.icon
             tempLabel.text = "\(data.temp)º"
         }
+        
         private func setupTimeLabel() {
             stackView.addArrangedSubview(timeLabel)
             timeLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
@@ -107,7 +107,6 @@ extension DayTempView {
             tempLabel.textColor = .white
             tempLabel.textAlignment = .center
         }
-        
         
         private func setupStackView() {
             addSubview(stackView)

@@ -93,5 +93,4 @@ final class CurrentWeatherView: UIView {
         tempLimits.textColor = .white
         tempLimits.textAlignment = .center
     }
-    
 }
