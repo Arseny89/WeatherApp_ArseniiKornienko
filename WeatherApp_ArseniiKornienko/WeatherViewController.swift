@@ -126,6 +126,23 @@ final class WeatherViewController: UIViewController {
         }
     }
     
+    private func setHourTemp(_ hour: Int) -> Int {
+        switch hour {
+        case 0...7: return 16
+        case 8...10: return 18
+        case 11...12: return 20
+        case 13...15: return 23
+        case 16: return 25
+        case 17: return 23
+        case 18...19: return 21
+        case 20...21: return 19
+        case 22: return 18
+        case 23: return 17
+        default: break
+        }
+        return 0
+    }
+    
     private func setupDayTempView() {
         contentView.addSubview(dayTempView)
         dayTempView.setup([DayTempView.InputData(icon: setHourIcon(currentHour), temp: 25, time: "Сейчас"),
