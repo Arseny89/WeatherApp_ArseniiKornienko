@@ -5,7 +5,6 @@
 //  Created by Арсений Корниенко on 5/4/24.
 //
 
-import Foundation
 import UIKit
 import SnapKit
 
