@@ -43,7 +43,7 @@ final class TempRangeView: UIView {
     
     private func setupTitleLabel() {
         addSubview(titleLabel)
-        titleLabel.text = "Прогноз на 10 дней"
+        titleLabel.text = Constants.title.text
         titleLabel.textColor = .white
         titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         titleLabel.snp.makeConstraints { make in

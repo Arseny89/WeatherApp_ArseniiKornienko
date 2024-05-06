@@ -52,7 +52,7 @@ final class WeatherViewController: UIViewController {
         setupCurrentWeatherView()
         setHours()
         setupDayTempView()
-        setupTempRangeView()        
+        setupTempRangeView()
     }
     
     override func viewDidLayoutSubviews() {
@@ -87,13 +87,13 @@ final class WeatherViewController: UIViewController {
     
     private func setupCurrentWeatherView() {
         contentView.addSubview(currentWeatherView)
-        currentWeatherView.setup(
-            CurrentWeatherView.InputData(title: "Текущее место",
-                                         subtitle: "Glendale",
-                                         currentTemp: 25,
-                                         description: "Солнечно",
-                                         minTemp: 16,
-                                         maxTemp: 25)
+        currentWeatherView.setupCurrentWeather(
+            CurrentWeatherView.InputData(title: Constants.currentWeatherTitle.text,
+                                         subtitle: Constants.currenWeatherCity.text,
+                                         currentTemp: Constants.currentTemp.value,
+                                         description: Constants.currentWeatherDescription.text,
+                                         minTemp: Constants.currentMinTemp.value,
+                                         maxTemp: Constants.currentMaxTemp.value)
         )
         currentWeatherView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview().inset(20)
