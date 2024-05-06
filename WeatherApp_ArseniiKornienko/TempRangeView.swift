@@ -18,6 +18,16 @@ final class TempRangeView: UIView {
         let icon: UIImage
     }
     
+    enum Constants {
+        case title
+        
+        var text: String {
+            switch self {
+            case .title: return "Прогноз на 10 дней"
+            }
+        }
+    }
+    
     private let titleLabel = UILabel()
     
     override init(frame: CGRect) {

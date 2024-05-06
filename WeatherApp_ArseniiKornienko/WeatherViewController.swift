@@ -9,6 +9,31 @@ import UIKit
 import SnapKit
 
 final class WeatherViewController: UIViewController {
+    enum Constants: Int {
+        case currentWeatherTitle
+        case currenWeatherCity
+        case currentWeatherDescription
+        case currentTemp
+        case currentMinTemp
+        case currentMaxTemp
+        var text: String {
+            switch self {
+            case .currenWeatherCity: return "Glendale"
+            case .currentWeatherTitle: return "Текущее место"
+            case .currentWeatherDescription: return "Солнечно"
+            default: return "No text"
+            }
+        }
+        var value: Int {
+            switch self {
+            case .currentTemp: return 25
+            case .currentMinTemp: return 16
+            case .currentMaxTemp: return 25
+            default: return 0
+            }
+        }
+    }
+    
     private let currentWeatherView = CurrentWeatherView()
     private let dayTempView = DayTempView()
     private let tempRangeView = TempRangeView()
