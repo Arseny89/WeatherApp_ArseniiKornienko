@@ -16,11 +16,15 @@ final class WeatherViewController: UIViewController {
         case currentTemp
         case currentMinTemp
         case currentMaxTemp
+        case today
+        case minTemp
+        case maxTemp
         var text: String {
             switch self {
             case .currenWeatherCity: return "Glendale"
             case .currentWeatherTitle: return "Текущее место"
             case .currentWeatherDescription: return "Солнечно"
+            case .today: return "Сегодня"
             default: return "No text"
             }
         }
@@ -29,6 +33,8 @@ final class WeatherViewController: UIViewController {
             case .currentTemp: return 25
             case .currentMinTemp: return 16
             case .currentMaxTemp: return 25
+            case .minTemp: return 13
+            case .maxTemp: return 28
             default: return 0
             }
         }
@@ -161,10 +167,74 @@ final class WeatherViewController: UIViewController {
     
     private func setupTempRangeView() {
         contentView.addSubview(tempRangeView)
+        tempRangeView.setupDayRange([TempRangeView.InputData(day: Constants.today.text, 
+                                                             icon: sunIcon, minDayTemp: Double(Constants.currentMinTemp.value),
+                                                             maxDayTemp: Double(Constants.currentMaxTemp.value) ,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value),
+                                                             currentTemp: Double(Constants.currentTemp.value)),
+                                     TempRangeView.InputData(day: "Вт",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 15, 
+                                                             maxDayTemp: 23,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value)),
+                                     TempRangeView.InputData(day: "Ср",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 14, 
+                                                             maxDayTemp: 23,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value)),
+                                     TempRangeView.InputData(day: "Чт",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 13, 
+                                                             maxDayTemp: 22,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value)),
+                                     TempRangeView.InputData(day: "Пт",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 13, 
+                                                             maxDayTemp: 20,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value)),
+                                     TempRangeView.InputData(day: "Сб",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 16, 
+                                                             maxDayTemp: 22,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value)),
+                                     TempRangeView.InputData(day: "Вс",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 17, 
+                                                             maxDayTemp: 24,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value)),
+                                     TempRangeView.InputData(day: "Пн",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 15, 
+                                                             maxDayTemp: 21,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value)),
+                                     TempRangeView.InputData(day: "Вт",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 14, 
+                                                             maxDayTemp: 19,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value)),
+                                     TempRangeView.InputData(day: "Ср",
+                                                             icon: sunIcon,
+                                                             minDayTemp: 13, 
+                                                             maxDayTemp: 18,
+                                                             minTemp: Double(Constants.minTemp.value),
+                                                             maxTemp: Double(Constants.maxTemp.value))]
+        )
+        
         tempRangeView.snp.makeConstraints { make in
-            make.bottom.horizontalEdges.equalToSuperview().inset(16)
+            make.bottom.leading.equalToSuperview().inset(16)
             make.top.equalTo(dayTempView.snp.bottom).offset(16)
-            make.height.equalTo(800)
+            make.width.equalTo(dayTempView)
+        }
+    }
     
     private func setupBottomView() {
         view.addSubview(bottomView)
