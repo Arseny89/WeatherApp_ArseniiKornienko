@@ -42,11 +42,13 @@ final class WeatherViewController: UIViewController {
     private let currentHour: Int = 14
     private var hours: [String] = []
     private var hourIcon: UIImage?
+    private let bottomView = BottomView()
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
+        setupBottomView()
         setupScrollView()
         setupContentView()
         setupCurrentWeatherView()
@@ -73,7 +75,8 @@ final class WeatherViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.showsVerticalScrollIndicator = false
         scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(bottomView.snp.top)
         }
     }
     
@@ -163,6 +166,15 @@ final class WeatherViewController: UIViewController {
             make.bottom.horizontalEdges.equalToSuperview().inset(16)
             make.top.equalTo(dayTempView.snp.bottom).offset(16)
             make.height.equalTo(800)
+        }
+    }
+    
+    private func setupBottomView() {
+        view.addSubview(bottomView)
+        bottomView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(70)
         }
     }
 }
