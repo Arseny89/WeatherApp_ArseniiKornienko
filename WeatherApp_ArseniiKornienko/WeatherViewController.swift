@@ -145,9 +145,17 @@ final class WeatherViewController: UIViewController {
     
     private func setupDayTempView() {
         contentView.addSubview(dayTempView)
-        dayTempView.setupDayTemp([DayTempView.InputData(icon: setHourIcon(currentHour), temp: 25, time: "Сейчас")])
-        for hourIndex in 0...11 {
-            dayTempView.setupDayTemp([DayTempView.InputData(icon: setHourIcon(Int(hours[hourIndex]) ?? 0), temp: setHourTemp(Int(hours[hourIndex]) ?? 0), time: hours[hourIndex])])
+        dayTempView.setupDayTemp([DayTempView.InputData(
+            icon: setHourIcon(currentHour),
+            temp: 25,
+            time: "Сейчас")])
+        
+        for (index, _) in hours.enumerated() {
+            guard let hour = Int(hours[index]) else { return }
+            dayTempView.setupDayTemp([DayTempView.InputData(
+                icon: setHourIcon(hour),
+                temp: setHourTemp(hour),
+                time: hours[index])])
         }
         
         dayTempView.snp.makeConstraints { make in
