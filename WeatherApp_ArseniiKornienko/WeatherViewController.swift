@@ -49,6 +49,8 @@ final class WeatherViewController: UIViewController {
     private var hours: [String] = []
     private var hourIcon: UIImage?
     private let bottomView = BottomView()
+    private let sunIcon = UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+    private let moonIcon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
     
     override func viewDidLoad() {
         
@@ -123,10 +125,10 @@ final class WeatherViewController: UIViewController {
     private func setHourIcon(_ hour: Int) -> UIImage {
         var icon: UIImage
         if 6...20 ~= hour {
-            icon =  UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+            icon =  sunIcon
             return icon
         } else {
-            icon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+            icon = moonIcon
             return icon
         }
     }
