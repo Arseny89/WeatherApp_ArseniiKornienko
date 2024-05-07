@@ -49,6 +49,8 @@ final class WeatherViewController: UIViewController {
     private var hours: [String] = []
     private var hourIcon: UIImage?
     private let bottomView = BottomView()
+    private let sunIcon = UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+    private let moonIcon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
     
     override func viewDidLoad() {
         
@@ -81,7 +83,9 @@ final class WeatherViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.showsVerticalScrollIndicator = false
         scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.horizontalEdges.equalToSuperview()
+            make.bottom.equalTo(bottomView.snp.top)
         }
     }
     
@@ -126,10 +130,10 @@ final class WeatherViewController: UIViewController {
     private func setHourIcon(_ hour: Int) -> UIImage {
         var icon: UIImage
         if 6...20 ~= hour {
-            icon =  UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+            icon =  sunIcon
             return icon
         } else {
-            icon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+            icon = moonIcon
             return icon
         }
     }
