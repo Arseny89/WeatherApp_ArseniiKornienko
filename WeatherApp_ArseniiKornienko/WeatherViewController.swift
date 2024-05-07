@@ -34,6 +34,7 @@ final class WeatherViewController: UIViewController {
         }
     }
     
+    private let backgroundImage = UIImageView()
     private let currentWeatherView = CurrentWeatherView()
     private let dayTempView = DayTempView()
     private let tempRangeView = TempRangeView()
@@ -48,6 +49,7 @@ final class WeatherViewController: UIViewController {
         
         super.viewDidLoad()
         
+        setupBackgroundImage()
         setupBottomView()
         setupScrollView()
         setupContentView()
@@ -57,17 +59,12 @@ final class WeatherViewController: UIViewController {
         setupTempRangeView()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        UIGraphicsBeginImageContext(view.frame.size)
-        UIImage(named: "sky")?.draw(in: self.view.bounds)
-        if let image = UIGraphicsGetImageFromCurrentImageContext() {
-            UIGraphicsEndImageContext()
-            self.view.backgroundColor = UIColor(patternImage: image)
-        } else {
-            UIGraphicsEndImageContext()
-            debugPrint("Image not available")
+    private func setupBackgroundImage() {
+        view.addSubview(backgroundImage)
+        backgroundImage.contentMode = .scaleAspectFill
+        backgroundImage.image = UIImage(named: "sky")
+        backgroundImage.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     
