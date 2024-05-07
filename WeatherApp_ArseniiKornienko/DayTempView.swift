@@ -21,7 +21,7 @@ final class DayTempView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = .systemBlue.withAlphaComponent(0.5)
+        backgroundColor = .blueBackground.withAlphaComponent(0.5)
         layer.cornerRadius = 12
         
         setupScrollView()
