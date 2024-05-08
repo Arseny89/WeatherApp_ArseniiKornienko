@@ -16,6 +16,9 @@ final class WeatherViewController: UIViewController {
         case currentTemp
         case currentMinTemp
         case currentMaxTemp
+        case minTemp
+        case maxTemp
+        
         var text: String {
             switch self {
             case .currenWeatherCity: return "Glendale"
@@ -24,11 +27,14 @@ final class WeatherViewController: UIViewController {
             default: return "No text"
             }
         }
-        var value: Int {
+        
+        var value: Double {
             switch self {
             case .currentTemp: return 25
             case .currentMinTemp: return 16
             case .currentMaxTemp: return 25
+            case .minTemp: return 13
+            case .maxTemp: return 28
             default: return 0
             }
         }
@@ -44,6 +50,8 @@ final class WeatherViewController: UIViewController {
     private var hours: [String] = []
     private var hourIcon: UIImage?
     private let bottomView = BottomView()
+    private let sunIcon = UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+    private let moonIcon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
     
     override func viewDidLoad() {
         
@@ -90,10 +98,10 @@ final class WeatherViewController: UIViewController {
         currentWeatherView.setupCurrentWeather(
             CurrentWeatherView.InputData(title: Constants.currentWeatherTitle.text,
                                          subtitle: Constants.currenWeatherCity.text,
-                                         currentTemp: Constants.currentTemp.value,
+                                         currentTemp: Int(Constants.currentTemp.value),
                                          description: Constants.currentWeatherDescription.text,
-                                         minTemp: Constants.currentMinTemp.value,
-                                         maxTemp: Constants.currentMaxTemp.value)
+                                         minTemp: Int(Constants.currentMinTemp.value),
+                                         maxTemp: Int(Constants.currentMaxTemp.value))
         )
         currentWeatherView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview().inset(20)
@@ -118,10 +126,10 @@ final class WeatherViewController: UIViewController {
     private func setHourIcon(_ hour: Int) -> UIImage {
         var icon: UIImage
         if 6...20 ~= hour {
-            icon =  UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+            icon =  sunIcon
             return icon
         } else {
-            icon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+            icon = moonIcon
             return icon
         }
     }
@@ -147,7 +155,7 @@ final class WeatherViewController: UIViewController {
         contentView.addSubview(dayTempView)
         dayTempView.setupDayTemp([DayTempView.InputData(
             icon: setHourIcon(currentHour),
-            temp: 25,
+            temp: Int(Constants.currentTemp.value),
             time: "Сейчас")])
         
         for (index, _) in hours.enumerated() {
