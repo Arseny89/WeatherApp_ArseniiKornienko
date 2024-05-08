@@ -212,6 +212,9 @@ extension TempRangeView {
             dayLabel.textColor = .white
             dayLabel.textAlignment = .left
             dayLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+            dayLabel.snp.makeConstraints { make in
+                make.width.equalTo(80)
+            }
         }
         
         private func setupDayIcon() {
@@ -230,7 +233,6 @@ extension TempRangeView {
             stackView.addArrangedSubview(barsView)
             barsView.snp.makeConstraints { make in
                 make.height.equalToSuperview()
-                make.width.equalTo(100)
             }
         }
         
