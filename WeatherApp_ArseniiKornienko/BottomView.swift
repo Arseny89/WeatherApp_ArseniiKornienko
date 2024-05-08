@@ -10,7 +10,7 @@ import SnapKit
 
 final class BottomView: UIView {
     
-    private let listButton = UIButton()
+    let listButton = UIButton()
     private let divider = UIView()
     
     override init(frame: CGRect) {
@@ -52,4 +52,3 @@ final class BottomView: UIView {
         }
     }
 }
-

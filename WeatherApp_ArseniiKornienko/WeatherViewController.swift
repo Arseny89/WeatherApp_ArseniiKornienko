@@ -57,6 +57,7 @@ final class WeatherViewController: UIViewController {
         
         super.viewDidLoad()
         
+        bottomView.listButton.addTarget(self, action: #selector(openCitySelectionView), for: .touchUpInside)
         setupBackgroundImage()
         setupBottomView()
         setupScrollView()
@@ -251,5 +252,11 @@ final class WeatherViewController: UIViewController {
             make.bottom.equalToSuperview()
             make.height.equalTo(70)
         }
+    }
+    
+    @objc private func openCitySelectionView() {
+        let viewController = CitySelectionViewController()
+        viewController.modalPresentationStyle = .fullScreen
+        self.present(viewController, animated: true)
     }
 }
