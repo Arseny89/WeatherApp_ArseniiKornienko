@@ -56,6 +56,15 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
+    private func setupCityWeatherView() {
+        view.addSubview(cityWeatherView)
+        cityWeatherView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(16)
+            make.height.equalTo(120)
+            make.top.equalTo(button.snp.bottom).offset(15)
+        }
+    }
+    
     @objc private func onClick(button: UIButton) {
         if unitSelectionView.isHidden {
             unitSelectionView.isHidden = false
@@ -63,15 +72,6 @@ final class CitySelectionViewController: UIViewController {
         } else {
             unitSelectionView.isHidden = true
             button.setTitle(Constants.buttonTitleShow.text, for: .normal)
-        }
-    }
-    
-    private func setupCityWeatherView() {
-        view.addSubview(cityWeatherView)
-        cityWeatherView.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview().inset(16)
-            make.height.equalTo(120)
-            make.top.equalTo(button.snp.bottom).offset(15)
         }
     }
 }
