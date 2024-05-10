@@ -52,6 +52,10 @@ final class WeatherViewController: UIViewController {
     private let bottomView = BottomView()
     private let sunIcon = UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
     private let moonIcon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+    private let numberOfDays = 10
+    private let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+    private let dayLimits: [(Min: Double, Max: Double)] = [(15, 23), (14, 23), (13, 22), (13, 20), (16, 22), (17, 24), (15, 21), (14, 19), (13, 18)]
+    var days: [String] = []
     
     override func viewDidLoad() {
         
@@ -63,6 +67,7 @@ final class WeatherViewController: UIViewController {
         setupContentView()
         setupCurrentWeatherView()
         setHours()
+        setDayNames(today: weekDays[0])
         setupDayTempView()
         setupTempRangeView()
     }
@@ -170,6 +175,21 @@ final class WeatherViewController: UIViewController {
             make.top.equalTo(currentWeatherView.snp.bottom).offset(16)
             make.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(100)
+        }
+    }
+    
+    private func setDayNames(today: String) {
+        if var index = weekDays.firstIndex(of: today) {
+            for _ in 1...numberOfDays {
+                if index < weekDays.count {
+                    days.append(weekDays[index])
+                    index += 1
+                } else {
+                    index = 0
+                    days.append(weekDays[index])
+                    index += 1
+                }
+            }
         }
     }
     
