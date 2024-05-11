@@ -65,13 +65,9 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    @objc private func onClick(button: UIButton) {
-        if unitSelectionView.isHidden {
-            unitSelectionView.isHidden = false
-            button.setTitle(Constants.buttonTitleHide.text, for: .normal)
-        } else {
-            unitSelectionView.isHidden = true
-            button.setTitle(Constants.buttonTitleShow.text, for: .normal)
-        }
+    @objc private func onSwitchButtonTap(button: UIButton) {
+        let isSelectionHidden = unitSelectionView.isHidden
+        unitSelectionView.isHidden = isSelectionHidden ? false : true
+        button.setTitle(isSelectionHidden ? Constants.buttonTitleHide.text : Constants.buttonTitleShow.text, for: .normal)
     }
 }
