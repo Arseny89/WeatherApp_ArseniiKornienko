@@ -54,22 +54,12 @@ final class TempRangeView: UIView {
             let view = DayRangeView()
             view.setupDayRange(data)
             let maxTempDiff = data.maxTemp - data.maxDayTemp
-            let maxOffset: Double
-            
-            if maxTempDiff > 0 {
-                maxOffset = maxTempDiff / data.maxDayTemp
-            } else {
-                maxOffset = 0
-            }
-            
             let minTempDiff = data.minDayTemp - data.minTemp
+            let maxOffset: Double
             let minOffset: Double
             
-            if minTempDiff > 0 {
-                minOffset = minTempDiff / data.minDayTemp
-            } else {
-                minOffset = 0
-            }
+            maxOffset = maxTempDiff > 0 ? maxTempDiff / data.maxDayTemp : 0
+            minOffset = minTempDiff > 0 ? minTempDiff / data.minDayTemp : 0
             
             view.dayBar.snp.remakeConstraints { make in
                 make.trailing.equalToSuperview().multipliedBy(1 - maxOffset)
@@ -81,19 +71,13 @@ final class TempRangeView: UIView {
                 if let currentTemp = data.currentTemp {
                     let dayTempDiff = data.maxDayTemp - data.minDayTemp
                     let currentTempOffset = abs(data.minDayTemp - currentTemp) / dayTempDiff
-                    if currentTempOffset == 0 {
                         view.currentTempView.snp.remakeConstraints { make in
-                            make.centerX.equalTo(view.dayBar.snp.leading)
-                            make.size.equalTo(6)
-                            make.centerY.equalToSuperview()
-                        }
-                    } else {
-                        view.currentTempView.snp.remakeConstraints { make in
+                            _ = currentTempOffset == 0 ? 
+                            make.centerX.equalTo(view.dayBar.snp.leading) :
                             make.centerX.equalTo(view.dayBar.snp.trailing).multipliedBy(currentTempOffset)
                             make.size.equalTo(6)
                             make.centerY.equalToSuperview()
                         }
-                    }
                 }
             } else {
                 view.currentTempView.isHidden = true
