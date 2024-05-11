@@ -16,6 +16,9 @@ final class WeatherViewController: UIViewController {
         case currentTemp
         case currentMinTemp
         case currentMaxTemp
+        case minTemp
+        case maxTemp
+        
         var text: String {
             switch self {
             case .currenWeatherCity: return "Glendale"
@@ -24,11 +27,14 @@ final class WeatherViewController: UIViewController {
             default: return "No text"
             }
         }
-        var value: Int {
+        
+        var value: Double {
             switch self {
             case .currentTemp: return 25
             case .currentMinTemp: return 16
             case .currentMaxTemp: return 25
+            case .minTemp: return 13
+            case .maxTemp: return 28
             default: return 0
             }
         }
@@ -44,6 +50,12 @@ final class WeatherViewController: UIViewController {
     private var hours: [String] = []
     private var hourIcon: UIImage?
     private let bottomView = BottomView()
+    private let sunIcon = UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+    private let moonIcon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+    private let numberOfDays = 10
+    private let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+    private let dayLimits: [(Min: Double, Max: Double)] = [(15, 23), (14, 23), (13, 22), (13, 20), (16, 22), (17, 24), (15, 21), (14, 19), (13, 18)]
+    var days: [String] = []
     
     override func viewDidLoad() {
         
@@ -55,6 +67,7 @@ final class WeatherViewController: UIViewController {
         setupContentView()
         setupCurrentWeatherView()
         setHours()
+        setDayNames(today: weekDays[0])
         setupDayTempView()
         setupTempRangeView()
     }
@@ -90,10 +103,10 @@ final class WeatherViewController: UIViewController {
         currentWeatherView.setupCurrentWeather(
             CurrentWeatherView.InputData(title: Constants.currentWeatherTitle.text,
                                          subtitle: Constants.currenWeatherCity.text,
-                                         currentTemp: Constants.currentTemp.value,
+                                         currentTemp: Int(Constants.currentTemp.value),
                                          description: Constants.currentWeatherDescription.text,
-                                         minTemp: Constants.currentMinTemp.value,
-                                         maxTemp: Constants.currentMaxTemp.value)
+                                         minTemp: Int(Constants.currentMinTemp.value),
+                                         maxTemp: Int(Constants.currentMaxTemp.value))
         )
         currentWeatherView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview().inset(20)
@@ -118,10 +131,10 @@ final class WeatherViewController: UIViewController {
     private func setHourIcon(_ hour: Int) -> UIImage {
         var icon: UIImage
         if 6...20 ~= hour {
-            icon =  UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+            icon =  sunIcon
             return icon
         } else {
-            icon = UIImage(systemName: "moon.stars.fill")?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+            icon = moonIcon
             return icon
         }
     }
@@ -147,7 +160,7 @@ final class WeatherViewController: UIViewController {
         contentView.addSubview(dayTempView)
         dayTempView.setupDayTemp([DayTempView.InputData(
             icon: setHourIcon(currentHour),
-            temp: 25,
+            temp: Int(Constants.currentTemp.value),
             time: "Сейчас")])
         
         for (index, _) in hours.enumerated() {
@@ -165,12 +178,46 @@ final class WeatherViewController: UIViewController {
         }
     }
     
+    private func setDayNames(today: String) {
+        if var index = weekDays.firstIndex(of: today) {
+            for _ in 1...numberOfDays {
+                if index < weekDays.count {
+                    days.append(weekDays[index])
+                    index += 1
+                } else {
+                    index = 0
+                    days.append(weekDays[index])
+                    index += 1
+                }
+            }
+        }
+    }
+    
     private func setupTempRangeView() {
         contentView.addSubview(tempRangeView)
-        tempRangeView.snp.makeConstraints { make in
-            make.bottom.horizontalEdges.equalToSuperview().inset(16)
-            make.top.equalTo(dayTempView.snp.bottom).offset(16)
-            make.height.equalTo(800)
+        for (index, _) in days.enumerated() {
+            if index == 0 {
+                tempRangeView.setupDayRange([TempRangeView.InputData(day: "Сегодня",
+                                                                     icon: sunIcon,
+                                                                     minDayTemp: Constants.currentMinTemp.value,
+                                                                     maxDayTemp: Constants.currentMaxTemp.value,
+                                                                     minTemp: Constants.minTemp.value,
+                                                                     maxTemp: Constants.maxTemp.value,
+                                                                     currentTemp: Constants.currentTemp.value)])
+            } else {
+                tempRangeView.setupDayRange([TempRangeView.InputData(day: days[index],
+                                                                     icon: sunIcon,
+                                                                     minDayTemp: dayLimits[index - 1].Min,
+                                                                     maxDayTemp: dayLimits[index - 1].Max,
+                                                                     minTemp: Constants.minTemp.value,
+                                                                     maxTemp: Constants.maxTemp.value)])
+                
+                tempRangeView.snp.makeConstraints { make in
+                    make.bottom.leading.equalToSuperview().inset(16)
+                    make.top.equalTo(dayTempView.snp.bottom).offset(16)
+                    make.width.equalTo(dayTempView)
+                }
+            }
         }
     }
     
