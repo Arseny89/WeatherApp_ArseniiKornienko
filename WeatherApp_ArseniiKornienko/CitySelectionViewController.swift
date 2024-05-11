@@ -23,7 +23,7 @@ final class CitySelectionViewController: UIViewController {
     }
     
     private let unitSelectionView = UIView()
-    private let button = UIButton()
+    private let switchButton = UIButton()
     private let cityWeatherView = CityWeatherView()
     
     override func viewDidLoad() {
@@ -46,12 +46,12 @@ final class CitySelectionViewController: UIViewController {
     }
     
     private func setupButton() {
-        view.addSubview(button)
-        button.backgroundColor = .yellow
-        button.setTitle(Constants.buttonTitleHide.text, for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.addTarget(self, action: #selector(onClick), for: .touchUpInside)
-        button.snp.makeConstraints {make in
+        view.addSubview(switchButton)
+        switchButton.backgroundColor = .yellow
+        switchButton.setTitle(Constants.buttonTitleHide.text, for: .normal)
+        switchButton.setTitleColor(.black, for: .normal)
+        switchButton.addTarget(self, action: #selector(onSwitchButtonTap), for: .touchUpInside)
+        switchButton.snp.makeConstraints {make in
             make.trailing.top.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
@@ -61,7 +61,7 @@ final class CitySelectionViewController: UIViewController {
         cityWeatherView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(120)
-            make.top.equalTo(button.snp.bottom).offset(15)
+            make.top.equalTo(switchButton.snp.bottom).offset(15)
         }
     }
     
