@@ -55,6 +55,13 @@ final class TempRangeView: UIView {
             view.setupDayRange(data)
             let maxTempDiff = data.maxTemp - data.maxDayTemp
             let minTempDiff = data.minDayTemp - data.minTemp
+<<<<<<< HW_2.6
+            let maxOffset: Double
+            let minOffset: Double
+            
+            maxOffset = maxTempDiff > 0 ? maxTempDiff / data.maxDayTemp : 0
+            minOffset = minTempDiff > 0 ? minTempDiff / data.minDayTemp : 0
+=======
             
             func setOffset(dayTemp: Double, tempDiff: Double) -> Double {
                 if tempDiff > 0 {
@@ -63,6 +70,7 @@ final class TempRangeView: UIView {
                     return 0
                 }
             }
+>>>>>>> main
             
             let maxOffset = setOffset(dayTemp: data.maxDayTemp, tempDiff: maxTempDiff)
             let minOffset = setOffset(dayTemp: data.minDayTemp, tempDiff: minTempDiff)
@@ -77,19 +85,13 @@ final class TempRangeView: UIView {
                 if let currentTemp = data.currentTemp {
                     let dayTempDiff = data.maxDayTemp - data.minDayTemp
                     let currentTempOffset = abs(data.minDayTemp - currentTemp) / dayTempDiff
-                    if currentTempOffset == 0 {
                         view.currentTempView.snp.remakeConstraints { make in
-                            make.centerX.equalTo(view.dayBar.snp.leading)
-                            make.size.equalTo(6)
-                            make.centerY.equalToSuperview()
-                        }
-                    } else {
-                        view.currentTempView.snp.remakeConstraints { make in
+                            _ = currentTempOffset == 0 ? 
+                            make.centerX.equalTo(view.dayBar.snp.leading) :
                             make.centerX.equalTo(view.dayBar.snp.trailing).multipliedBy(currentTempOffset)
                             make.size.equalTo(6)
                             make.centerY.equalToSuperview()
                         }
-                    }
                 }
             } else {
                 view.currentTempView.isHidden = true
