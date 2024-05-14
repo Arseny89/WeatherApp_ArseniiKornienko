@@ -25,6 +25,9 @@ final class CitySelectionViewController: UIViewController {
     private let unitSelectionView = UIView()
     private let switchButton = UIButton()
     private let cityWeatherView = CityWeatherView()
+    private let scalePickerView = UIPickerView()
+    private let scales: [String] = ["º C", "º F", "º K"]
+    private let scalesLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +37,8 @@ final class CitySelectionViewController: UIViewController {
         setupUnitSelectionView()
         setupButton()
         setupCityWeatherView()
+        setupScalePickerView()
+        setupScalesLabel()
     }
     
     private func setupUnitSelectionView() {
@@ -65,9 +70,49 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
+    private func setupScalePickerView() {
+        view.addSubview(scalePickerView)
+        scalePickerView.backgroundColor = .systemGray5
+        scalePickerView.layer.cornerRadius = 12
+        scalePickerView.dataSource = self
+        scalePickerView.delegate = self
+        scalePickerView.snp.makeConstraints { make in
+            make.top.equalTo(cityWeatherView.snp.bottom).offset(20)
+            make.centerX.equalTo(cityWeatherView)
+            make.size.equalTo(80)
+        }
+    }
+    
+    private func setupScalesLabel() {
+        unitSelectionView.addSubview(scalesLabel)
+        scalesLabel.text = scales[0]
+        scalesLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+    }
+    
     @objc private func onSwitchButtonTap(button: UIButton) {
         let isSelectionHidden = unitSelectionView.isHidden
         unitSelectionView.isHidden = isSelectionHidden ? false : true
         button.setTitle(isSelectionHidden ? Constants.buttonTitleHide.text : Constants.buttonTitleShow.text, for: .normal)
+    }
+extension CitySelectionViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        scales.count
+    }
+    
+}
+
+extension CitySelectionViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        scales[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        scalesLabel.text  = scales[row]
     }
 }
