@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import WebKit
 
 final class CitySelectionViewController: UIViewController {
     
@@ -24,6 +25,7 @@ final class CitySelectionViewController: UIViewController {
     
     private let unitSelectionView = UIView()
     private let switchButton = UIButton()
+    private let infoButton = UIButton()
     private let cityWeatherView = CityWeatherView()
     private let scalePickerView = UIPickerView()
     private let scales: [String] = ["º C", "º F", "º K"]
@@ -39,6 +41,7 @@ final class CitySelectionViewController: UIViewController {
         setupCityWeatherView()
         setupScalePickerView()
         setupScalesLabel()
+        setupInfoButton()
     }
     
     private func setupUnitSelectionView() {
@@ -91,11 +94,35 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
+    private func setupInfoButton() {
+        view.addSubview(infoButton)
+        infoButton.backgroundColor = .systemGray
+        infoButton.setTitle("Show info", for: .normal)
+        infoButton.setTitleColor(.black, for: .normal)
+        infoButton.addTarget(self, action: #selector(onInfoButtonTap), for: .touchUpInside)
+        infoButton.snp.makeConstraints { make in
+            make.trailing.equalTo(switchButton.snp.leading).offset(-20)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+        }
+    }
+    
     @objc private func onSwitchButtonTap(button: UIButton) {
         let isSelectionHidden = unitSelectionView.isHidden
         unitSelectionView.isHidden = isSelectionHidden ? false : true
         button.setTitle(isSelectionHidden ? Constants.buttonTitleHide.text : Constants.buttonTitleShow.text, for: .normal)
     }
+    
+    @objc private func onInfoButtonTap(button: UIButton) {
+        if let url = URL(string: "https://www.meteoinfo.ru/t-scale") {
+            let webViewController = WebViewController()
+            webViewController.openUrl(url)
+            self.present(webViewController, animated: true)
+        } else {
+            print("Invalid url")
+        }
+    }
+}
+
 extension CitySelectionViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
