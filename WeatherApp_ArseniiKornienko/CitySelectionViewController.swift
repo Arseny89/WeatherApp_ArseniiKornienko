@@ -121,8 +121,6 @@ final class CitySelectionViewController: UIViewController {
             let webViewController = WebViewController()
             webViewController.openUrl(url)
             self.present(webViewController, animated: true)
-        } else {
-            print("Invalid url")
         }
     }
 }
