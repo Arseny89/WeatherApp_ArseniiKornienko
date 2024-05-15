@@ -33,7 +33,6 @@ final class CitySelectionViewController: UIViewController {
     private let cityWeatherView = CityWeatherView()
     private let scalePickerView = UIPickerView()
     private let scales: [String] = ["º C", "º F", "º K"]
-    private let scalesLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +43,6 @@ final class CitySelectionViewController: UIViewController {
         setupButton()
         setupCityWeatherView()
         setupScalePickerView()
-        setupScalesLabel()
         setupInfoButton()
     }
     
@@ -89,11 +87,6 @@ final class CitySelectionViewController: UIViewController {
             make.size.equalTo(80)
         }
     }
-    
-    private func setupScalesLabel() {
-        unitSelectionView.addSubview(scalesLabel)
-        scalesLabel.text = scales[0]
-        scalesLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
     }
@@ -142,6 +135,5 @@ extension CitySelectionViewController: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        scalesLabel.text  = scales[row]
     }
 }
