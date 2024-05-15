@@ -33,6 +33,7 @@ final class CitySelectionViewController: UIViewController {
     private let cityWeatherView = CityWeatherView()
     private let scalePickerView = UIPickerView()
     private let scales: [String] = ["º C", "º F", "º K"]
+    private var pickedScale: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -131,5 +132,6 @@ extension CitySelectionViewController: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        pickedScale  = scales[row]
     }
 }
