@@ -76,18 +76,14 @@ final class CitySelectionViewController: UIViewController {
     }
     
     private func setupScalePickerView() {
-        view.addSubview(scalePickerView)
+        unitSelectionView.addSubview(scalePickerView)
         scalePickerView.backgroundColor = .systemGray5
         scalePickerView.layer.cornerRadius = 12
         scalePickerView.dataSource = self
         scalePickerView.delegate = self
         scalePickerView.snp.makeConstraints { make in
-            make.top.equalTo(cityWeatherView.snp.bottom).offset(20)
-            make.centerX.equalTo(cityWeatherView)
-            make.size.equalTo(80)
-        }
-    }
             make.center.equalToSuperview()
+            make.size.equalTo(80)
         }
     }
     
