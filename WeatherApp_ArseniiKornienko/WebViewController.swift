@@ -18,15 +18,15 @@ final class WebViewController: UIViewController {
         setupWebView()
     }
     
+    func openUrl(_ url: URL) {
+        webView.load(URLRequest(url: url))
+    }
+    
     private func setupWebView() {
         view.addSubview(webView)
         webView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-    }
-    
-    func openUrl(_ url: URL) {
-        webView.load(URLRequest(url: url))
     }
 }
 
