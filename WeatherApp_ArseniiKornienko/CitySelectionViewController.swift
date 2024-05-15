@@ -14,11 +14,15 @@ final class CitySelectionViewController: UIViewController {
     enum Constants {
         case buttonTitleShow
         case buttonTitleHide
+        case infoButtonTitle
+        case url
         
         var text: String {
             switch self {
             case .buttonTitleShow: return "Show UnitSelectionView"
             case .buttonTitleHide: return "Hide UnitSelectionView"
+            case .infoButtonTitle: return "Show info"
+            case .url: return "https://www.meteoinfo.ru/t-scale"
             }
         }
     }
@@ -97,7 +101,7 @@ final class CitySelectionViewController: UIViewController {
     private func setupInfoButton() {
         view.addSubview(infoButton)
         infoButton.backgroundColor = .systemGray
-        infoButton.setTitle("Show info", for: .normal)
+        infoButton.setTitle(Constants.infoButtonTitle.text, for: .normal)
         infoButton.setTitleColor(.black, for: .normal)
         infoButton.addTarget(self, action: #selector(onInfoButtonTap), for: .touchUpInside)
         infoButton.snp.makeConstraints { make in
@@ -113,7 +117,7 @@ final class CitySelectionViewController: UIViewController {
     }
     
     @objc private func onInfoButtonTap(button: UIButton) {
-        if let url = URL(string: "https://www.meteoinfo.ru/t-scale") {
+        if let url = URL(string: Constants.url.text) {
             let webViewController = WebViewController()
             webViewController.openUrl(url)
             self.present(webViewController, animated: true)
