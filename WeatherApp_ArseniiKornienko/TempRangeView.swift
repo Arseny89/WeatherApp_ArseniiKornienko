@@ -55,26 +55,12 @@ final class TempRangeView: UIView {
             view.setupDayRange(data)
             let maxTempDiff = data.maxTemp - data.maxDayTemp
             let minTempDiff = data.minDayTemp - data.minTemp
-<<<<<<< HW_2.6
             let maxOffset: Double
             let minOffset: Double
             
             maxOffset = maxTempDiff > 0 ? maxTempDiff / data.maxDayTemp : 0
             minOffset = minTempDiff > 0 ? minTempDiff / data.minDayTemp : 0
-=======
-            
-            func setOffset(dayTemp: Double, tempDiff: Double) -> Double {
-                if tempDiff > 0 {
-                    return tempDiff / dayTemp
-                } else {
-                    return 0
-                }
-            }
->>>>>>> main
-            
-            let maxOffset = setOffset(dayTemp: data.maxDayTemp, tempDiff: maxTempDiff)
-            let minOffset = setOffset(dayTemp: data.minDayTemp, tempDiff: minTempDiff)
-            
+
             view.dayBar.snp.remakeConstraints { make in
                 make.trailing.equalToSuperview().multipliedBy(1 - maxOffset)
                 make.width.equalToSuperview().multipliedBy(1 - minOffset - maxOffset)
