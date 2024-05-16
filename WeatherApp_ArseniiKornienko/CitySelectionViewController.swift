@@ -16,6 +16,7 @@ final class CitySelectionViewController: UIViewController {
         case buttonTitleHide
         case infoButtonTitle
         case url
+        case title
         
         var text: String {
             switch self {
@@ -23,12 +24,12 @@ final class CitySelectionViewController: UIViewController {
             case .buttonTitleHide: return "Hide UnitSelectionView"
             case .infoButtonTitle: return "Show info"
             case .url: return "https://www.meteoinfo.ru/t-scale"
+            case .title: return "Погода"
             }
         }
     }
     
     private let unitSelectionView = UIView()
-    private let switchButton = UIButton()
     private let infoButton = UIButton()
     private let cityWeatherView = CityWeatherView()
     private let scalePickerView = UIPickerView()
@@ -39,9 +40,10 @@ final class CitySelectionViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .black
-        
+        title = Constants.title.text
+
+        setupNavigationBar()
         setupUnitSelectionView()
-        setupButton()
         setupCityWeatherView()
         setupScalePickerView()
         setupInfoButton()
@@ -56,23 +58,13 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    private func setupButton() {
-        view.addSubview(switchButton)
-        switchButton.backgroundColor = .yellow
-        switchButton.setTitle(Constants.buttonTitleHide.text, for: .normal)
-        switchButton.setTitleColor(.black, for: .normal)
-        switchButton.addTarget(self, action: #selector(onSwitchButtonTap), for: .touchUpInside)
-        switchButton.snp.makeConstraints {make in
-            make.trailing.top.equalTo(view.safeAreaLayoutGuide).inset(20)
-        }
-    }
     
     private func setupCityWeatherView() {
         view.addSubview(cityWeatherView)
         cityWeatherView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(120)
-            make.top.equalTo(switchButton.snp.bottom).offset(15)
+           make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
     
@@ -95,23 +87,47 @@ final class CitySelectionViewController: UIViewController {
         infoButton.setTitleColor(.black, for: .normal)
         infoButton.addTarget(self, action: #selector(onInfoButtonTap), for: .touchUpInside)
         infoButton.snp.makeConstraints { make in
-            make.trailing.equalTo(switchButton.snp.leading).offset(-20)
-            make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.top.equalTo(cityWeatherView.snp.bottom).offset(20)
         }
+    }
+    
+    private func setupNavigationBar() {
+        let navigationBar = navigationController?.navigationBar
+        
+        navigationBar?.prefersLargeTitles = true
+        navigationBar?.tintColor = .white
+        navigationBar?.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(onSwitchButtonTap))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"),
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(onDetailedWeatherButtonTap))
     }
     
     @objc private func onSwitchButtonTap(button: UIButton) {
         let isSelectionHidden = unitSelectionView.isHidden
         unitSelectionView.isHidden = isSelectionHidden ? false : true
-        button.setTitle(isSelectionHidden ? Constants.buttonTitleHide.text : Constants.buttonTitleShow.text, for: .normal)
     }
     
     @objc private func onInfoButtonTap(button: UIButton) {
         if let url = URL(string: Constants.url.text) {
             let webViewController = WebViewController()
+            let viewController = UINavigationController(rootViewController: webViewController)
             webViewController.openUrl(url)
-            self.present(webViewController, animated: true)
+            self.present(viewController, animated: true)
         }
+    }
+    
+    @objc private func onDetailedWeatherButtonTap() {
+        let viewController = UINavigationController(rootViewController: DetailedWeatherViewController())
+        viewController.modalPresentationStyle = .fullScreen
+        self.present(viewController, animated: true)
+        
     }
 }
 

@@ -255,7 +255,7 @@ final class WeatherViewController: UIViewController {
     }
     
     @objc private func onListButtonTap() {
-        let viewController = CitySelectionViewController()
+        let viewController = UINavigationController(rootViewController: CitySelectionViewController())
         viewController.modalPresentationStyle = .fullScreen
         self.present(viewController, animated: true)
     }
