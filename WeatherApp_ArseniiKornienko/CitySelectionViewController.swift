@@ -7,33 +7,24 @@
 
 import UIKit
 import SnapKit
-import WebKit
 
 final class CitySelectionViewController: UIViewController {
     
     enum Constants {
         case buttonTitleShow
         case buttonTitleHide
-        case infoButtonTitle
-        case url
         
         var text: String {
             switch self {
             case .buttonTitleShow: return "Show UnitSelectionView"
             case .buttonTitleHide: return "Hide UnitSelectionView"
-            case .infoButtonTitle: return "Show info"
-            case .url: return "https://www.meteoinfo.ru/t-scale"
             }
         }
     }
     
     private let unitSelectionView = UIView()
     private let switchButton = UIButton()
-    private let infoButton = UIButton()
     private let cityWeatherView = CityWeatherView()
-    private let scalePickerView = UIPickerView()
-    private let scales: [String] = ["º C", "º F", "º K"]
-    private var pickedScale: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,8 +34,6 @@ final class CitySelectionViewController: UIViewController {
         setupUnitSelectionView()
         setupButton()
         setupCityWeatherView()
-        setupScalePickerView()
-        setupInfoButton()
     }
     
     private func setupUnitSelectionView() {
@@ -76,62 +65,9 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    private func setupScalePickerView() {
-        unitSelectionView.addSubview(scalePickerView)
-        scalePickerView.backgroundColor = .systemGray5
-        scalePickerView.layer.cornerRadius = 12
-        scalePickerView.dataSource = self
-        scalePickerView.delegate = self
-        scalePickerView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.size.equalTo(80)
-        }
-    }
-    
-    private func setupInfoButton() {
-        view.addSubview(infoButton)
-        infoButton.backgroundColor = .systemGray
-        infoButton.setTitle(Constants.infoButtonTitle.text, for: .normal)
-        infoButton.setTitleColor(.black, for: .normal)
-        infoButton.addTarget(self, action: #selector(onInfoButtonTap), for: .touchUpInside)
-        infoButton.snp.makeConstraints { make in
-            make.trailing.equalTo(switchButton.snp.leading).offset(-20)
-            make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
-        }
-    }
-    
     @objc private func onSwitchButtonTap(button: UIButton) {
         let isSelectionHidden = unitSelectionView.isHidden
         unitSelectionView.isHidden = isSelectionHidden ? false : true
         button.setTitle(isSelectionHidden ? Constants.buttonTitleHide.text : Constants.buttonTitleShow.text, for: .normal)
-    }
-    
-    @objc private func onInfoButtonTap(button: UIButton) {
-        if let url = URL(string: Constants.url.text) {
-            let webViewController = WebViewController()
-            webViewController.openUrl(url)
-            self.present(webViewController, animated: true)
-        }
-    }
-}
-
-extension CitySelectionViewController: UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        scales.count
-    }
-    
-}
-
-extension CitySelectionViewController: UIPickerViewDelegate {
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        scales[row]
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        pickedScale  = scales[row]
     }
 }
