@@ -23,7 +23,7 @@ extension UIImage {
             switch self {
             case .cloudSun: return UIImage(systemName: "cloud.sun.fill")
             case .xmarkCircle: return UIImage(systemName: "xmark.circle.fill")
-            case .ellipsisCircle: return UIImage(systemName: "ellipsis.cirlce")
+            case .ellipsisCircle: return UIImage(systemName: "ellipsis.circle")
             case .infoCircle: return UIImage(systemName: "info.circle")
             case .sky: return UIImage(named: "sky")
             case .calendar: return UIImage(systemName: "calendar")
