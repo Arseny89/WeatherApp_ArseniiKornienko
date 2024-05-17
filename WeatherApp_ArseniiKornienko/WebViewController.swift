@@ -45,10 +45,12 @@ final class WebViewController: UIViewController {
         navigationBar?.tintColor = .white
         title = Constants.title.text
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark.circle.fill")?.withConfiguration(imageConfiguration),
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(onRightBarButtonTap))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage.Images.xmarkCircle.image?.withConfiguration(imageConfiguration),
+            style: .plain,
+            target: self,
+            action: #selector(onRightBarButtonTap)
+        )
     }
     
     @objc func onRightBarButtonTap() {

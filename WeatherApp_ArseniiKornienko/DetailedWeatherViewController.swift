@@ -59,10 +59,12 @@ final class DetailedWeatherViewController: UIViewController {
         navigationBar?.tintColor = .white
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationItem.titleView = titleView
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark.circle.fill")?.withConfiguration(imageConfiguration),
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(onRightBarButtonTap))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage.Images.xmarkCircle.image?.withConfiguration(imageConfiguration),
+            style: .plain,
+            target: self,
+            action: #selector(onRightBarButtonTap)
+        )
     }
     
     @objc func onRightBarButtonTap() {
