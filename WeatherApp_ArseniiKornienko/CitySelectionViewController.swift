@@ -99,11 +99,11 @@ final class CitySelectionViewController: UIViewController {
         navigationBar?.tintColor = .white
         navigationBar?.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage.Images.ellipsisCircle.image,
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(onSwitchButtonTap))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"),
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage.Images.infoCircle.image,
                                                            style: .plain,
                                                            target: self,
                                                            action: #selector(onDetailedWeatherButtonTap))

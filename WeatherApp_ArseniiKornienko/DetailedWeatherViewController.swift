@@ -46,7 +46,7 @@ final class DetailedWeatherViewController: UIViewController {
     
     private func setupTitleImage() {
         titleView.addSubview(titleImage)
-        titleImage.image = UIImage(systemName: "cloud.sun.fill")
+        titleImage.image = UIImage.Images.cloudSun.image
         titleImage.snp.makeConstraints { make in
             make.trailing.equalTo(titleLabel.snp.leading).offset(-5)
             make.centerY.equalTo(titleLabel)

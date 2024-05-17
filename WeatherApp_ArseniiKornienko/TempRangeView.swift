@@ -105,7 +105,7 @@ final class TempRangeView: UIView {
     
     private func setupTitleIcon() {
         titleStackView.addArrangedSubview(titleIcon)
-        titleIcon.image = UIImage(systemName: "calendar")
+        titleIcon.image = UIImage.Images.calendar.image
         titleIcon.tintColor = .white
         titleIcon.alpha = 0.8
         titleIcon.snp.makeConstraints { make in
