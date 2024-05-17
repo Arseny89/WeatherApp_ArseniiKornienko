@@ -12,16 +12,12 @@ import WebKit
 final class CitySelectionViewController: UIViewController {
     
     enum Constants {
-        case buttonTitleShow
-        case buttonTitleHide
         case infoButtonTitle
         case url
         case title
         
         var text: String {
             switch self {
-            case .buttonTitleShow: return "Show UnitSelectionView"
-            case .buttonTitleHide: return "Hide UnitSelectionView"
             case .infoButtonTitle: return "Show info"
             case .url: return "https://www.meteoinfo.ru/t-scale"
             case .title: return "Погода"
