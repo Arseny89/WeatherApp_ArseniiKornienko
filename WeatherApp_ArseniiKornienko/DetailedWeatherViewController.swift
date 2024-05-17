@@ -20,9 +20,9 @@ final class DetailedWeatherViewController: UIViewController {
         }
     }
     
-    let titleView = UIStackView()
-    let titleLabel = UILabel()
-    let titleImage = UIImageView()
+    private let titleView = UIStackView()
+    private let titleLabel = UILabel()
+    private let titleImage = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
