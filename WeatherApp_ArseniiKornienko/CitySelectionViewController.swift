@@ -60,7 +60,7 @@ final class CitySelectionViewController: UIViewController {
         cityWeatherView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(120)
-           make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
     
