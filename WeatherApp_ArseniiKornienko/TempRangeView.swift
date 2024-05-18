@@ -60,7 +60,7 @@ final class TempRangeView: UIView {
             
             maxOffset = maxTempDiff > 0 ? maxTempDiff / data.maxDayTemp : 0
             minOffset = minTempDiff > 0 ? minTempDiff / data.minDayTemp : 0
-            
+
             view.dayBar.snp.remakeConstraints { make in
                 make.trailing.equalToSuperview().multipliedBy(1 - maxOffset)
                 make.width.equalToSuperview().multipliedBy(1 - minOffset - maxOffset)
