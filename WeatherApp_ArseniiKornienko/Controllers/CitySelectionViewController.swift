@@ -112,10 +112,10 @@ final class CitySelectionViewController: UIViewController {
     
     @objc private func onInfoButtonTap(button: UIButton) {
         guard let url = URL(string: Constants.url.text) else { return }
-            let webViewController = WebViewController()
-            let viewController = UINavigationController(rootViewController: webViewController)
-            webViewController.openUrl(url)
-            self.present(viewController, animated: true)
+        let webViewController = WebViewController()
+        let viewController = UINavigationController(rootViewController: webViewController)
+        webViewController.openUrl(url)
+        self.present(viewController, animated: true)
     }
     
     @objc private func onDetailedWeatherButtonTap() {

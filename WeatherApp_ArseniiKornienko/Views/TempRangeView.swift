@@ -71,13 +71,13 @@ final class TempRangeView: UIView {
                 if let currentTemp = data.currentTemp {
                     let dayTempDiff = data.maxDayTemp - data.minDayTemp
                     let currentTempOffset = abs(data.minDayTemp - currentTemp) / dayTempDiff
-                        view.currentTempView.snp.remakeConstraints { make in
-                            _ = currentTempOffset == 0 ? 
-                            make.centerX.equalTo(view.dayBar.snp.leading) :
-                            make.centerX.equalTo(view.dayBar.snp.trailing).multipliedBy(currentTempOffset)
-                            make.size.equalTo(6)
-                            make.centerY.equalToSuperview()
-                        }
+                    view.currentTempView.snp.remakeConstraints { make in
+                        _ = currentTempOffset == 0 ? 
+                        make.centerX.equalTo(view.dayBar.snp.leading) :
+                        make.centerX.equalTo(view.dayBar.snp.trailing).multipliedBy(currentTempOffset)
+                        make.size.equalTo(6)
+                        make.centerY.equalToSuperview()
+                    }
                 }
             } else {
                 view.currentTempView.isHidden = true
