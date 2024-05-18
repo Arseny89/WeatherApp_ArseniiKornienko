@@ -91,6 +91,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0E11F5092BF863D000D82550 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				0ED012B22BE76180005D48D7 /* WeatherViewController.swift */,
+				0EF824842BEF4FA70033BF6C /* WebViewController.swift */,
+				0E816D3D2BEB2562007CC983 /* CitySelectionViewController.swift */,
+				0E510DBF2BF49018007EB1A8 /* DetailedWeatherViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		0E11F50A2BF863F900D82550 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0E7649F92BEACA500052E3F2 /* BottomView.swift */,
+				0E7649EF2BE765320052E3F2 /* TempRangeView.swift */,
+				0E816D3F2BEB3806007CC983 /* CityWeatherView.swift */,
+				0E7649F12BE765440052E3F2 /* CurrentWeatherView.swift */,
+				0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		0E11F50B2BF8641A00D82550 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0E510DC22BF72D89007EB1A8 /* ImageExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		0ED012A22BE76180005D48D7 = {
 			isa = PBXGroup;
 			children = (
@@ -116,16 +147,9 @@
 			children = (
 				0ED012AE2BE76180005D48D7 /* AppDelegate.swift */,
 				0ED012B02BE76180005D48D7 /* SceneDelegate.swift */,
-				0ED012B22BE76180005D48D7 /* WeatherViewController.swift */,
-				0E7649F92BEACA500052E3F2 /* BottomView.swift */,
-				0E510DC22BF72D89007EB1A8 /* ImageExtension.swift */,
-				0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */,
-				0E7649EF2BE765320052E3F2 /* TempRangeView.swift */,
-				0EF824842BEF4FA70033BF6C /* WebViewController.swift */,
-				0E816D3F2BEB3806007CC983 /* CityWeatherView.swift */,
-				0E816D3D2BEB2562007CC983 /* CitySelectionViewController.swift */,
-				0E510DBF2BF49018007EB1A8 /* DetailedWeatherViewController.swift */,
-				0E7649F12BE765440052E3F2 /* CurrentWeatherView.swift */,
+				0E11F5092BF863D000D82550 /* Controllers */,
+				0E11F50A2BF863F900D82550 /* Views */,
+				0E11F50B2BF8641A00D82550 /* Extensions */,
 				0ED012B72BE76181005D48D7 /* Assets.xcassets */,
 				0ED012B92BE76181005D48D7 /* LaunchScreen.storyboard */,
 				0ED012BC2BE76181005D48D7 /* Info.plist */,
