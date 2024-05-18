@@ -50,8 +50,8 @@ final class WeatherViewController: UIViewController {
     private var hours: [String] = []
     private var hourIcon: UIImage?
     private let bottomView = BottomView()
-    private let sunIcon = UIImage.Images.sunMax.image?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
-    private let moonIcon = UIImage.Images.moonStars.image?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+    private let sunIcon = UIImage(icon: .sunMax)?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+    private let moonIcon = UIImage(icon: .moonStars)?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
     private let numberOfDays = 10
     private let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     private let dayLimits: [(Min: Double, Max: Double)] = [(15, 23), (14, 23), (13, 22), (13, 20), (16, 22), (17, 24), (15, 21), (14, 19), (13, 18)]
@@ -76,7 +76,7 @@ final class WeatherViewController: UIViewController {
     private func setupBackgroundImage() {
         view.addSubview(backgroundImage)
         backgroundImage.contentMode = .scaleAspectFill
-        backgroundImage.image = UIImage.Images.sky.image
+        backgroundImage.image = UIImage(image: .sky)
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

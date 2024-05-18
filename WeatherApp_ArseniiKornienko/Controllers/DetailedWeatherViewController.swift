@@ -46,7 +46,7 @@ final class DetailedWeatherViewController: UIViewController {
     
     private func setupTitleImage() {
         titleView.addSubview(titleImage)
-        titleImage.image = UIImage.Images.cloudSun.image
+        titleImage.image = UIImage(icon: .cloudSun)
         titleImage.snp.makeConstraints { make in
             make.trailing.equalTo(titleLabel.snp.leading).offset(-5)
             make.centerY.equalTo(titleLabel)
@@ -60,7 +60,7 @@ final class DetailedWeatherViewController: UIViewController {
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationItem.titleView = titleView
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage.Images.xmarkCircle.image?.withConfiguration(imageConfiguration),
+            image: UIImage(icon: .xmarkCircle)?.withConfiguration(imageConfiguration),
             style: .plain,
             target: self,
             action: #selector(onRightBarButtonTap)

@@ -46,7 +46,7 @@ final class WebViewController: UIViewController {
         title = Constants.title.text
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage.Images.xmarkCircle.image?.withConfiguration(imageConfiguration),
+            image: UIImage(icon: .xmarkCircle)?.withConfiguration(imageConfiguration),
             style: .plain,
             target: self,
             action: #selector(onRightBarButtonTap)

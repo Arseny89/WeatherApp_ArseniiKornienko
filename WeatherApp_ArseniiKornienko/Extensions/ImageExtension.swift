@@ -8,29 +8,29 @@
 import UIKit
 
 extension UIImage {
-    enum Images {
-        case cloudSun
-        case xmarkCircle
-        case ellipsisCircle
-        case infoCircle
-        case sky
-        case calendar
-        case listBullet
-        case sunMax
-        case moonStars
+    
+    convenience init?(icon: Icons) {
+        self.init(systemName: icon.rawValue )
+    }
+    
+    convenience init?(image: Images) {
+        self.init(named: image.rawValue )
+    }
+    
+    enum Icons: String {
+        case cloudSun = "cloud.sun.fill"
+        case xmarkCircle = "xmark.circle.fill"
+        case ellipsisCircle = "ellipsis.circle"
+        case infoCircle = "info.circle"
+        case calendar = "calendar"
+        case listBullet = "list.bullet"
+        case sunMax = "sun.max.fill"
+        case moonStars = "moon.stars.fill"
         
-        var image: UIImage? {
-            switch self {
-            case .cloudSun: return UIImage(systemName: "cloud.sun.fill")
-            case .xmarkCircle: return UIImage(systemName: "xmark.circle.fill")
-            case .ellipsisCircle: return UIImage(systemName: "ellipsis.circle")
-            case .infoCircle: return UIImage(systemName: "info.circle")
-            case .sky: return UIImage(named: "sky")
-            case .calendar: return UIImage(systemName: "calendar")
-            case .listBullet: return UIImage(systemName: "list.bullet")
-            case .sunMax: return UIImage(systemName: "sun.max.fill")
-            case .moonStars: return UIImage(systemName: "moon.stars.fill")
-            }
-        }
+    }
+    
+    enum Images: String {
+        case sky = "sky"
+        
     }
 }
