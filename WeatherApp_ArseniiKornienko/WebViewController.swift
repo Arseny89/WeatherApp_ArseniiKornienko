@@ -10,11 +10,20 @@ import SnapKit
 import WebKit
 
 final class WebViewController: UIViewController {
+    enum Constants {
+        case title
+        var text: String {
+            switch self {
+            case .title: return "Info"
+            }
+        }
+    }
     
     private let webView = WKWebView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         setupWebView()
     }
     
@@ -27,6 +36,25 @@ final class WebViewController: UIViewController {
         webView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    
+    private func setupNavigationBar() {
+        let navigationBar = navigationController?.navigationBar
+        let imageConfiguration = UIImage.SymbolConfiguration(hierarchicalColor: .systemGray2)
+        navigationBar?.backgroundColor = .darkGray
+        navigationBar?.tintColor = .white
+        title = Constants.title.text
+        navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage.Images.xmarkCircle.image?.withConfiguration(imageConfiguration),
+            style: .plain,
+            target: self,
+            action: #selector(onRightBarButtonTap)
+        )
+    }
+    
+    @objc func onRightBarButtonTap() {
+        self.navigationController?.dismiss(animated: true)
     }
 }
 

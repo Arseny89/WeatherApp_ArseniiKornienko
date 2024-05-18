@@ -41,8 +41,9 @@ final class BottomView: UIView {
     private func setupListButton() {
         addSubview(listButton)
         listButton.setImage(
-            UIImage(systemName: "list.bullet",
-                    withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)),
+            UIImage.Images.listBullet.image?.withConfiguration(
+                UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
+            ),
             for: .normal
         )
         listButton.tintColor = .white
