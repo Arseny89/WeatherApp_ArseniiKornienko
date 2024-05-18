@@ -222,7 +222,7 @@ extension TempRangeView {
         
         private func setupWeekBar() {
             barsView.addSubview(weekBar)
-            weekBar.backgroundColor = UIColor(named: "darkBlue")
+            weekBar.backgroundColor = .darkBlue
             weekBar.layer.cornerRadius = 2
             weekBar.snp.makeConstraints { make in
                 make.height.equalTo(3)
@@ -233,9 +233,9 @@ extension TempRangeView {
         
         private func setupDayBar() {
             weekBar.addSubview(dayBar)
-            dayBar.backgroundColor = UIColor(named: "darkYellow")
+            dayBar.backgroundColor = .darkYellow
             dayBar.layer.borderWidth = 0.5
-            dayBar.layer.borderColor = UIColor(named: "darkBlue")?.withAlphaComponent(0.7).cgColor
+            dayBar.layer.borderColor = UIColor.darkBlue.withAlphaComponent(0.7).cgColor
             dayBar.layer.cornerRadius = 2
             dayBar.snp.makeConstraints { make in
                 make.verticalEdges.equalToSuperview()
@@ -264,7 +264,7 @@ extension TempRangeView {
             dayBar.addSubview(currentTempView)
             
             currentTempView.backgroundColor = .white
-            currentTempView.layer.borderColor = UIColor(named: "darkBlue")?.withAlphaComponent(1).cgColor
+            currentTempView.layer.borderColor = UIColor.darkBlue.withAlphaComponent(0.7).cgColor
             currentTempView.layer.borderWidth = 1
             currentTempView.layer.cornerRadius = 3
             
