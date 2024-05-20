@@ -69,7 +69,7 @@ final class CityWeatherView: UIView {
         backgroundImage.contentMode = .scaleAspectFill
         backgroundImage.clipsToBounds = true
         backgroundImage.layer.cornerRadius = 15
-        backgroundImage.image = UIImage.Images.sky.image
+        backgroundImage.image = UIImage(image: .sky)
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

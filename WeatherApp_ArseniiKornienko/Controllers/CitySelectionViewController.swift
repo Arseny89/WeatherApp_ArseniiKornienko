@@ -95,11 +95,11 @@ final class CitySelectionViewController: UIViewController {
         navigationBar?.tintColor = .white
         navigationBar?.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage.Images.ellipsisCircle.image,
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(icon: .ellipsisCircle),
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(onSwitchButtonTap))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage.Images.infoCircle.image,
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(icon: .infoCircle),
                                                            style: .plain,
                                                            target: self,
                                                            action: #selector(onDetailedWeatherButtonTap))
@@ -112,10 +112,10 @@ final class CitySelectionViewController: UIViewController {
     
     @objc private func onInfoButtonTap(button: UIButton) {
         guard let url = URL(string: Constants.url.text) else { return }
-            let webViewController = WebViewController()
-            let viewController = UINavigationController(rootViewController: webViewController)
-            webViewController.openUrl(url)
-            self.present(viewController, animated: true)
+        let webViewController = WebViewController()
+        let viewController = UINavigationController(rootViewController: webViewController)
+        webViewController.openUrl(url)
+        self.present(viewController, animated: true)
     }
     
     @objc private func onDetailedWeatherButtonTap() {
