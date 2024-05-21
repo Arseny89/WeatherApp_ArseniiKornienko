@@ -27,21 +27,24 @@ final class CitySelectionViewController: UIViewController {
     
     private let unitSelectionView = UIView()
     private let infoButton = UIButton()
+    private let contentView = UIView()
     private let cityWeatherView = CityWeatherView()
     private let scalePickerView = UIPickerView()
     private let weatherView = WeatherViewController()
     private let scales: [String] = ["º C", "º F", "º K"]
     private var pickedScale: String = ""
+    private let cityStackView = UIStackView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .black
         title = Constants.title.text
-
+        
         setupNavigationBar()
+        setupContentView()
+        setupCityStackView()
         setupUnitSelectionView()
-        setupCityWeatherView()
         setupScalePickerView()
         setupInfoButton()
         
@@ -51,22 +54,54 @@ final class CitySelectionViewController: UIViewController {
     }
     
     private func setupUnitSelectionView() {
-        view.addSubview(unitSelectionView)
+        contentView.addSubview(unitSelectionView)
         unitSelectionView.backgroundColor = .green
         unitSelectionView.snp.makeConstraints { make in
             make.size.equalTo(100)
-            make.center.equalTo(view.safeAreaLayoutGuide)
+            make.centerX.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(cityStackView.snp.bottom).offset(15)
         }
     }
     
-    
-    private func setupCityWeatherView() {
-        view.addSubview(cityWeatherView)
-        cityWeatherView.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview().inset(16)
-            make.height.equalTo(120)
-            make.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+    private func setupContentView() {
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+    }
+    
+    private func setupCityStackView() {
+        contentView.addSubview(cityStackView)
+        cityStackView.axis = .vertical
+        cityStackView.spacing = 15
+        cityStackView.distribution = .fillEqually
+        
+        MOCKData.data.enumerated().forEach { index, data in
+            let cityWeatherView = CityWeatherView()
+            cityWeatherView.setupCityWeather(CurrentWeatherView.InputData(title: data.titleData.title,
+                                                                          subtitle: data.titleData.subtitle,
+                                                                          currentTemp: data.titleData.currentTemp,
+                                                                          description: data.titleData.description,
+                                                                          minTemp: data.titleData.minTemp,
+                                                                          maxTemp: data.titleData.maxTemp))
+            
+            cityWeatherView.tapAction = { [weak self] in self?.presentCityWeater(with: index) }
+            cityStackView.addArrangedSubview(cityWeatherView)
+        }
+        
+        cityStackView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.top.equalToSuperview()
+        }
+    }
+    
+    private func presentCityWeater(with index: Int) {
+        let viewController = WeatherViewController()
+        viewController.setupWeatherView(WeatherViewController.InputData(city: index))
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: true)
     }
     
     private func setupScalePickerView() {
@@ -82,14 +117,14 @@ final class CitySelectionViewController: UIViewController {
     }
     
     private func setupInfoButton() {
-        view.addSubview(infoButton)
+        contentView.addSubview(infoButton)
         infoButton.backgroundColor = .systemGray
         infoButton.setTitle(Constants.infoButtonTitle.text, for: .normal)
         infoButton.setTitleColor(.black, for: .normal)
         infoButton.addTarget(self, action: #selector(onInfoButtonTap), for: .touchUpInside)
         infoButton.snp.makeConstraints { make in
             make.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-            make.top.equalTo(cityWeatherView.snp.bottom).offset(20)
+            make.top.equalTo(unitSelectionView.snp.bottom).offset(20)
         }
     }
     
