@@ -29,6 +29,7 @@ final class CitySelectionViewController: UIViewController {
     private let infoButton = UIButton()
     private let cityWeatherView = CityWeatherView()
     private let scalePickerView = UIPickerView()
+    private let weatherView = WeatherViewController()
     private let scales: [String] = ["º C", "º F", "º K"]
     private var pickedScale: String = ""
     
@@ -43,6 +44,10 @@ final class CitySelectionViewController: UIViewController {
         setupCityWeatherView()
         setupScalePickerView()
         setupInfoButton()
+        
+        let navigationController = UINavigationController(rootViewController: weatherView)
+        navigationController.modalPresentationStyle = .fullScreen
+        self.present(navigationController, animated: false)
     }
     
     private func setupUnitSelectionView() {
