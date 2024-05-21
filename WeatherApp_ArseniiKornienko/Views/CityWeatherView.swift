@@ -8,34 +8,7 @@
 import UIKit
 import SnapKit
 
-final class CityWeatherView: UIView {
-    
-    enum Constants {
-        case title
-        case subtitle
-        case description
-        case minTemp
-        case maxTemp
-        case currentTemp
-        
-        var text: String {
-            switch self {
-            case .title: return "Текущее место"
-            case .subtitle: return "Glendale"
-            case .description: return "Солнечно"
-            default: return "No text"
-            }
-        }
-        
-        var value: Int {
-            switch self {
-            case .minTemp: return 16
-            case .maxTemp: return 25
-            case .currentTemp: return 25
-            default: return 0
-            }
-        }
-    }
+final class CityWeatherView : UIView {
     
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
@@ -44,12 +17,16 @@ final class CityWeatherView: UIView {
     private let currentTempLabel = UILabel()
     private let backgroundImage = UIImageView()
     private let titleStackView = UIStackView()
+    var tapAction: (() -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         layer.cornerRadius = 15
-
+        
+        snp.makeConstraints { make in
+            make.height.equalTo(100)
+        }
         setupBackgroundImage()
         setupTitleStackView()
         setupTitleLabel()
@@ -57,15 +34,19 @@ final class CityWeatherView: UIView {
         setupDescriptionLabel()
         setupCurrentTempLabel()
         setupTempLimitsLabel()
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureAction)))
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @IBAction private func tapGestureAction() {
+        tapAction?()
+    }
+    
     private func setupBackgroundImage() {
         addSubview(backgroundImage)
-
         backgroundImage.contentMode = .scaleAspectFill
         backgroundImage.clipsToBounds = true
         backgroundImage.layer.cornerRadius = 15
@@ -73,6 +54,14 @@ final class CityWeatherView: UIView {
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    
+    func setupCityWeather(_ data: CurrentWeatherView.InputData) {
+        titleLabel.text = data.title
+        subtitleLabel.text = data.subtitle
+        descriptionLabel.text = data.description
+        currentTempLabel.text = "\(data.currentTemp)º"
+        tempLimitsLabel.text = "Макс.:\(data.maxTemp)º, мин.:\(data.minTemp)º "
     }
     
     private func setupTitleStackView() {
@@ -86,8 +75,7 @@ final class CityWeatherView: UIView {
     
     private func setupTitleLabel() {
         titleStackView.addArrangedSubview(titleLabel)
-        titleLabel.text = Constants.title.text
-        titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .heavy)
         titleLabel.textColor = .white
         titleLabel.snp.makeConstraints { make in
             make.top.leading.equalToSuperview()
@@ -97,8 +85,7 @@ final class CityWeatherView: UIView {
     
     private func setupSubtitleLabel() {
         titleStackView.addArrangedSubview(subtitleLabel)
-        subtitleLabel.text = Constants.subtitle.text
-        subtitleLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        subtitleLabel.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         subtitleLabel.textColor = .white
         subtitleLabel.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
@@ -107,20 +94,18 @@ final class CityWeatherView: UIView {
     
     private func setupDescriptionLabel() {
         addSubview(descriptionLabel)
-        descriptionLabel.text = Constants.description.text
         descriptionLabel.textColor = .white
-        descriptionLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        descriptionLabel.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         descriptionLabel.snp.makeConstraints { make in
-            make.leading.equalTo(titleLabel)
-            make.bottom.equalToSuperview().inset(15)
+            make.leading.equalTo(titleStackView)
+            make.bottom.equalToSuperview().inset(10)
         }
     }
     
     private func setupCurrentTempLabel() {
         addSubview(currentTempLabel)
-        currentTempLabel.text = "\(Constants.currentTemp.value)º"
         currentTempLabel.textColor = .white
-        currentTempLabel.font = UIFont.systemFont(ofSize: 50, weight: .light)
+        currentTempLabel.font = UIFont.systemFont(ofSize: 40, weight: .medium)
         currentTempLabel.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(15)
             make.centerY.equalTo(titleStackView)
@@ -129,7 +114,6 @@ final class CityWeatherView: UIView {
     
     private func setupTempLimitsLabel() {
         addSubview(tempLimitsLabel)
-        tempLimitsLabel.text = "Макс.:\(Constants.maxTemp.value)º, мин.:\(Constants.minTemp.value)º "
         tempLimitsLabel.textColor = .white
         tempLimitsLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         tempLimitsLabel.snp.makeConstraints { make in
@@ -138,4 +122,3 @@ final class CityWeatherView: UIView {
         }
     }
 }
-
