@@ -9,6 +9,9 @@ import UIKit
 import SnapKit
 
 final class WeatherViewController: UIViewController {
+    struct InputData {
+        let city: Int
+    }
     enum Constants: Int {
         case currentWeatherTitle
         case currenWeatherCity
@@ -46,17 +49,8 @@ final class WeatherViewController: UIViewController {
     private let tempRangeView = TempRangeView()
     private let scrollView = UIScrollView()
     private let contentView = UIView()
-    private let currentHour: Int = 14
-    private var hours: [String] = []
-    private var hourIcon: UIImage?
     private let bottomView = BottomView()
-    private let sunIcon = UIImage(icon: .sunMax)?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
-    private let moonIcon = UIImage(icon: .moonStars)?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
-    private let numberOfDays = 10
-    private let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
-    private let dayLimits: [(Min: Double, Max: Double)] = [(15, 23), (14, 23), (13, 22), (13, 20), (16, 22), (17, 24), (15, 21), (14, 19), (13, 18)]
-    var days: [String] = []
-    
+    var city: Int = 0
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -66,11 +60,13 @@ final class WeatherViewController: UIViewController {
         setupBottomView()
         setupScrollView()
         setupContentView()
-        setupCurrentWeatherView()
-        setHours()
-        setDayNames(today: weekDays[0])
-        setupDayTempView()
-        setupTempRangeView()
+        setupCurrentWeatherView(MOCKData.data[city])
+        setupDayTempView(MOCKData.data[city])
+        setupTempRangeView(MOCKData.data[city])
+    }
+    
+    func setupWeatherView(_ data: InputData) {
+        city = data.city
     }
     
     private func setupBackgroundImage() {
@@ -99,79 +95,21 @@ final class WeatherViewController: UIViewController {
         }
     }
     
-    private func setupCurrentWeatherView() {
+    private func setupCurrentWeatherView(_ data: MOCKData?) {
         contentView.addSubview(currentWeatherView)
-        currentWeatherView.setupCurrentWeather(
-            CurrentWeatherView.InputData(title: Constants.currentWeatherTitle.text,
-                                         subtitle: Constants.currenWeatherCity.text,
-                                         currentTemp: Int(Constants.currentTemp.value),
-                                         description: Constants.currentWeatherDescription.text,
-                                         minTemp: Int(Constants.currentMinTemp.value),
-                                         maxTemp: Int(Constants.currentMaxTemp.value))
-        )
+        if let data {
+            currentWeatherView.setupCurrentWeather(data.titleData)
+        }
         currentWeatherView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview().inset(20)
         }
     }
     
-    private func setHours() {
-        for i in 1...12 {
-            if 1...9 ~= (currentHour + i) {
-                hours.append("0\(currentHour + i)")
-            } else if 24... ~= (currentHour + i) {
-                switch (currentHour + i) {
-                case 24...33: hours.append("0\((currentHour + i) - 24)")
-                default: hours.append("\((currentHour + i) - 24)")
-                }
-            } else {
-                hours.append("\(currentHour + i)")
-            }
-        }
-    }
-    
-    private func setHourIcon(_ hour: Int) -> UIImage {
-        var icon: UIImage
-        if 6...20 ~= hour {
-            icon =  sunIcon
-            return icon
-        } else {
-            icon = moonIcon
-            return icon
-        }
-    }
-    
-    private func setHourTemp(_ hour: Int) -> Int {
-        switch hour {
-        case 0...7: return 16
-        case 8...10: return 18
-        case 11...12: return 20
-        case 13...15: return 23
-        case 16: return 25
-        case 17: return 23
-        case 18...19: return 21
-        case 20...21: return 19
-        case 22: return 18
-        case 23: return 17
-        default: break
-        }
-        return 0
-    }
-    
-    private func setupDayTempView() {
+    private func setupDayTempView(_ data: MOCKData?) {
         contentView.addSubview(dayTempView)
-        dayTempView.setupDayTemp([DayTempView.InputData(
-            icon: setHourIcon(currentHour),
-            temp: Int(Constants.currentTemp.value),
-            time: "Сейчас")])
-        
-        for (index, _) in hours.enumerated() {
-            guard let hour = Int(hours[index]) else { return }
-            dayTempView.setupDayTemp([DayTempView.InputData(
-                icon: setHourIcon(hour),
-                temp: setHourTemp(hour),
-                time: hours[index])])
+        if let data {
+            dayTempView.setupDayTemp(data.dayTempData.data)
         }
-        
         dayTempView.snp.makeConstraints { make in
             make.top.equalTo(currentWeatherView.snp.bottom).offset(16)
             make.horizontalEdges.equalToSuperview().inset(16)
@@ -179,46 +117,15 @@ final class WeatherViewController: UIViewController {
         }
     }
     
-    private func setDayNames(today: String) {
-        if var index = weekDays.firstIndex(of: today) {
-            for _ in 1...numberOfDays {
-                if index < weekDays.count {
-                    days.append(weekDays[index])
-                    index += 1
-                } else {
-                    index = 0
-                    days.append(weekDays[index])
-                    index += 1
-                }
-            }
-        }
-    }
-    
-    private func setupTempRangeView() {
+    private func setupTempRangeView(_ data: MOCKData?) {
         contentView.addSubview(tempRangeView)
-        for (index, _) in days.enumerated() {
-            if index == 0 {
-                tempRangeView.setupDayRange([TempRangeView.InputData(day: "Сегодня",
-                                                                     icon: sunIcon,
-                                                                     minDayTemp: Constants.currentMinTemp.value,
-                                                                     maxDayTemp: Constants.currentMaxTemp.value,
-                                                                     minTemp: Constants.minTemp.value,
-                                                                     maxTemp: Constants.maxTemp.value,
-                                                                     currentTemp: Constants.currentTemp.value)])
-            } else {
-                tempRangeView.setupDayRange([TempRangeView.InputData(day: days[index],
-                                                                     icon: sunIcon,
-                                                                     minDayTemp: dayLimits[index - 1].Min,
-                                                                     maxDayTemp: dayLimits[index - 1].Max,
-                                                                     minTemp: Constants.minTemp.value,
-                                                                     maxTemp: Constants.maxTemp.value)])
-                
-                tempRangeView.snp.makeConstraints { make in
-                    make.bottom.leading.equalToSuperview().inset(16)
-                    make.top.equalTo(dayTempView.snp.bottom).offset(16)
-                    make.width.equalTo(dayTempView)
-                }
-            }
+        if let data {
+            tempRangeView.setupDayRange(data.tempRangeData)
+        }
+        tempRangeView.snp.makeConstraints { make in
+            make.bottom.leading.equalToSuperview().inset(16)
+            make.top.equalTo(dayTempView.snp.bottom).offset(16)
+            make.width.equalTo(dayTempView)
         }
     }
     
@@ -232,8 +139,6 @@ final class WeatherViewController: UIViewController {
     }
     
     @objc private func onListButtonTap() {
-        let viewController = UINavigationController(rootViewController: CitySelectionViewController())
-        viewController.modalPresentationStyle = .fullScreen
-        self.present(viewController, animated: true)
+        self.navigationController?.dismiss(animated: true)
     }
 }
