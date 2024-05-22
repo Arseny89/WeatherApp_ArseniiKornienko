@@ -41,8 +41,13 @@ final class CityWeatherView : UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @IBAction private func tapGestureAction() {
-        tapAction?()
+    func setupCityWeather(_ data: CurrentWeatherView.InputData) {
+        titleLabel.text = data.title
+        subtitleLabel.text = data.subtitle
+        descriptionLabel.text = data.description
+        currentTempLabel.text = "\(data.currentTemp)º"
+        tempLimitsLabel.text = "Макс.:\(data.maxTemp)º, мин.:\(data.minTemp)º "
+        backgroundImage.image = data.backgroundImage
     }
     
     private func setupBackgroundImage() {
@@ -50,18 +55,9 @@ final class CityWeatherView : UIView {
         backgroundImage.contentMode = .scaleAspectFill
         backgroundImage.clipsToBounds = true
         backgroundImage.layer.cornerRadius = 15
-        backgroundImage.image = UIImage(image: .sky)
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-    }
-    
-    func setupCityWeather(_ data: CurrentWeatherView.InputData) {
-        titleLabel.text = data.title
-        subtitleLabel.text = data.subtitle
-        descriptionLabel.text = data.description
-        currentTempLabel.text = "\(data.currentTemp)º"
-        tempLimitsLabel.text = "Макс.:\(data.maxTemp)º, мин.:\(data.minTemp)º "
     }
     
     private func setupTitleStackView() {
@@ -120,5 +116,9 @@ final class CityWeatherView : UIView {
             make.trailing.equalTo(currentTempLabel)
             make.centerY.equalTo(descriptionLabel)
         }
+    }
+    
+    @IBAction private func tapGestureAction() {
+        tapAction?()
     }
 }
