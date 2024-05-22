@@ -33,6 +33,7 @@ extension UIImage {
     
     enum Images: String {
         case sky = "sky"
+        case cloudNight = "cloudNight"
         
     }
 }
