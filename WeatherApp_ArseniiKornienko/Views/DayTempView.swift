@@ -17,6 +17,9 @@ final class DayTempView: UIView {
     
     private let stackView = UIStackView()
     private let scrollView = UIScrollView()
+    private let contentView = UIStackView()
+    private let descriptionLabel = UILabel()
+    private let divider = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,6 +27,9 @@ final class DayTempView: UIView {
         backgroundColor = .blueBackground.withAlphaComponent(0.5)
         layer.cornerRadius = 12
         
+        setupContentView()
+        setupDescriptionLabel()
+        setupDivider()
         setupScrollView()
         setupStackView()
     }
@@ -32,7 +38,8 @@ final class DayTempView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupDayTemp(_ data: [InputData]) {
+    func setupDayTemp(_ data: [InputData], _ desc: MOCKData?) {
+        descriptionLabel.text = desc?.dayTempData.description
         data.enumerated().forEach { index, data in
             let view = HourWeatherView()
             view.setupHourWeather(data)
@@ -43,12 +50,46 @@ final class DayTempView: UIView {
         }
     }
     
-    private func setupScrollView() {
-        addSubview(scrollView)
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.snp.makeConstraints { make in
+    private func setupContentView() {
+        addSubview(contentView)
+        contentView.axis = .vertical
+        contentView.distribution = .fillProportionally
+        contentView.spacing = 10
+        contentView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(5)
             make.verticalEdges.equalToSuperview().inset(5)
+        }
+    }
+    
+    private func setupDescriptionLabel() {
+        contentView.addArrangedSubview(descriptionLabel)
+        descriptionLabel.textColor = .white
+        descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        descriptionLabel.textAlignment = .left
+        descriptionLabel.lineBreakMode = .byWordWrapping
+        descriptionLabel.numberOfLines = 2
+        descriptionLabel.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview()
+        }
+    }
+    
+    private func setupDivider() {
+        contentView.addArrangedSubview(divider)
+        divider.backgroundColor = .white
+        divider.alpha = 0.5
+        divider.snp.makeConstraints { make in
+            make.height.equalTo(1)
+            make.horizontalEdges.equalToSuperview()
+        }
+    }
+    
+    private func setupScrollView() {
+        contentView.addArrangedSubview(scrollView)
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(100)
+            make.bottom.equalToSuperview()
         }
     }
     
