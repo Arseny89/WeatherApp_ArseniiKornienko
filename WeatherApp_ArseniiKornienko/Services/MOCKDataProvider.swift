@@ -13,7 +13,7 @@ typealias TempRangeData = TempRangeView.InputData
 
 struct MOCKData {
     
-    enum Constants: Int {
+    enum Constants {
         case title
         case subtitle
         case titleDescription
@@ -23,13 +23,14 @@ struct MOCKData {
         case currentMaxTemp
         case minTemp
         case maxTemp
+        case backgroundImage
         
         var currentText: String {
             switch self {
             case .title: return "Текущее место"
             case .subtitle: return "Glendale"
             case .titleDescription: return "Солнечно"
-            case .dayDescription: return "Преимущественно солнечно"
+            case .dayDescription: return "Cолнечно до конца дня. Порывы ветра до 9 ми/ч."
             default: return "No text"
             }
         }
@@ -48,16 +49,16 @@ struct MOCKData {
         var secondText: String {
             switch self {
             case .title: return "Moscow"
-            case .subtitle: return "12:00 PM"
+            case .subtitle: return "12:00 AM"
             case .titleDescription: return "Облачно"
-            case .dayDescription: return "Преимущественно облачно"
+            case .dayDescription: return "Облачно весь день. Порывы ветра до 12 ми/ч."
             default: return "No text"
             }
         }
         
         var secondValue: Double {
             switch self {
-            case .currentTemp: return 20
+            case .currentTemp: return 13
             case .currentMinTemp: return 13
             case .currentMaxTemp: return 21
             case .minTemp: return 10
@@ -71,7 +72,7 @@ struct MOCKData {
             case .title: return "Mexico City"
             case .subtitle: return "15:00 PM"
             case .titleDescription: return "Солнечно"
-            case .dayDescription: return "Преимущественно солнечно"
+            case .dayDescription: return "Ожидается переменная облачность около 9PM."
             default: return "No text"
             }
         }
@@ -98,6 +99,8 @@ private let sunIcon = UIImage(icon: .sunMax)?.withRenderingMode(.alwaysOriginal)
 private let moonIcon = UIImage(icon: .moonStars)?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
 private let cloudIcon = UIImage(icon: .cloud)?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
 private let cloudMoonIcon = UIImage(icon: .cloudMoon)?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
+private let skyImage = UIImage(image: .sky) ?? UIImage.checkmark
+private let cloudNightImage = UIImage(image: .cloudNight) ?? UIImage.checkmark
 
 extension MOCKData {
     static var data: [MOCKData] {
@@ -108,7 +111,8 @@ extension MOCKData {
                                           currentTemp: Int(Constants.currentTemp.currentValue),
                                           description: Constants.titleDescription.currentText,
                                           minTemp: Int(Constants.currentMinTemp.currentValue),
-                                          maxTemp: Int(Constants.currentMaxTemp.currentValue)),
+                                          maxTemp: Int(Constants.currentMaxTemp.currentValue),
+                                          backgroundImage: skyImage),
                      dayTempData: (description: Constants.dayDescription.currentText,
                                    data: [DayTempData(icon: sunIcon,
                                                       temp: 25,
@@ -217,47 +221,48 @@ extension MOCKData {
                                           currentTemp: Int(Constants.currentTemp.secondValue),
                                           description: Constants.titleDescription.secondText,
                                           minTemp: Int(Constants.currentMinTemp.secondValue),
-                                          maxTemp: Int(Constants.currentMaxTemp.secondValue)),
+                                          maxTemp: Int(Constants.currentMaxTemp.secondValue),
+                                          backgroundImage: cloudNightImage),
                      dayTempData: (description: Constants.dayDescription.secondText,
-                                   data: [DayTempData(icon: cloudIcon,
-                                                      temp: 22,
+                                   data: [DayTempData(icon: cloudMoonIcon,
+                                                      temp: 13,
                                                       time: "Сейчас"),
-                                          DayTempData(icon: cloudIcon,
-                                                      temp: 22,
-                                                      time: "13"),
-                                          DayTempData(icon: cloudIcon,
-                                                      temp: 21,
-                                                      time: "14"),
-                                          DayTempData(icon: cloudIcon,
-                                                      temp: 21,
-                                                      time: "15"),
-                                          DayTempData(icon: cloudIcon,
-                                                      temp: 21,
-                                                      time: "16"),
-                                          DayTempData(icon: cloudIcon,
-                                                      temp: 19,
-                                                      time: "17"),
-                                          DayTempData(icon: cloudIcon,
-                                                      temp: 19,
-                                                      time: "18"),
-                                          DayTempData(icon: cloudIcon,
-                                                      temp: 19,
-                                                      time: "19"),
-                                          DayTempData(icon: cloudIcon,
-                                                      temp: 18,
-                                                      time: "20"),
-                                          DayTempData(icon: cloudMoonIcon,
-                                                      temp: 16,
-                                                      time: "21"),
-                                          DayTempData(icon: cloudMoonIcon,
-                                                      temp: 14,
-                                                      time: "22"),
                                           DayTempData(icon: cloudMoonIcon,
                                                       temp: 13,
-                                                      time: "23"),
+                                                      time: "01"),
                                           DayTempData(icon: cloudMoonIcon,
-                                                      temp: 12,
-                                                      time: "00")]),
+                                                      temp: 13,
+                                                      time: "02"),
+                                          DayTempData(icon: cloudMoonIcon,
+                                                      temp: 13,
+                                                      time: "03"),
+                                          DayTempData(icon: cloudMoonIcon,
+                                                      temp: 13,
+                                                      time: "04"),
+                                          DayTempData(icon: cloudMoonIcon,
+                                                      temp: 14,
+                                                      time: "05"),
+                                          DayTempData(icon: cloudMoonIcon,
+                                                      temp: 14,
+                                                      time: "06"),
+                                          DayTempData(icon: cloudMoonIcon,
+                                                      temp: 15,
+                                                      time: "07"),
+                                          DayTempData(icon: cloudIcon,
+                                                      temp: 15,
+                                                      time: "08"),
+                                          DayTempData(icon: cloudIcon,
+                                                      temp: 16,
+                                                      time: "09"),
+                                          DayTempData(icon: cloudIcon,
+                                                      temp: 17,
+                                                      time: "10"),
+                                          DayTempData(icon: cloudIcon,
+                                                      temp: 18,
+                                                      time: "11"),
+                                          DayTempData(icon: cloudIcon,
+                                                      temp: 20,
+                                                      time: "12")]),
                      tempRangeData: [TempRangeData(day: "Сегодня",
                                                    icon: cloudIcon,
                                                    minDayTemp: Constants.currentMinTemp.secondValue,
@@ -327,7 +332,8 @@ extension MOCKData {
                                           currentTemp: Int(Constants.currentTemp.thirdValue),
                                           description: Constants.titleDescription.thirdText,
                                           minTemp: Int(Constants.currentMinTemp.thirdValue),
-                                          maxTemp: Int(Constants.currentMaxTemp.thirdValue)),
+                                          maxTemp: Int(Constants.currentMaxTemp.thirdValue),
+                                         backgroundImage: skyImage),
                      dayTempData: (description: Constants.dayDescription.thirdText,
                                    data: [DayTempData(icon: sunIcon,
                                                       temp: 28,
@@ -347,16 +353,16 @@ extension MOCKData {
                                           DayTempData(icon: sunIcon,
                                                       temp: 23,
                                                       time: "20"),
-                                          DayTempData(icon: moonIcon,
+                                          DayTempData(icon: cloudMoonIcon,
                                                       temp: 21,
                                                       time: "21"),
-                                          DayTempData(icon: moonIcon,
+                                          DayTempData(icon: cloudMoonIcon,
                                                       temp: 20,
                                                       time: "22"),
-                                          DayTempData(icon: moonIcon,
+                                          DayTempData(icon: cloudMoonIcon,
                                                       temp: 20,
                                                       time: "23"),
-                                          DayTempData(icon: moonIcon,
+                                          DayTempData(icon: cloudMoonIcon,
                                                       temp: 19,
                                                       time: "00"),
                                           DayTempData(icon: moonIcon,
