@@ -16,6 +16,7 @@ final class CurrentWeatherView: UIView {
         let description: String
         let minTemp: Int
         let maxTemp: Int
+        let backgroundImage: UIImage
     }
     
     private let titleLabel = UILabel()

@@ -56,7 +56,7 @@ final class WeatherViewController: UIViewController {
         super.viewDidLoad()
         
         bottomView.listButton.addTarget(self, action: #selector(onListButtonTap), for: .touchUpInside)
-        setupBackgroundImage()
+        setupBackgroundImage(MOCKData.data[city])
         setupBottomView()
         setupScrollView()
         setupContentView()
@@ -69,10 +69,12 @@ final class WeatherViewController: UIViewController {
         city = data.city
     }
     
-    private func setupBackgroundImage() {
+    private func setupBackgroundImage(_ data: MOCKData?) {
         view.addSubview(backgroundImage)
         backgroundImage.contentMode = .scaleAspectFill
-        backgroundImage.image = UIImage(image: .sky)
+        if let data {
+            backgroundImage.image = data.titleData.backgroundImage
+        }
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -108,12 +110,11 @@ final class WeatherViewController: UIViewController {
     private func setupDayTempView(_ data: MOCKData?) {
         contentView.addSubview(dayTempView)
         if let data {
-            dayTempView.setupDayTemp(data.dayTempData.data)
+            dayTempView.setupDayTemp(data.dayTempData.data, data)
         }
         dayTempView.snp.makeConstraints { make in
             make.top.equalTo(currentWeatherView.snp.bottom).offset(16)
             make.horizontalEdges.equalToSuperview().inset(16)
-            make.height.equalTo(100)
         }
     }
     
