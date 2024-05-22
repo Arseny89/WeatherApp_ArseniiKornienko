@@ -47,10 +47,7 @@ final class CitySelectionViewController: UIViewController {
         setupUnitSelectionView()
         setupScalePickerView()
         setupInfoButton()
-        
-        let navigationController = UINavigationController(rootViewController: weatherView)
-        navigationController.modalPresentationStyle = .fullScreen
-        self.present(navigationController, animated: false)
+        presentCityWeater(withCityIndex: 0)
     }
     
     private func setupUnitSelectionView() {
@@ -84,9 +81,13 @@ final class CitySelectionViewController: UIViewController {
                                                                           currentTemp: data.titleData.currentTemp,
                                                                           description: data.titleData.description,
                                                                           minTemp: data.titleData.minTemp,
-                                                                          maxTemp: data.titleData.maxTemp))
+                                                                          maxTemp: data.titleData.maxTemp,
+                                                                          backgroundImage: data.titleData.backgroundImage))
             
-            cityWeatherView.tapAction = { [weak self] in self?.presentCityWeater(with: index) }
+            cityWeatherView.tapAction = { [weak self] in
+                self?.presentCityWeater(withCityIndex: index)
+            }
+            
             cityStackView.addArrangedSubview(cityWeatherView)
         }
         
@@ -96,7 +97,7 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    private func presentCityWeater(with index: Int) {
+    private func presentCityWeater(withCityIndex index: Int) {
         let viewController = WeatherViewController()
         viewController.setupWeatherView(WeatherViewController.InputData(city: index))
         let navigationController = UINavigationController(rootViewController: viewController)
