@@ -26,11 +26,14 @@ extension UIImage {
         case listBullet = "list.bullet"
         case sunMax = "sun.max.fill"
         case moonStars = "moon.stars.fill"
+        case cloud = "cloud.fill"
+        case cloudMoon = "cloud.moon.fill"
         
     }
     
     enum Images: String {
         case sky = "sky"
+        case cloudNight = "cloudNight"
         
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E11F5112BFAF39E00D82550 /* MOCKDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */; };
 		0E510DC02BF49018007EB1A8 /* DetailedWeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E510DBF2BF49018007EB1A8 /* DetailedWeatherViewController.swift */; };
 		0E510DC32BF72D89007EB1A8 /* ImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E510DC22BF72D89007EB1A8 /* ImageExtension.swift */; };
 		0E7649EE2BE7651E0052E3F2 /* DayTempView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOCKDataProvider.swift; sourceTree = "<group>"; };
 		0E510DBF2BF49018007EB1A8 /* DetailedWeatherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedWeatherViewController.swift; sourceTree = "<group>"; };
 		0E510DC22BF72D89007EB1A8 /* ImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtension.swift; sourceTree = "<group>"; };
 		0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTempView.swift; sourceTree = "<group>"; };
@@ -122,6 +124,14 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
+		0E11F50F2BFAF37900D82550 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		0ED012A22BE76180005D48D7 = {
 			isa = PBXGroup;
 			children = (
@@ -150,6 +160,7 @@
 				0E11F50E2BF86F9500D82550 /* Controllers */,
 				0E11F50D2BF86F7E00D82550 /* Views */,
 				0E11F50C2BF86F6E00D82550 /* Extensions */,
+				0E11F50F2BFAF37900D82550 /* Services */,
 				0ED012B72BE76181005D48D7 /* Assets.xcassets */,
 				0ED012B92BE76181005D48D7 /* LaunchScreen.storyboard */,
 				0ED012BC2BE76181005D48D7 /* Info.plist */,
@@ -338,6 +349,7 @@
 				0E7649F22BE765440052E3F2 /* CurrentWeatherView.swift in Sources */,
 				0E816D3E2BEB2562007CC983 /* CitySelectionViewController.swift in Sources */,
 				0E7649FA2BEACA500052E3F2 /* BottomView.swift in Sources */,
+				0E11F5112BFAF39E00D82550 /* MOCKDataProvider.swift in Sources */,
 				0E816D402BEB3806007CC983 /* CityWeatherView.swift in Sources */,
 				0E510DC02BF49018007EB1A8 /* DetailedWeatherViewController.swift in Sources */,
 				0ED012B12BE76180005D48D7 /* SceneDelegate.swift in Sources */,

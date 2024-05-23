@@ -16,11 +16,12 @@ final class CurrentWeatherView: UIView {
         let description: String
         let minTemp: Int
         let maxTemp: Int
+        let backgroundImage: UIImage
     }
     
     private let titleLabel = UILabel()
     private let currentTemp = UILabel()
-    private let city = UILabel()
+    private let subtitleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let tempLimits = UILabel()
     private let stackView  = UIStackView()
@@ -30,7 +31,7 @@ final class CurrentWeatherView: UIView {
         
         setupStackView()
         setupTitleLabel()
-        setupCity()
+        setupSubtitleLabel()
         setupCurrentTemp()
         setupDescriptionLabel()
         setupTempLimits()
@@ -42,7 +43,7 @@ final class CurrentWeatherView: UIView {
     
     func setupCurrentWeather(_ data: InputData) {
         titleLabel.text = data.title
-        city.text = data.subtitle
+        subtitleLabel.text = data.subtitle
         descriptionLabel.text = data.description
         currentTemp.text = "\(data.currentTemp)º"
         tempLimits.text = "Макс.: \(data.maxTemp)º, Мин.: \(data.minTemp)º"
@@ -66,11 +67,11 @@ final class CurrentWeatherView: UIView {
         titleLabel.textAlignment = .center
     }
     
-    private func setupCity() {
-        stackView.addArrangedSubview(city)
-        city.font = UIFont.systemFont(ofSize: 25, weight: .medium)
-        city.textColor = .white
-        city.textAlignment = .center
+    private func setupSubtitleLabel() {
+        stackView.addArrangedSubview(subtitleLabel)
+        subtitleLabel.font = UIFont.systemFont(ofSize: 25, weight: .medium)
+        subtitleLabel.textColor = .white
+        subtitleLabel.textAlignment = .center
     }
     
     private func setupCurrentTemp() {
