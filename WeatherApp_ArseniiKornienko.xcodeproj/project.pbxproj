@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0E11F5112BFAF39E00D82550 /* MOCKDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */; };
+		0E11F5132BFEFFCD00D82550 /* UnitSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E11F5122BFEFFCD00D82550 /* UnitSelectionView.swift */; };
 		0E510DC02BF49018007EB1A8 /* DetailedWeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E510DBF2BF49018007EB1A8 /* DetailedWeatherViewController.swift */; };
 		0E510DC32BF72D89007EB1A8 /* ImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E510DC22BF72D89007EB1A8 /* ImageExtension.swift */; };
 		0E7649EE2BE7651E0052E3F2 /* DayTempView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */; };
@@ -44,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOCKDataProvider.swift; sourceTree = "<group>"; };
+		0E11F5122BFEFFCD00D82550 /* UnitSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSelectionView.swift; sourceTree = "<group>"; };
 		0E510DBF2BF49018007EB1A8 /* DetailedWeatherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedWeatherViewController.swift; sourceTree = "<group>"; };
 		0E510DC22BF72D89007EB1A8 /* ImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtension.swift; sourceTree = "<group>"; };
 		0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTempView.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */,
 				0E816D3F2BEB3806007CC983 /* CityWeatherView.swift */,
 				0E7649F12BE765440052E3F2 /* CurrentWeatherView.swift */,
+				0E11F5122BFEFFCD00D82550 /* UnitSelectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -352,6 +355,7 @@
 				0E11F5112BFAF39E00D82550 /* MOCKDataProvider.swift in Sources */,
 				0E816D402BEB3806007CC983 /* CityWeatherView.swift in Sources */,
 				0E510DC02BF49018007EB1A8 /* DetailedWeatherViewController.swift in Sources */,
+				0E11F5132BFEFFCD00D82550 /* UnitSelectionView.swift in Sources */,
 				0ED012B12BE76180005D48D7 /* SceneDelegate.swift in Sources */,
 				0E7649EE2BE7651E0052E3F2 /* DayTempView.swift in Sources */,
 			);
