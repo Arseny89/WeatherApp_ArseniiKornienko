@@ -12,7 +12,7 @@ final class WeatherViewController: UIViewController {
     struct InputData {
         let city: Int
     }
-    enum Constants: Int {
+    private enum Constants: Int {
         case currentWeatherTitle
         case currenWeatherCity
         case currentWeatherDescription
