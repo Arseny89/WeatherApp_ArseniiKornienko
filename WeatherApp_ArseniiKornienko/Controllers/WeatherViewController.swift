@@ -72,9 +72,8 @@ final class WeatherViewController: UIViewController {
     private func setupBackgroundImage(_ data: MOCKData?) {
         view.addSubview(backgroundImage)
         backgroundImage.contentMode = .scaleAspectFill
-        if let data {
-            backgroundImage.image = data.titleData.backgroundImage
-        }
+        guard let data else { return }
+        backgroundImage.image = data.titleData.backgroundImage
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -99,9 +98,8 @@ final class WeatherViewController: UIViewController {
     
     private func setupCurrentWeatherView(_ data: MOCKData?) {
         contentView.addSubview(currentWeatherView)
-        if let data {
-            currentWeatherView.setupCurrentWeather(data.titleData)
-        }
+        guard let data else { return }
+        currentWeatherView.setupCurrentWeather(data.titleData)
         currentWeatherView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview().inset(20)
         }
@@ -109,9 +107,8 @@ final class WeatherViewController: UIViewController {
     
     private func setupDayTempView(_ data: MOCKData?) {
         contentView.addSubview(dayTempView)
-        if let data {
-            dayTempView.setupDayTemp(data.dayTempData.data, data)
-        }
+        guard let data else { return }
+        dayTempView.setupDayTemp(data.dayTempData.data, data)
         dayTempView.snp.makeConstraints { make in
             make.top.equalTo(currentWeatherView.snp.bottom).offset(16)
             make.horizontalEdges.equalToSuperview().inset(16)
@@ -120,9 +117,8 @@ final class WeatherViewController: UIViewController {
     
     private func setupTempRangeView(_ data: MOCKData?) {
         contentView.addSubview(tempRangeView)
-        if let data {
-            tempRangeView.setupDayRange(data.tempRangeData)
-        }
+        guard let data else { return }
+        tempRangeView.setupDayRange(data.tempRangeData)
         tempRangeView.snp.makeConstraints { make in
             make.bottom.leading.equalToSuperview().inset(16)
             make.top.equalTo(dayTempView.snp.bottom).offset(16)
