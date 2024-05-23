@@ -50,7 +50,7 @@ final class WeatherViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     private let bottomView = BottomView()
-    var city: Int = 0
+    private var city: Int = 0
     override func viewDidLoad() {
         
         super.viewDidLoad()
