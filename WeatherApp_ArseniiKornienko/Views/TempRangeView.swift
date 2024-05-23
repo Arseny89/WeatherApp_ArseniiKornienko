@@ -65,6 +65,7 @@ final class TempRangeView: UIView {
                 make.trailing.equalToSuperview().multipliedBy(1 - maxOffset)
                 make.width.equalToSuperview().multipliedBy(1 - minOffset - maxOffset)
                 make.height.equalToSuperview()
+                make.verticalEdges.equalToSuperview()
             }
             
             if index == 0 {
@@ -109,8 +110,7 @@ final class TempRangeView: UIView {
         titleIcon.tintColor = .white
         titleIcon.alpha = 0.8
         titleIcon.snp.makeConstraints { make in
-            make.width.equalTo(20)
-            make.height.equalTo(20)
+            make.size.equalTo(20)
             make.top.bottom.equalToSuperview().inset(5)
             make.leading.equalToSuperview().inset(15)
         }
