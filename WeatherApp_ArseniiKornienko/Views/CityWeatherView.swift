@@ -22,11 +22,7 @@ final class CityWeatherView : UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        layer.cornerRadius = 15
-        
-        snp.makeConstraints { make in
-            make.height.equalTo(100)
-        }
+        setupCityWeatherView()
         setupBackgroundImage()
         setupTitleStackView()
         setupTitleLabel()
@@ -48,6 +44,13 @@ final class CityWeatherView : UIView {
         currentTempLabel.text = "\(data.currentTemp)º"
         tempLimitsLabel.text = "Макс.:\(data.maxTemp)º, мин.:\(data.minTemp)º "
         backgroundImage.image = data.backgroundImage
+    }
+    
+    private func setupCityWeatherView() {
+        layer.cornerRadius = 15
+        snp.makeConstraints { make in
+            make.height.equalTo(100)
+        }
     }
     
     private func setupBackgroundImage() {
