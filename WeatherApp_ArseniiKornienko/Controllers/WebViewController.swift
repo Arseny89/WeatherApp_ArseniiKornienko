@@ -10,7 +10,7 @@ import SnapKit
 import WebKit
 
 final class WebViewController: UIViewController {
-    enum Constants {
+    private enum Constants {
         case title
         var text: String {
             switch self {

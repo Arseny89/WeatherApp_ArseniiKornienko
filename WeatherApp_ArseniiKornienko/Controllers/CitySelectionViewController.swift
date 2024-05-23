@@ -11,7 +11,7 @@ import WebKit
 
 final class CitySelectionViewController: UIViewController {
     
-    enum Constants {
+    private enum Constants {
         case infoButtonTitle
         case url
         case title

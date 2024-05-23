@@ -10,7 +10,7 @@ import SnapKit
 
 final class DetailedWeatherViewController: UIViewController {
     
-    enum Constants {
+    private enum Constants {
         case title
         
         var text: String {

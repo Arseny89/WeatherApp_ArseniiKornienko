@@ -19,7 +19,7 @@ final class TempRangeView: UIView {
         var currentTemp: Double? = 0
     }
     
-    enum Constants {
+    private enum Constants {
         case title
         
         var text: String {
