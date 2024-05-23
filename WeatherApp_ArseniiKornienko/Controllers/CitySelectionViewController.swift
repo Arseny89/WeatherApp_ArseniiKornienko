@@ -25,14 +25,10 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    private let unitSelectionView = UIView()
-    private let infoButton = UIButton()
+    private let unitSelectionView = UnitSelectionView()
     private let contentView = UIView()
     private let cityWeatherView = CityWeatherView()
-    private let scalePickerView = UIPickerView()
     private let weatherView = WeatherViewController()
-    private let scales: [String] = ["º C", "º F", "º K"]
-    private var pickedScale: String = ""
     private let cityStackView = UIStackView()
     
     override func viewDidLoad() {
@@ -45,19 +41,17 @@ final class CitySelectionViewController: UIViewController {
         setupContentView()
         setupCityStackView()
         setupUnitSelectionView()
-        setupScalePickerView()
-        setupInfoButton()
         presentCityWeater(withCityIndex: 0)
     }
     
     private func setupUnitSelectionView() {
-        contentView.addSubview(unitSelectionView)
-        unitSelectionView.backgroundColor = .green
+        guard let navigationControllerView = self.navigationController?.view else { return }
+        navigationControllerView.addSubview(unitSelectionView)
+        unitSelectionView.isHidden = true
         unitSelectionView.delegate = self
         unitSelectionView.snp.makeConstraints { make in
-            make.size.equalTo(100)
-            make.centerX.equalTo(view.safeAreaLayoutGuide)
-            make.top.equalTo(cityStackView.snp.bottom).offset(15)
+            make.trailing.equalTo(navigationControllerView.safeAreaLayoutGuide).inset(15)
+            make.top.equalTo(navigationControllerView.safeAreaLayoutGuide).inset(40)
         }
     }
     
@@ -114,30 +108,6 @@ final class CitySelectionViewController: UIViewController {
         self.present(navigationController, animated: true)
     }
     
-    private func setupScalePickerView() {
-        unitSelectionView.addSubview(scalePickerView)
-        scalePickerView.backgroundColor = .systemGray5
-        scalePickerView.layer.cornerRadius = 12
-        scalePickerView.dataSource = self
-        scalePickerView.delegate = self
-        scalePickerView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.size.equalTo(80)
-        }
-    }
-    
-    private func setupInfoButton() {
-        contentView.addSubview(infoButton)
-        infoButton.backgroundColor = .systemGray
-        infoButton.setTitle(Constants.infoButtonTitle.text, for: .normal)
-        infoButton.setTitleColor(.black, for: .normal)
-        infoButton.addTarget(self, action: #selector(onInfoButtonTap), for: .touchUpInside)
-        infoButton.snp.makeConstraints { make in
-            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-            make.top.equalTo(unitSelectionView.snp.bottom).offset(20)
-        }
-    }
-    
     private func setupNavigationBar() {
         let navigationBar = navigationController?.navigationBar
         
@@ -164,32 +134,15 @@ final class CitySelectionViewController: UIViewController {
         let viewController = UINavigationController(rootViewController: DetailedWeatherViewController())
         viewController.modalPresentationStyle = .fullScreen
         self.present(viewController, animated: true)
-        
     }
 }
 
-extension CitySelectionViewController: UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        scales.count
-    }
-    
-}
-
-extension CitySelectionViewController: UIPickerViewDelegate {
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        scales[row]
 //MARK: UnitSelectionDelegate
 extension CitySelectionViewController: UnitSelectionDelegate {
     func pickScale(_ unit: String) {
         print(unit)
     }
     
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        pickedScale  = scales[row]
     func openInfo() {
         onInfoButtonTap()
     }
