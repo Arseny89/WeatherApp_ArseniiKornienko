@@ -53,11 +53,20 @@ final class CitySelectionViewController: UIViewController {
     private func setupUnitSelectionView() {
         contentView.addSubview(unitSelectionView)
         unitSelectionView.backgroundColor = .green
+        unitSelectionView.delegate = self
         unitSelectionView.snp.makeConstraints { make in
             make.size.equalTo(100)
             make.centerX.equalTo(view.safeAreaLayoutGuide)
             make.top.equalTo(cityStackView.snp.bottom).offset(15)
         }
+    }
+    
+    private func onInfoButtonTap() {
+        guard let url = URL(string: Constants.url.text) else { return }
+        let webViewController = WebViewController()
+        let viewController = UINavigationController(rootViewController: webViewController)
+        webViewController.openUrl(url)
+        self.present(viewController, animated: true)
     }
     
     private func setupContentView() {
@@ -151,14 +160,6 @@ final class CitySelectionViewController: UIViewController {
         unitSelectionView.isHidden = isSelectionHidden ? false : true
     }
     
-    @objc private func onInfoButtonTap(button: UIButton) {
-        guard let url = URL(string: Constants.url.text) else { return }
-        let webViewController = WebViewController()
-        let viewController = UINavigationController(rootViewController: webViewController)
-        webViewController.openUrl(url)
-        self.present(viewController, animated: true)
-    }
-    
     @objc private func onDetailedWeatherButtonTap() {
         let viewController = UINavigationController(rootViewController: DetailedWeatherViewController())
         viewController.modalPresentationStyle = .fullScreen
@@ -181,9 +182,15 @@ extension CitySelectionViewController: UIPickerViewDataSource {
 extension CitySelectionViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         scales[row]
+//MARK: UnitSelectionDelegate
+extension CitySelectionViewController: UnitSelectionDelegate {
+    func pickScale(_ unit: String) {
+        print(unit)
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         pickedScale  = scales[row]
+    func openInfo() {
+        onInfoButtonTap()
     }
 }

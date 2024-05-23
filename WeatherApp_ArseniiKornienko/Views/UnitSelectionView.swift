@@ -7,11 +7,19 @@
 
 import UIKit
 import SnapKit
+
+protocol UnitSelectionDelegate: AnyObject {
+    func pickScale(_ unit: String)
+    func openInfo()
+}
+
 final class UnitSelectionView: UIView {
     
     private let infoButton = UIButton()
     private let scales: [String] = ["º C", "º F", "º K"]
     private let scalePickerView = UIPickerView()
+    weak var delegate: UnitSelectionDelegate?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -57,6 +65,11 @@ final class UnitSelectionView: UIView {
         }
     }
     
+    @IBAction func onInfoButtonTap(button: UIButton) {
+        delegate?.openInfo()
+    }
+}
+
 extension UnitSelectionView: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
@@ -73,6 +86,8 @@ extension UnitSelectionView: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        delegate?.pickScale(scales[row])
+    }
     
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         return NSAttributedString(string: scales[row], attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
