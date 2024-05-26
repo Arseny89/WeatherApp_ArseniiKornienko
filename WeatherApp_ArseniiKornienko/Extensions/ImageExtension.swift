@@ -28,12 +28,11 @@ extension UIImage {
         case moonStars = "moon.stars.fill"
         case cloud = "cloud.fill"
         case cloudMoon = "cloud.moon.fill"
-        
+        case infoSquare = "info.square"
     }
     
     enum Images: String {
         case sky = "sky"
         case cloudNight = "cloudNight"
-        
     }
 }

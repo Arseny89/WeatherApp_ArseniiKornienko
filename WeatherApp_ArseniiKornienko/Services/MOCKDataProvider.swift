@@ -13,7 +13,7 @@ typealias TempRangeData = TempRangeView.InputData
 
 struct MOCKData {
     
-    enum Constants {
+   private enum Constants {
         case title
         case subtitle
         case titleDescription
