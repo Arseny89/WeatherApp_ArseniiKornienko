@@ -36,7 +36,6 @@ final class TempRangeView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .blueBackground.withAlphaComponent(0.5)
         layer.cornerRadius = 12
         
         setupStackView()
@@ -49,7 +48,7 @@ final class TempRangeView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupDayRange (_ data: [InputData]) {
+    func setupDayRange (_ data: [InputData], _ weekBarColor: UIColor) {
         data.enumerated().forEach { index, data in
             let view = DayRangeView()
             view.setupDayRange(data)
@@ -57,7 +56,7 @@ final class TempRangeView: UIView {
             let minTempDiff = data.minDayTemp - data.minTemp
             let maxOffset: Double
             let minOffset: Double
-            
+            view.weekBar.backgroundColor = weekBarColor
             maxOffset = maxTempDiff > 0 ? maxTempDiff / data.maxDayTemp : 0
             minOffset = minTempDiff > 0 ? minTempDiff / data.minDayTemp : 0
 
@@ -129,12 +128,12 @@ final class TempRangeView: UIView {
 }
 
 extension TempRangeView {
-    final class DayRangeView: UIView {
+     class DayRangeView: UIView {
         private let dayLabel = UILabel()
         private let dayIcon = UIImageView()
         private let minDayTempLabel = UILabel()
         private let maxDayTempLabel = UILabel()
-        private let weekBar = UIView()
+        let weekBar = UIView()
         let dayBar = UIView()
         private let currentTempIcon = UIImageView()
         private let stackView = UIStackView()
