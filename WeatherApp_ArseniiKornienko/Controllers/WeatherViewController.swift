@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class WeatherViewController: UIViewController {
+class WeatherViewController: UIViewController {
     struct InputData {
         let city: Int
     }
@@ -49,7 +49,8 @@ final class WeatherViewController: UIViewController {
     private let tempRangeView = TempRangeView()
     private let scrollView = UIScrollView()
     private let contentView = UIView()
-    private let bottomView = BottomView()
+    let bottomView = BottomView()
+    private var weekBarColor = UIColor()
     private var city: Int = 0
     override func viewDidLoad() {
         
@@ -63,6 +64,7 @@ final class WeatherViewController: UIViewController {
         setupCurrentWeatherView(MOCKData.data[city])
         setupDayTempView(MOCKData.data[city])
         setupTempRangeView(MOCKData.data[city])
+
     }
     
     func setupWeatherView(_ data: InputData) {
@@ -145,7 +147,7 @@ final class WeatherViewController: UIViewController {
         }
     }
     
-    private func setupBottomView() {
+    func setupBottomView() {
         view.addSubview(bottomView)
         setupViewColors(MOCKData.data[city], bottomView)
         bottomView.snp.makeConstraints { make in
