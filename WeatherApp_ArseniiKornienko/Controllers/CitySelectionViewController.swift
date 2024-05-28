@@ -84,13 +84,25 @@ final class CitySelectionViewController: UIViewController {
         self.present(navigationController, animated: true)
     }
     
+    private func setupSearchController() -> UISearchController {
+        let searchController = UISearchController(searchResultsController: citySearchViewController)
+        searchController.searchResultsUpdater = citySearchViewController
+        searchController.searchBar.searchTextField.placeholder = "Поиск города или аэропорта"
+        searchController.searchBar.setImage(UIImage(icon: .micIcon), for: .bookmark, state: .normal)
+        searchController.searchBar.showsBookmarkButton = true
+        return searchController
+    }
+    
     private func setupNavigationBar() {
         let navigationBar = navigationController?.navigationBar
-        
+        navigationBar?.barStyle = .black
         navigationBar?.prefersLargeTitles = true
         navigationBar?.tintColor = .white
         navigationBar?.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
         
+        navigationItem.searchController = setupSearchController()
+        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(icon: .ellipsisCircle),
                                                             style: .plain,
                                                             target: self,
