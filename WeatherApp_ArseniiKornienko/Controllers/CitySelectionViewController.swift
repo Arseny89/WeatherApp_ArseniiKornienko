@@ -26,10 +26,10 @@ final class CitySelectionViewController: UIViewController {
     }
     
     private let unitSelectionView = UnitSelectionView()
-    private let contentView = UIView()
     private let cityWeatherView = CityWeatherView()
     private let weatherView = WeatherViewController()
-    private let cityStackView = UIStackView()
+    private let citySearchViewController = CitySearchViewController()
+    private let cityTableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +38,7 @@ final class CitySelectionViewController: UIViewController {
         title = Constants.title.text
         
         setupNavigationBar()
-        setupContentView()
-        setupCityStackView()
+        setupCityTableView()
         setupUnitSelectionView()
         presentCityWeater(withCityIndex: 0)
     }
@@ -63,40 +62,17 @@ final class CitySelectionViewController: UIViewController {
         self.present(viewController, animated: true)
     }
     
-    private func setupContentView() {
-        view.addSubview(contentView)
-        contentView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-    }
-    
-    private func setupCityStackView() {
-        contentView.addSubview(cityStackView)
-        cityStackView.axis = .vertical
-        cityStackView.spacing = 15
-        cityStackView.distribution = .fillEqually
-        
-        MOCKData.data.enumerated().forEach { index, data in
-            let cityWeatherView = CityWeatherView()
-            cityWeatherView.setupCityWeather(CurrentWeatherView.InputData(title: data.titleData.title,
-                                                                          subtitle: data.titleData.subtitle,
-                                                                          currentTemp: data.titleData.currentTemp,
-                                                                          description: data.titleData.description,
-                                                                          minTemp: data.titleData.minTemp,
-                                                                          maxTemp: data.titleData.maxTemp,
-                                                                          backgroundImage: data.titleData.backgroundImage))
-            
-            cityWeatherView.tapAction = { [weak self] in
-                self?.presentCityWeater(withCityIndex: index)
-            }
-            
-            cityStackView.addArrangedSubview(cityWeatherView)
-        }
-        
-        cityStackView.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview()
-            make.top.equalToSuperview()
+    private func setupCityTableView() {
+        view.addSubview(cityTableView)
+        cityTableView.backgroundColor = .clear
+        cityTableView.dataSource = self
+        cityTableView.delegate = self
+        cityTableView.sectionHeaderTopPadding = 0
+        cityTableView.showsVerticalScrollIndicator = false
+        cityTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        cityTableView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(16)
+            make.top.bottom.equalToSuperview()
         }
     }
     
@@ -145,5 +121,50 @@ extension CitySelectionViewController: UnitSelectionDelegate {
     
     func openInfo() {
         onInfoButtonTap()
+    }
+}
+
+extension CitySelectionViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        1
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        MOCKData.data.count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        10
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = .clear
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cityWeatherView = CityWeatherView()
+        let data = MOCKData.data[indexPath.section]
+        cityWeatherView.setupCityWeather(CurrentWeatherView.InputData(title: data.titleData.title,
+                                                                      subtitle: data.titleData.subtitle,
+                                                                      currentTemp: data.titleData.currentTemp,
+                                                                      description: data.titleData.description,
+                                                                      minTemp: data.titleData.minTemp,
+                                                                      maxTemp: data.titleData.maxTemp,
+                                                                      backgroundImage: data.titleData.backgroundImage))
+        cell.addSubview(cityWeatherView)
+        cityWeatherView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        cell.selectionStyle = .none
+        cell.backgroundColor = .clear
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presentCityWeater(withCityIndex: indexPath.section)
     }
 }
