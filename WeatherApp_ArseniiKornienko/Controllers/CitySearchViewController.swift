@@ -31,7 +31,6 @@ final class CitySearchViewController: UIViewController {
         setupTableView()
     }
     
-    
     private func setupTableView() {
         view.addSubview(tableView)
         tableView.backgroundColor = .clear
@@ -39,7 +38,6 @@ final class CitySearchViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cityCellId)
         tableView.snp.makeConstraints { make in
-            
             make.edges.equalToSuperview()
         }
     }
