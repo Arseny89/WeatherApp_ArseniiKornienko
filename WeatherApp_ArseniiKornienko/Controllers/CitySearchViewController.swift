@@ -23,7 +23,7 @@ final class CitySearchViewController: UIViewController {
                             "Las Vegas",
                             "Melbourne"]
     
-    private var filteredCityList:[String] = []
+    private var filteredCityList: [String] = []
     private var searchText = ""
     
     override func viewDidLoad() {
