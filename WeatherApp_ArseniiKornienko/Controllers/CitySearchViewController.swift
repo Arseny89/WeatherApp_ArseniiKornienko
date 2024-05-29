@@ -11,7 +11,7 @@ import SnapKit
 final class CitySearchViewController: UIViewController {
     
     private let tableView = UITableView()
-    private let cityCellId = "cell"
+    private let cityCellId = "cityNameCell"
     private let cityList = ["Glendale",
                             "Moscow" ,
                             "Mexico City",

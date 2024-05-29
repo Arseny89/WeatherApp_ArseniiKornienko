@@ -30,6 +30,7 @@ final class CitySelectionViewController: UIViewController {
     private let weatherView = WeatherViewController()
     private let citySearchViewController = CitySearchViewController()
     private let cityTableView = UITableView()
+    private let cityViewId = "cityViewCell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,7 +70,7 @@ final class CitySelectionViewController: UIViewController {
         cityTableView.delegate = self
         cityTableView.sectionHeaderTopPadding = 0
         cityTableView.showsVerticalScrollIndicator = false
-        cityTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        cityTableView.register(UITableViewCell.self, forCellReuseIdentifier: cityViewId)
         cityTableView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(16)
             make.top.bottom.equalToSuperview()
@@ -156,7 +157,7 @@ extension CitySelectionViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cityViewId, for: indexPath)
         let cityWeatherView = CityWeatherView()
         let data = MOCKData.data[indexPath.section]
         cityWeatherView.setupCityWeather(CurrentWeatherView.InputData(title: data.titleData.title,
