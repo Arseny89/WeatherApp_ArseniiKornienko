@@ -9,6 +9,17 @@ import UIKit
 import SnapKit
 
 final class SelectedCityViewController: WeatherViewController {
+    private enum Constants {
+        case leftButtonTitle
+        case rightButtonTitle
+        
+        var text: String {
+            switch self {
+            case .leftButtonTitle: return "Отменить"
+            case .rightButtonTitle: return "Добавить"
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,15 +31,16 @@ final class SelectedCityViewController: WeatherViewController {
         navigationBar?.tintColor = .white
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Отменить",
+            title: Constants.leftButtonTitle.text,
             style: .plain,
             target: self,
             action: #selector(onLeftBarButtonTap)
         )
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Добавить",
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: .none
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: Constants.rightButtonTitle.text,
+            style: .plain,
+            target: self,
+            action: .none
         )
     }
     

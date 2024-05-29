@@ -15,12 +15,14 @@ final class CitySelectionViewController: UIViewController {
         case infoButtonTitle
         case url
         case title
+        case searchBarTitle
         
         var text: String {
             switch self {
             case .infoButtonTitle: return "Show info"
             case .url: return "https://www.meteoinfo.ru/t-scale"
             case .title: return "Погода"
+            case .searchBarTitle: return "Поиск города или аэропорта"
             }
         }
     }
@@ -88,7 +90,7 @@ final class CitySelectionViewController: UIViewController {
     private func setupSearchController() -> UISearchController {
         let searchController = UISearchController(searchResultsController: citySearchViewController)
         searchController.searchResultsUpdater = citySearchViewController
-        searchController.searchBar.searchTextField.placeholder = "Поиск города или аэропорта"
+        searchController.searchBar.searchTextField.placeholder = Constants.searchBarTitle.text
         searchController.searchBar.setImage(UIImage(icon: .micIcon), for: .bookmark, state: .normal)
         searchController.searchBar.showsBookmarkButton = true
         return searchController
