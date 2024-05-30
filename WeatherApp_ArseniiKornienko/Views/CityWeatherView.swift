@@ -30,7 +30,6 @@ final class CityWeatherView : UIView {
         setupDescriptionLabel()
         setupCurrentTempLabel()
         setupTempLimitsLabel()
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureAction)))
     }
     
     required init?(coder: NSCoder) {
@@ -119,9 +118,5 @@ final class CityWeatherView : UIView {
             make.trailing.equalTo(currentTempLabel)
             make.centerY.equalTo(descriptionLabel)
         }
-    }
-    
-    @IBAction private func tapGestureAction() {
-        tapAction?()
     }
 }

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class WeatherViewController: UIViewController {
+class WeatherViewController: UIViewController {
     struct InputData {
         let city: Int
     }
@@ -49,7 +49,8 @@ final class WeatherViewController: UIViewController {
     private let tempRangeView = TempRangeView()
     private let scrollView = UIScrollView()
     private let contentView = UIView()
-    private let bottomView = BottomView()
+    let bottomView = BottomView()
+    private var weekBarColor = UIColor()
     private var city: Int = 0
     override func viewDidLoad() {
         
@@ -63,6 +64,7 @@ final class WeatherViewController: UIViewController {
         setupCurrentWeatherView(MOCKData.data[city])
         setupDayTempView(MOCKData.data[city])
         setupTempRangeView(MOCKData.data[city])
+
     }
     
     func setupWeatherView(_ data: InputData) {
@@ -76,6 +78,23 @@ final class WeatherViewController: UIViewController {
         backgroundImage.image = data.titleData.backgroundImage
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+    }
+    
+    private func setupViewColors (_ data: MOCKData?, _ view: UIView) {
+        guard let data else { return }
+        switch data.titleData.backgroundImage {
+        case UIImage(image: .sunSky), UIImage(image: .clouds):
+            view.backgroundColor = .blueBackground.withAlphaComponent(0.7)
+            weekBarColor = view.backgroundColor?.darker(by: 10) ?? .darkBlue
+        case UIImage(image: .starNight), UIImage(image: .cloudNight):
+            view.backgroundColor = .nightBlue.withAlphaComponent(0.7)
+            weekBarColor = view.backgroundColor?.darker(by: 50) ?? .darkBlue
+        case UIImage(image: .cloudsGrey):
+            view.backgroundColor = .systemGray2.withAlphaComponent(0.7)
+            weekBarColor = view.backgroundColor?.darker(by: 20) ?? .darkBlue
+        default:
+            return
         }
     }
     
@@ -109,6 +128,7 @@ final class WeatherViewController: UIViewController {
         contentView.addSubview(dayTempView)
         guard let data else { return }
         dayTempView.setupDayTemp(data.dayTempData.data, data)
+        setupViewColors(data, dayTempView)
         dayTempView.snp.makeConstraints { make in
             make.top.equalTo(currentWeatherView.snp.bottom).offset(16)
             make.horizontalEdges.equalToSuperview().inset(16)
@@ -118,7 +138,8 @@ final class WeatherViewController: UIViewController {
     private func setupTempRangeView(_ data: MOCKData?) {
         contentView.addSubview(tempRangeView)
         guard let data else { return }
-        tempRangeView.setupDayRange(data.tempRangeData)
+        setupViewColors(data, tempRangeView)
+        tempRangeView.setupDayRange(data.tempRangeData, weekBarColor)
         tempRangeView.snp.makeConstraints { make in
             make.bottom.leading.equalToSuperview().inset(16)
             make.top.equalTo(dayTempView.snp.bottom).offset(16)
@@ -126,8 +147,9 @@ final class WeatherViewController: UIViewController {
         }
     }
     
-    private func setupBottomView() {
+    func setupBottomView() {
         view.addSubview(bottomView)
+        setupViewColors(MOCKData.data[city], bottomView)
         bottomView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
             make.bottom.equalToSuperview()

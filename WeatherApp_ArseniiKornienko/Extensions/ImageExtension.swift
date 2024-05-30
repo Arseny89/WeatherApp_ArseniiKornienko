@@ -10,11 +10,11 @@ import UIKit
 extension UIImage {
     
     convenience init?(icon: Icons) {
-        self.init(systemName: icon.rawValue )
+        self.init(systemName: icon.rawValue)
     }
     
     convenience init?(image: Images) {
-        self.init(named: image.rawValue )
+        self.init(named: image.rawValue)
     }
     
     enum Icons: String {
@@ -29,10 +29,16 @@ extension UIImage {
         case cloud = "cloud.fill"
         case cloudMoon = "cloud.moon.fill"
         case infoSquare = "info.square"
+        case wind = "wind"
+        case cloudRain = "cloud.rain.fill"
+        case micIcon = "mic.fill"
     }
     
     enum Images: String {
-        case sky = "sky"
+        case sunSky = "sunSky"
         case cloudNight = "cloudNight"
+        case clouds = "clouds"
+        case starNight = "starNight"
+        case cloudsGrey = "cloudsGrey"
     }
 }
