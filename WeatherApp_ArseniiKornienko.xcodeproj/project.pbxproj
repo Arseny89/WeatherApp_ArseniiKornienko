@@ -110,26 +110,13 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		0E11F50D2BF86F7E00D82550 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				0E7649F92BEACA500052E3F2 /* BottomView.swift */,
-				0E7649EF2BE765320052E3F2 /* TempRangeView.swift */,
-				0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */,
-				0E816D3F2BEB3806007CC983 /* CityWeatherView.swift */,
-				0E7649F12BE765440052E3F2 /* CurrentWeatherView.swift */,
-				0E11F5122BFEFFCD00D82550 /* UnitSelectionView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		0E11F50E2BF86F9500D82550 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0ED012B22BE76180005D48D7 /* WeatherViewController.swift */,
+				0E4B6A272C0836E800058097 /* CitySelectionViewController */,
+				0E4B6A242C08365700058097 /* WeatherViewController */,
 				0E4B6A212C05930800058097 /* SelectedCityViewController.swift */,
 				0E510DBF2BF49018007EB1A8 /* DetailedWeatherViewController.swift */,
-				0E816D3D2BEB2562007CC983 /* CitySelectionViewController.swift */,
 				0EF824842BEF4FA70033BF6C /* WebViewController.swift */,
 				0E4B6A1F2C04650F00058097 /* CitySearchViewController.swift */,
 			);
@@ -142,6 +129,52 @@
 				0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		0E4B6A242C08365700058097 /* WeatherViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0ED012B22BE76180005D48D7 /* WeatherViewController.swift */,
+				0E4B6A262C08368B00058097 /* Views */,
+				0E4B6A252C08366600058097 /* Cells */,
+			);
+			path = WeatherViewController;
+			sourceTree = "<group>";
+		};
+		0E4B6A252C08366600058097 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		0E4B6A262C08368B00058097 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0E7649F92BEACA500052E3F2 /* BottomView.swift */,
+				0E7649EF2BE765320052E3F2 /* TempRangeView.swift */,
+				0E7649ED2BE7651E0052E3F2 /* DayTempView.swift */,
+				0E7649F12BE765440052E3F2 /* CurrentWeatherView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		0E4B6A272C0836E800058097 /* CitySelectionViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0E816D3D2BEB2562007CC983 /* CitySelectionViewController.swift */,
+				0E4B6A282C08376600058097 /* Views */,
+			);
+			path = CitySelectionViewController;
+			sourceTree = "<group>";
+		};
+		0E4B6A282C08376600058097 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0E11F5122BFEFFCD00D82550 /* UnitSelectionView.swift */,
+				0E816D3F2BEB3806007CC983 /* CityWeatherView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		0ED012A22BE76180005D48D7 = {
@@ -170,7 +203,6 @@
 				0ED012AE2BE76180005D48D7 /* AppDelegate.swift */,
 				0ED012B02BE76180005D48D7 /* SceneDelegate.swift */,
 				0E11F50E2BF86F9500D82550 /* Controllers */,
-				0E11F50D2BF86F7E00D82550 /* Views */,
 				0E11F50C2BF86F6E00D82550 /* Extensions */,
 				0E11F50F2BFAF37900D82550 /* Services */,
 				0ED012B72BE76181005D48D7 /* Assets.xcassets */,
