@@ -43,28 +43,32 @@ class WeatherViewController: UIViewController {
         }
     }
     
+    private let weatherData = MOCKData.data
     private let backgroundImage = UIImageView()
     private let currentWeatherView = CurrentWeatherView()
-    private let dayTempView = DayTempView()
-    private let tempRangeView = TempRangeView()
+    private let dayTempView = DayTempCell()
+    private let tempRangeView = TempRangeCell()
+    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let scrollView = UIScrollView()
-    private let contentView = UIView()
+    private let titleView = UIView()
     let bottomView = BottomView()
     private var weekBarColor = UIColor()
     private var city: Int = 0
+    var viewModel: WeatherViewModelInput!
+    var dataSource: [WeatherViewModel.Section] = []
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
         bottomView.listButton.addTarget(self, action: #selector(onListButtonTap), for: .touchUpInside)
-        setupBackgroundImage(MOCKData.data[city])
+        setupBackgroundImage(weatherData[city])
         setupBottomView()
-        setupScrollView()
-        setupContentView()
-        setupCurrentWeatherView(MOCKData.data[city])
-        setupDayTempView(MOCKData.data[city])
-        setupTempRangeView(MOCKData.data[city])
-
+        setupTitleView()
+        setupCurrentWeatherView(weatherData[city])
+        setupTableView()
+        viewModel.output = self
+        viewModel.viewDidLoad()
     }
     
     func setupWeatherView(_ data: InputData) {
@@ -81,75 +85,60 @@ class WeatherViewController: UIViewController {
         }
     }
     
-    private func setupViewColors (_ data: MOCKData?, _ view: UIView) {
+    private func setupCellsColor (_ data: MOCKData?, _ cell: UITableViewCell) {
         guard let data else { return }
         switch data.titleData.backgroundImage {
         case UIImage(image: .sunSky), UIImage(image: .clouds):
-            view.backgroundColor = .blueBackground.withAlphaComponent(0.7)
-            weekBarColor = view.backgroundColor?.darker(by: 10) ?? .darkBlue
+            cell.backgroundColor = .blueBackground.withAlphaComponent(0.7)
+            weekBarColor = cell.backgroundColor?.darker(by: 10) ?? .darkBlue
         case UIImage(image: .starNight), UIImage(image: .cloudNight):
-            view.backgroundColor = .nightBlue.withAlphaComponent(0.7)
-            weekBarColor = view.backgroundColor?.darker(by: 50) ?? .darkBlue
+            cell.backgroundColor = .nightBlue.withAlphaComponent(0.7)
+            weekBarColor = cell.backgroundColor?.darker(by: 50) ?? .darkBlue
         case UIImage(image: .cloudsGrey):
-            view.backgroundColor = .systemGray2.withAlphaComponent(0.7)
-            weekBarColor = view.backgroundColor?.darker(by: 20) ?? .darkBlue
+            cell.backgroundColor = .systemGray2.withAlphaComponent(0.7)
+            weekBarColor = cell.backgroundColor?.darker(by: 20) ?? .darkBlue
         default:
             return
         }
     }
     
-    private func setupScrollView() {
-        view.addSubview(scrollView)
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+    private func setupTableView() {
+        view.addSubview(tableView)
+        tableView.backgroundColor = .clear
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorColor = .white.withAlphaComponent(0.5)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.registerCell(TitleCell.self)
+        tableView.registerCell(DayTempCell.self)
+        tableView.registerCell(TempRangeCell.self)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(titleView.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview()
             make.bottom.equalTo(bottomView.snp.top)
         }
     }
     
-    private func setupContentView() {
-        scrollView.addSubview(contentView)
-        contentView.snp.makeConstraints { make in
+    private func setupTitleView() {
+        view.addSubview(titleView)
+        titleView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.centerX.equalToSuperview()
-            make.edges.equalToSuperview()
         }
     }
     
     private func setupCurrentWeatherView(_ data: MOCKData?) {
-        contentView.addSubview(currentWeatherView)
+        titleView.addSubview(currentWeatherView)
         guard let data else { return }
         currentWeatherView.setupCurrentWeather(data.titleData)
         currentWeatherView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview().inset(20)
-        }
-    }
-    
-    private func setupDayTempView(_ data: MOCKData?) {
-        contentView.addSubview(dayTempView)
-        guard let data else { return }
-        dayTempView.setupDayTemp(data.dayTempData.data, data)
-        setupViewColors(data, dayTempView)
-        dayTempView.snp.makeConstraints { make in
-            make.top.equalTo(currentWeatherView.snp.bottom).offset(16)
-            make.horizontalEdges.equalToSuperview().inset(16)
-        }
-    }
-    
-    private func setupTempRangeView(_ data: MOCKData?) {
-        contentView.addSubview(tempRangeView)
-        guard let data else { return }
-        setupViewColors(data, tempRangeView)
-        tempRangeView.setupDayRange(data.tempRangeData, weekBarColor)
-        tempRangeView.snp.makeConstraints { make in
-            make.bottom.leading.equalToSuperview().inset(16)
-            make.top.equalTo(dayTempView.snp.bottom).offset(16)
-            make.width.equalTo(dayTempView)
+            make.bottom.equalToSuperview()
         }
     }
     
     func setupBottomView() {
         view.addSubview(bottomView)
-        setupViewColors(MOCKData.data[city], bottomView)
         bottomView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
             make.bottom.equalToSuperview()
@@ -159,5 +148,55 @@ class WeatherViewController: UIViewController {
     
     @objc private func onListButtonTap() {
         self.navigationController?.dismiss(animated: true)
+    }
+}
+
+extension WeatherViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        dataSource[section].items.count
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        dataSource.count
+    }
+    
+}
+
+extension WeatherViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let item = dataSource[indexPath.section].items[indexPath.row]
+        let cell: UITableViewCell
+        switch item {
+        case .title(let data):
+            cell = tableView.dequeue(TitleCell.self, for: indexPath)
+            (cell as? TitleCell)?.setupTitleCell(data)
+            
+        case .dayTemp(let data):
+            cell = tableView.dequeue(DayTempCell.self, for: indexPath)
+            (cell as? DayTempCell)?.setupDayTemp(data)
+            
+        case .tempRange(let data):
+            cell = tableView.dequeue(TempRangeCell.self, for: indexPath)
+            (cell as? TempRangeCell)?.setupDayRange(data, weekBarColor)
+        }
+        cell.selectionStyle = .none
+        setupCellsColor(weatherData[city], cell)
+        return cell
+    }
+}
+
+extension WeatherViewController: WeatherViewModelOutput {
+    func setupCurrentWeatherView(with data: CurrentWeatherView.InputData) {
+        currentWeatherView.setupCurrentWeather(data)
+    }
+    
+    func reloadData() {
+        tableView.reloadData()
     }
 }
