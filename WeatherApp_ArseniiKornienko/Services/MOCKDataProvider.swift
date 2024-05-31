@@ -8,8 +8,8 @@
 import UIKit
 
 typealias TitleData = CurrentWeatherView.InputData
-typealias DayTempData = DayTempView.InputData
-typealias TempRangeData = TempRangeView.InputData
+typealias DayTempData = DayTempCell.InputData
+typealias TempRangeData = TempRangeCell.InputData
 
 struct MOCKData {
     
