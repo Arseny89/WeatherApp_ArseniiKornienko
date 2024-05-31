@@ -81,6 +81,7 @@ final class CitySelectionViewController: UIViewController {
     
     private func presentCityWeater(withCityIndex index: Int) {
         let viewController = WeatherViewController()
+        viewController.viewModel = WeatherViewModel(with: MOCKData.data[index])
         viewController.setupWeatherView(WeatherViewController.InputData(city: index))
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
