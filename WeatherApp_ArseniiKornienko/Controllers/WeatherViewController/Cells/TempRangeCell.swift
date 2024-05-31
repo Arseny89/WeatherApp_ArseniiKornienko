@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class TempRangeView: UIView {
+final class TempRangeCell: UITableViewCell {
     struct InputData {
         let day: String
         let icon: UIImage
@@ -28,107 +28,70 @@ final class TempRangeView: UIView {
             }
         }
     }
+    static let id = String(describing: TempRangeCell.self)
+    private let dayView = UIView()
     
-    private let titleLabel = UILabel()
-    private let stackView = UIStackView()
-    private let titleStackView = UIStackView()
-    private let titleIcon = UIImageView()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        layer.cornerRadius = 12
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setupStackView()
-        setupTitleStackView()
-        setupTitleIcon()
-        setupTitleLabel()
+        setupDayView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupDayRange (_ data: [InputData], _ weekBarColor: UIColor) {
-        data.enumerated().forEach { index, data in
-            let view = DayRangeView()
-            view.setupDayRange(data)
-            let maxTempDiff = data.maxTemp - data.maxDayTemp
-            let minTempDiff = data.minDayTemp - data.minTemp
-            let maxOffset: Double
-            let minOffset: Double
-            view.weekBar.backgroundColor = weekBarColor
-            maxOffset = maxTempDiff > 0 ? maxTempDiff / data.maxDayTemp : 0
-            minOffset = minTempDiff > 0 ? minTempDiff / data.minDayTemp : 0
-
-            view.dayBar.snp.remakeConstraints { make in
-                make.trailing.equalToSuperview().multipliedBy(1 - maxOffset)
-                make.width.equalToSuperview().multipliedBy(1 - minOffset - maxOffset)
-                make.height.equalToSuperview()
-                make.verticalEdges.equalToSuperview()
-            }
-            
-            if index == 0 {
-                if let currentTemp = data.currentTemp {
-                    let dayTempDiff = data.maxDayTemp - data.minDayTemp
-                    let currentTempOffset = abs(data.minDayTemp - currentTemp) / dayTempDiff
-                    view.currentTempView.snp.remakeConstraints { make in
-                        _ = currentTempOffset == 0 ? 
-                        make.centerX.equalTo(view.dayBar.snp.leading) :
-                        make.centerX.equalTo(view.dayBar.snp.trailing).multipliedBy(currentTempOffset)
-                        make.size.equalTo(6)
-                        make.centerY.equalToSuperview()
-                    }
-                }
-            } else {
-                view.currentTempView.isHidden = true
-            }
-            stackView.addArrangedSubview(view)
+    func setupDayRange(_ data: InputData, _ weekBarColor: UIColor) {
+        dayView.subviews.forEach { $0.removeFromSuperview() }
+        let view = DayRangeView()
+        view.setupDayRange(data)
+        let maxTempDiff = data.maxTemp - data.maxDayTemp
+        let minTempDiff = data.minDayTemp - data.minTemp
+        let maxOffset: Double
+        let minOffset: Double
+        view.weekBar.backgroundColor = weekBarColor
+        maxOffset = maxTempDiff > 0 ? maxTempDiff / data.maxDayTemp : 0
+        minOffset = minTempDiff > 0 ? minTempDiff / data.minDayTemp : 0
+        
+        view.dayBar.snp.remakeConstraints { make in
+            make.trailing.equalToSuperview().multipliedBy(1 - maxOffset)
+            make.width.equalToSuperview().multipliedBy(1 - minOffset - maxOffset)
+            make.height.equalToSuperview()
+            make.verticalEdges.equalToSuperview()
         }
-    }
-    
-    private func setupStackView() {
-        addSubview(stackView)
-        stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
-        stackView.snp.makeConstraints { make in
+        
+        if let currentTemp = data.currentTemp {
+            let dayTempDiff = data.maxDayTemp - data.minDayTemp
+            let currentTempOffset = abs(data.minDayTemp - currentTemp) / dayTempDiff
+            view.currentTempView.snp.remakeConstraints { make in
+                _ = currentTempOffset == 0 ?
+                make.centerX.equalTo(view.dayBar.snp.leading) :
+                make.centerX.equalTo(view.dayBar.snp.trailing).multipliedBy(currentTempOffset)
+                make.size.equalTo(6)
+                make.centerY.equalToSuperview()
+            }
+        }
+        
+        if data.day != "Сегодня"  {
+            view.currentTempView.isHidden = true
+        }
+        
+        dayView.addSubview(view)
+        view.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
     
-    private func setupTitleStackView() {
-        stackView.addArrangedSubview(titleStackView)
-        titleStackView.spacing = 5
-        titleStackView.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview()
-        }
-    }
-    
-    private func setupTitleIcon() {
-        titleStackView.addArrangedSubview(titleIcon)
-        titleIcon.image = UIImage(icon: .calendar)
-        titleIcon.tintColor = .white
-        titleIcon.alpha = 0.8
-        titleIcon.snp.makeConstraints { make in
-            make.size.equalTo(20)
-            make.top.bottom.equalToSuperview().inset(5)
-            make.leading.equalToSuperview().inset(15)
-        }
-    }
-    
-    private func setupTitleLabel() {
-        titleStackView.addArrangedSubview(titleLabel)
-        titleLabel.text = Constants.title.text
-        titleLabel.textColor = .white
-        titleLabel.alpha = 0.8
-        titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        titleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(titleIcon)
+    private func setupDayView() {
+        contentView.addSubview(dayView)
+        dayView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
 }
 
-extension TempRangeView {
-     class DayRangeView: UIView {
+extension TempRangeCell {
+    class DayRangeView: UIView {
         private let dayLabel = UILabel()
         private let dayIcon = UIImageView()
         private let minDayTempLabel = UILabel()
@@ -139,14 +102,12 @@ extension TempRangeView {
         private let stackView = UIStackView()
         private let barsView = UIView()
         private let contentView = UIView()
-        private let divider = UIView()
-        let currentTempView = UIView()
+        public let currentTempView = UIView()
         
         override init(frame: CGRect) {
             super.init(frame: frame)
             
             setupContentView()
-            setupDivider()
             setupStackView()
             setupDayLabel()
             setupDayIcon()
@@ -156,7 +117,6 @@ extension TempRangeView {
             setupMaxDayTempLabel()
             setupDayBar()
             setupCurrentTempView()
-            
         }
         
         required init?(coder: NSCoder) {
@@ -186,7 +146,6 @@ extension TempRangeView {
                 make.bottom.equalToSuperview().inset(15)
                 make.trailing.equalToSuperview()
                 make.leading.equalToSuperview()
-                
             }
         }
         
@@ -246,17 +205,6 @@ extension TempRangeView {
             stackView.addArrangedSubview(maxDayTempLabel)
             maxDayTempLabel.textColor = .white
             maxDayTempLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        }
-        
-        private func setupDivider() {
-            contentView.addSubview(divider)
-            divider.backgroundColor = .white
-            divider.alpha = 0.5
-            divider.snp.makeConstraints { make in
-                make.height.equalTo(1)
-                make.horizontalEdges.equalToSuperview()
-                make.top.equalToSuperview()
-            }
         }
         
         private func setupCurrentTempView() {
