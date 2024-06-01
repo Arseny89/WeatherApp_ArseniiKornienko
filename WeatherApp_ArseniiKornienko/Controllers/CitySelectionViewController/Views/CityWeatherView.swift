@@ -10,6 +10,7 @@ import SnapKit
 
 final class CityWeatherView : UIView {
     
+    var tapAction: (() -> Void)?
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     private let descriptionLabel = UILabel()
@@ -17,7 +18,6 @@ final class CityWeatherView : UIView {
     private let currentTempLabel = UILabel()
     private let backgroundImage = UIImageView()
     private let titleStackView = UIStackView()
-    var tapAction: (() -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -15,10 +15,10 @@ protocol UnitSelectionDelegate: AnyObject {
 
 final class UnitSelectionView: UIView {
     
+    weak var delegate: UnitSelectionDelegate?
     private let infoButton = UIButton()
     private let scales: [String] = ["º C", "º F", "º K"]
     private let scalePickerView = UIPickerView()
-    weak var delegate: UnitSelectionDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)

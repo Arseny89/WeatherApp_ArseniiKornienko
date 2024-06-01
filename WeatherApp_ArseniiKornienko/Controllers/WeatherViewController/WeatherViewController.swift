@@ -42,7 +42,9 @@ class WeatherViewController: UIViewController {
             }
         }
     }
-    
+    var viewModel: WeatherViewModelInput!
+    var dataSource: [WeatherViewModel.Section] = []
+    let bottomView = BottomView()
     private let weatherData = MOCKData.data
     private let backgroundImage = UIImageView()
     private let currentWeatherView = CurrentWeatherView()
@@ -51,11 +53,8 @@ class WeatherViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let scrollView = UIScrollView()
     private let titleView = UIView()
-    let bottomView = BottomView()
     private var weekBarColor = UIColor()
     private var city: Int = 0
-    var viewModel: WeatherViewModelInput!
-    var dataSource: [WeatherViewModel.Section] = []
     
     override func viewDidLoad() {
         
