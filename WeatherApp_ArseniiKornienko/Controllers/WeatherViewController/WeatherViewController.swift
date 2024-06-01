@@ -64,7 +64,7 @@ class WeatherViewController: UIViewController {
         setupBackgroundImage(weatherData[city])
         setupBottomView()
         setupTitleView()
-        setupCurrentWeatherView(weatherData[city])
+        setupCurrentWeatherView()
         setupTableView()
         viewModel.output = self
         viewModel.viewDidLoad()
@@ -126,10 +126,8 @@ class WeatherViewController: UIViewController {
         }
     }
     
-    private func setupCurrentWeatherView(_ data: MOCKData?) {
+    private func setupCurrentWeatherView() {
         titleView.addSubview(currentWeatherView)
-        guard let data else { return }
-        currentWeatherView.setupCurrentWeather(data.titleData)
         currentWeatherView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview().inset(20)
             make.bottom.equalToSuperview()
