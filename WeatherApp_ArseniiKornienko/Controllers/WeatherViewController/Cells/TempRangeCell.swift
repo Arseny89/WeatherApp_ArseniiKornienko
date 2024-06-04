@@ -41,7 +41,7 @@ final class TempRangeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupDayRange(_ data: InputData, _ weekBarColor: UIColor) {
+    func setupDayRange(_ data: TempRangeData, _ weekBarColor: UIColor) {
         dayView.subviews.forEach { $0.removeFromSuperview() }
         let view = DayRangeView()
         view.setupDayRange(data)
@@ -123,7 +123,7 @@ extension TempRangeCell {
             fatalError("init(coder:) has not been implemented")
         }
         
-        func setupDayRange (_ data: InputData) {
+        func setupDayRange (_ data: TempRangeData) {
             dayLabel.text = data.day
             dayIcon.image = data.icon
             minDayTempLabel.text = "\(Int(data.minDayTemp))º"
