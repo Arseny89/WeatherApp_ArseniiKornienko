@@ -8,28 +8,22 @@
 import UIKit
 import SnapKit
 
-final class DayTempView: UIView {
+final class DayTempCell: UITableViewCell {
     struct InputData {
         var icon: UIImage?
         let temp: Int
         let time: String
     }
     
+    static let id = String(describing: DayTempCell.self)
     private let stackView = UIStackView()
     private let scrollView = UIScrollView()
-    private let contentView = UIStackView()
-    private let descriptionLabel = UILabel()
-    private let divider = UIView()
+    private let mainView = UIStackView()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        backgroundColor = .blueBackground.withAlphaComponent(0.5)
-        layer.cornerRadius = 12
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupContentView()
-        setupDescriptionLabel()
-        setupDivider()
         setupScrollView()
         setupStackView()
     }
@@ -38,8 +32,8 @@ final class DayTempView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupDayTemp(_ data: [InputData], _ desc: MOCKData?) {
-        descriptionLabel.text = desc?.dayTempData.description
+    func setupDayTemp(_ data: [InputData]) {
+        stackView.subviews.forEach { $0.removeFromSuperview() }
         data.enumerated().forEach { index, data in
             let view = HourWeatherView()
             view.setupHourWeather(data)
@@ -51,40 +45,18 @@ final class DayTempView: UIView {
     }
     
     private func setupContentView() {
-        addSubview(contentView)
-        contentView.axis = .vertical
-        contentView.distribution = .fillProportionally
-        contentView.spacing = 10
-        contentView.snp.makeConstraints { make in
+        contentView.addSubview(mainView)
+        mainView.axis = .vertical
+        mainView.distribution = .fillProportionally
+        mainView.spacing = 10
+        mainView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(5)
             make.verticalEdges.equalToSuperview().inset(5)
         }
     }
     
-    private func setupDescriptionLabel() {
-        contentView.addArrangedSubview(descriptionLabel)
-        descriptionLabel.textColor = .white
-        descriptionLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
-        descriptionLabel.textAlignment = .left
-        descriptionLabel.lineBreakMode = .byWordWrapping
-        descriptionLabel.numberOfLines = 2
-        descriptionLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview()
-        }
-    }
-    
-    private func setupDivider() {
-        contentView.addArrangedSubview(divider)
-        divider.backgroundColor = .white
-        divider.alpha = 0.5
-        divider.snp.makeConstraints { make in
-            make.height.equalTo(1)
-            make.horizontalEdges.equalToSuperview()
-        }
-    }
-    
     private func setupScrollView() {
-        contentView.addArrangedSubview(scrollView)
+        mainView.addArrangedSubview(scrollView)
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
@@ -102,7 +74,7 @@ final class DayTempView: UIView {
     }
 }
 
-extension DayTempView {    
+extension DayTempCell {
     final class HourWeatherView: UIView {
         
         private let timeLabel = UILabel()
