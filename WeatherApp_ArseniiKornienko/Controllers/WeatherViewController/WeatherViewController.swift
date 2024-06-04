@@ -46,10 +46,8 @@ class WeatherViewController: UIViewController {
     var dataSource: [WeatherViewModel.Section] = []
     let bottomView = BottomView()
     private let weatherData = MOCKData.data
-    private let backgroundImage = UIImageView()
+    private let background = UIImageView()
     private let currentWeatherView = CurrentWeatherView()
-    private let dayTempView = DayTempCell()
-    private let tempRangeView = TempRangeCell()
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let scrollView = UIScrollView()
     private let titleView = UIView()
@@ -61,25 +59,23 @@ class WeatherViewController: UIViewController {
         super.viewDidLoad()
         
         bottomView.listButton.addTarget(self, action: #selector(onListButtonTap), for: .touchUpInside)
-        setupBackgroundImage(weatherData[city])
+        setupBackground()
         setupBottomView()
         setupTitleView()
         setupCurrentWeatherView()
         setupTableView()
-        viewModel.output = self
-        viewModel.viewDidLoad()
+        viewModel?.output = self
+        viewModel?.viewDidLoad()
     }
     
     func setupWeatherView(_ data: InputData) {
         city = data.city
     }
     
-    private func setupBackgroundImage(_ data: MOCKData?) {
-        view.addSubview(backgroundImage)
-        backgroundImage.contentMode = .scaleAspectFill
-        guard let data else { return }
-        backgroundImage.image = data.titleData.backgroundImage
-        backgroundImage.snp.makeConstraints { make in
+    private func setupBackground() {
+        view.addSubview(background)
+        background.contentMode = .scaleAspectFill
+        background.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
@@ -184,13 +180,19 @@ extension WeatherViewController: UITableViewDelegate {
         }
         cell.selectionStyle = .none
         setupCellsColor(weatherData[city], cell)
+        bottomView.backgroundColor = cell.backgroundColor
         return cell
     }
 }
 
 extension WeatherViewController: WeatherViewModelOutput {
-    func setupCurrentWeatherView(with data: CurrentWeatherView.InputData) {
+    func setupCurrentWeatherView(with data: TitleData) {
         currentWeatherView.setupCurrentWeather(data)
+    }
+    
+    func setupBackgroundImage(with data: MOCKData?) {
+        guard let data else { return }
+        background.image = data.titleData.backgroundImage
     }
     
     func reloadData() {
