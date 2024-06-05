@@ -18,7 +18,8 @@ protocol WeatherViewModelInput {
 protocol WeatherViewModelOutput: AnyObject {
     var dataSource: [WeatherViewModel.Section] { get set }
     
-    func setupCurrentWeatherView(with data: CurrentWeatherView.InputData)
+    func setupCurrentWeatherView(with data: TitleData)
+    func setupBackgroundImage(with data: MOCKData?)
     func reloadData()
 }
 
@@ -31,8 +32,8 @@ extension WeatherViewModel {
     
     enum Item {
         case title(data: TitleCell.InputData)
-        case dayTemp(data: [DayTempCell.InputData])
-        case tempRange(data: TempRangeCell.InputData)
+        case dayTemp(data: [DayTempData])
+        case tempRange(data: TempRangeData)
     }
 }
 
@@ -52,14 +53,14 @@ final class WeatherViewModel: WeatherViewModelInput {
         
         var icon: UIImage {
             switch self {
-            case .dayTemp: 
+            case .dayTemp:
                 return UIImage(icon: .clock)?.withConfiguration(
-                UIImage.SymbolConfiguration(weight: .heavy)
-            ) ?? UIImage.checkmark
-            case .tempRange: 
+                    UIImage.SymbolConfiguration(weight: .heavy)
+                ) ?? UIImage.checkmark
+            case .tempRange:
                 return UIImage(icon: .calendar)?.withConfiguration(
-                UIImage.SymbolConfiguration(weight: .heavy)
-            ) ?? UIImage.checkmark
+                    UIImage.SymbolConfiguration(weight: .heavy)
+                ) ?? UIImage.checkmark
             }
         }
     }
@@ -74,6 +75,7 @@ final class WeatherViewModel: WeatherViewModelInput {
     func viewDidLoad() {
         if let weatherData {
             output?.setupCurrentWeatherView(with: weatherData.titleData)
+            output?.setupBackgroundImage(with: weatherData)
             prepareDataSource(from: weatherData)
         }
     }
@@ -93,7 +95,7 @@ final class WeatherViewModel: WeatherViewModelInput {
                     items: [
                         .title(data: TitleCell.InputData(title: Constants.dayTemp.title,
                                                          icon: Constants.dayTemp.icon)),
-                        .dayTemp(data: weatherData.dayTempData.data)
+                        .dayTemp(data: weatherData.dayTempData)
                     ]),Section(icon: nil,
                                title: nil,
                                items: forecastItems)]

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class CityWeatherView : UIView {
+final class CityWeatherCell: UICollectionViewCell {
     
     var tapAction: (() -> Void)?
     private let titleLabel = UILabel()
@@ -36,7 +36,7 @@ final class CityWeatherView : UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupCityWeather(_ data: CurrentWeatherView.InputData) {
+    func setupCityWeather(_ data: TitleData) {
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
         descriptionLabel.text = data.description

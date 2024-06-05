@@ -32,7 +32,7 @@ final class DayTempCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupDayTemp(_ data: [InputData]) {
+    func setupDayTemp(_ data: [DayTempData]) {
         stackView.subviews.forEach { $0.removeFromSuperview() }
         data.enumerated().forEach { index, data in
             let view = HourWeatherView()
@@ -96,7 +96,7 @@ extension DayTempCell {
             fatalError("init(coder:) has not been implemented")
         }
         
-        func setupHourWeather(_ data: InputData) {
+        func setupHourWeather(_ data: DayTempData) {
             timeLabel.text = data.time
             icon.image = data.icon
             tempLabel.text = "\(data.temp)º"

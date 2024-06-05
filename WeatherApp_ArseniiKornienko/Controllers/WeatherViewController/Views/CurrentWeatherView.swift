@@ -41,7 +41,7 @@ final class CurrentWeatherView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupCurrentWeather(_ data: InputData) {
+    func setupCurrentWeather(_ data: TitleData) {
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
         descriptionLabel.text = data.description
