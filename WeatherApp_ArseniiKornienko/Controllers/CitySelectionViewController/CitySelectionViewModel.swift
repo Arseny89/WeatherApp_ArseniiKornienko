@@ -30,15 +30,28 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
     typealias Item = MOCKData
     private let weatherData = MOCKData.data
     weak var output: CitySelectionViewModelOutput?
+    private var weatherProvider: WeatherProvider?
+    
+
+    init(weatherProvider: WeatherProvider) {
+        self.weatherProvider = weatherProvider
+        self.weatherProvider?.delegate = self
+    }
     
     func viewDidLoad() {
-        prepareSections()
+        prepareSections(with: weatherProvider?.currentWeatherData ?? [])
     }
     
-    private func prepareSections() {
-        output?.sections = [Section.init(items: weatherData)]
+    private func prepareSections(with data: [MOCKData]) {
+        output?.sections = [Section.init(items: data)]
     }
     
+}
+
+extension CitySelectionViewModel: WeatherProviderDelegate {
+    func setCurrentWeather(_ currentWeather: [MOCKData]) {
+        prepareSections(with: currentWeather)
+    }
 }
 
 
