@@ -32,7 +32,6 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
     weak var output: CitySelectionViewModelOutput?
     private var weatherProvider: WeatherProvider?
     
-
     init(weatherProvider: WeatherProvider) {
         self.weatherProvider = weatherProvider
         self.weatherProvider?.delegate = self
