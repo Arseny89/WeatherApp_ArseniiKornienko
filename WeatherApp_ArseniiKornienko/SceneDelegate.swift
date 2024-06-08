@@ -13,13 +13,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private let weatherProvider = WeatherProvider()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        let viewController = CitySelectionViewController()
-        viewController.viewModel = CitySelectionViewModel(weatherProvider: weatherProvider)
+        let сontroller = CitySelectionViewController()
+        сontroller.viewModel = CitySelectionViewModel(weatherProvider: weatherProvider)
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = UINavigationController(rootViewController: viewController)
+        window?.rootViewController = UINavigationController(rootViewController: сontroller)
         window?.makeKeyAndVisible()
     }
     
