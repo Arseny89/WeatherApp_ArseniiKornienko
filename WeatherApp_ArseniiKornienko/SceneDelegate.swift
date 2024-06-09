@@ -10,17 +10,22 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-
+    private let weatherProvider = WeatherProvider()
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        let viewController = CitySelectionViewController()
-        viewController.viewModel = CitySelectionViewModel()
+        let сontroller = CitySelectionViewController()
+        сontroller.viewModel = CitySelectionViewModel(weatherProvider: weatherProvider)
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = UINavigationController(rootViewController: viewController)
+        window?.rootViewController = UINavigationController(rootViewController: сontroller)
         window?.makeKeyAndVisible()
+    }
+    
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        weatherProvider.getCurrentWeather()
+        weatherProvider.appMovedToBackground()
     }
 }
 
