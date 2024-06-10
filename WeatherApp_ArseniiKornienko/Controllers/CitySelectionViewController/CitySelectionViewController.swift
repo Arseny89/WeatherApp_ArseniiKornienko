@@ -136,6 +136,7 @@ final class CitySelectionViewController: UIViewController {
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
         
         navigationItem.searchController = setupSearchController()
+        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProvider())
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(icon: .ellipsisCircle),
                                                             style: .plain,
