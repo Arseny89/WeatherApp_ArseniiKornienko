@@ -9,26 +9,18 @@ import UIKit
 import SnapKit
 
 final class CitySearchViewController: UIViewController {
-    
+    var viewModel: CitySearchViewModelInput!
+    var cityList: [CityData] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     private let tableView = UITableView()
     private let cityCellId = "cityNameCell"
-    private let cityList = ["Glendale",
-                            "Moscow" ,
-                            "Mexico City",
-                            "New York",
-                            "Paris",
-                            "Barcelona",
-                            "Tokyo",
-                            "Toronto",
-                            "Las Vegas",
-                            "Melbourne"]
-    
-    private var filteredCityList: [String] = []
-    private var searchText = ""
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        viewModel.output = self
     }
     
     private func setupTableView() {
@@ -46,19 +38,12 @@ final class CitySearchViewController: UIViewController {
 //MARK: TableView Delegate
 extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        filteredCityList.count
+        cityList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cityCellId, for: indexPath)
-        let city = filteredCityList[indexPath.row]
-        let attributedText = NSMutableAttributedString(
-            string: city,
-            attributes: [.foregroundColor: UIColor.white.withAlphaComponent(0.5)]
-        )
-        let textRange = (city.lowercased() as NSString).range(of: searchText)
-        attributedText.addAttributes([.foregroundColor: UIColor.white], range: textRange)
-        cell.textLabel?.attributedText = attributedText
+        cell.textLabel?.attributedText = viewModel.getAttributedText(for: indexPath)
         cell.backgroundColor = .clear
         let bgColorView = UIView()
         bgColorView.backgroundColor = .white.withAlphaComponent(0.3)
@@ -67,21 +52,19 @@ extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let index = cityList.firstIndex(of: filteredCityList[indexPath.row]) else { return }
-        let viewController = SelectedCityViewController()
-        viewController.setupWeatherView(WeatherViewController.InputData(city: index))
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.modalPresentationStyle = .popover
-        self.present(navigationController, animated: true)
+        print(cityList[indexPath.row])
     }
 }
 //MARK: UISearchResultUpdating
 extension CitySearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.searchTextField.text else { return }
-        self.searchText = text.lowercased()
+        let searchText = text.lowercased()
         view.backgroundColor = .black.withAlphaComponent(searchText.isEmpty ? 0.5 : 1)
-        filteredCityList = cityList.filter { $0.lowercased().contains(searchText) }
-        tableView.reloadData()
+        viewModel.filterCity(with: searchText)
     }
+}
+
+extension CitySearchViewController: CitySearchViewModelOutput {
+    
 }
