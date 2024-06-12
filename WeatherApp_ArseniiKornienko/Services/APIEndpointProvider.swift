@@ -35,26 +35,24 @@ class APIEndpointProvider {
               ) as? [String: Any] else {
             fatalError("\(config.configName).plist not found")
         }
-        appID = configuration["appID"] as! String
-        let weatherAPI = configuration["weatherAPI"] as! [String: Any]
-        scheme = weatherAPI["scheme"] as! String
-        host = weatherAPI["host"] as! String
-        apiVersion = weatherAPI["apiVersion"] as! String
+        guard let configAppId = configuration["appID"] as? String,
+        let weatherAPI = configuration["weatherAPI"] as? [String: Any],
+        let weatherApiScheme = weatherAPI["scheme"] as? String,
+        let weatherApiHost = weatherAPI["host"] as? String,
+        let weatherApiVersion = weatherAPI["apiVersion"] as? String
+        else {
+            fatalError()
+        }
+        
+        appID = configAppId
+        scheme = weatherApiScheme
+        host = weatherApiHost
+        apiVersion = weatherApiVersion
         
         var urlComponents = URLComponents()
         urlComponents.scheme = scheme
         urlComponents.host = host
         urlComponents.path = "/" + apiVersion
         url = urlComponents.url!
-    }
-    
-    //MARK: CurrentWeather
-    struct CurrentWeather: Codable {
-        let name: String
-        let timezone: Int
-        let country: String
-        let coordinates: Coordinates
-        let main: WeatherItem
-        let weather: [WeatherConditions]
     }
 }
