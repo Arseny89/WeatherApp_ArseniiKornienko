@@ -33,6 +33,9 @@ extension UIImage {
         case cloudRain = "cloud.rain.fill"
         case micIcon = "mic.fill"
         case clock = "clock"
+        case mist = "cloud.fog.fill"
+        case snow = "snowflake"
+        case thunder = "cloud.bolt.fill"
     }
     
     enum Images: String {
