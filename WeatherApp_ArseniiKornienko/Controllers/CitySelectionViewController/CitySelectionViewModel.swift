@@ -11,8 +11,6 @@ import SnapKit
 
 protocol CitySelectionViewModelInput {
     var output: CitySelectionViewModelOutput? { get set }
-    
-    func viewDidLoad()
 }
 
 protocol CitySelectionViewModelOutput: AnyObject {
@@ -27,8 +25,7 @@ extension CitySelectionViewModel {
 
 final class CitySelectionViewModel: CitySelectionViewModelInput {
     
-    typealias Item = MOCKData
-    private let weatherData = MOCKData.data
+    typealias Item = CityWeatherData
     weak var output: CitySelectionViewModelOutput?
     private var weatherProvider: WeatherProvider?
     
@@ -37,18 +34,14 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
         self.weatherProvider?.delegate = self
     }
     
-    func viewDidLoad() {
-        prepareSections(with: weatherProvider?.currentWeatherData ?? [])
-    }
-    
-    private func prepareSections(with data: [MOCKData]) {
+    private func prepareSections(with data: [CityWeatherData]) {
         output?.sections = [Section.init(items: data)]
     }
     
 }
 
 extension CitySelectionViewModel: WeatherProviderDelegate {
-    func setCurrentWeather(_ currentWeather: [MOCKData]) {
+    func setCurrentWeather(_ currentWeather: [CityWeatherData]) {
         prepareSections(with: currentWeather)
     }
 }
