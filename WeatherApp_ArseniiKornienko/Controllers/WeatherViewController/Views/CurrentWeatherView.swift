@@ -41,12 +41,18 @@ final class CurrentWeatherView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupCurrentWeather(_ data: TitleData) {
-        titleLabel.text = data.title
-        subtitleLabel.text = data.subtitle
-        descriptionLabel.text = data.description
-        currentTemp.text = "\(data.currentTemp)º"
-        tempLimits.text = "Макс.: \(data.maxTemp)º, Мин.: \(data.minTemp)º"
+    func setupCurrentWeather(_ data: CityWeatherData) {
+        titleLabel.text = data.titleData.title
+        subtitleLabel.text = data.titleData.subtitle
+        descriptionLabel.text = data.titleData.description
+        guard let maxTemp = data.titleData.maxTemp?.formattedTemp(),
+              let minTemp = data.titleData.minTemp?.formattedTemp(),
+              let temp = data.titleData.currentTemp?.formattedTemp()
+        else {
+            return
+        }
+        currentTemp.text = temp
+        tempLimits.text = "Макс.: \(maxTemp), Мин.: \(minTemp)"
     }
     
     private func setupStackView() {
