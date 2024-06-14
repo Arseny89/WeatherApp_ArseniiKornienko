@@ -9,50 +9,16 @@ import UIKit
 import SnapKit
 
 class WeatherViewController: UIViewController {
-    struct InputData {
-        let city: Int
-    }
-    private enum Constants: Int {
-        case currentWeatherTitle
-        case currenWeatherCity
-        case currentWeatherDescription
-        case currentTemp
-        case currentMinTemp
-        case currentMaxTemp
-        case minTemp
-        case maxTemp
-        
-        var text: String {
-            switch self {
-            case .currenWeatherCity: return "Glendale"
-            case .currentWeatherTitle: return "Текущее место"
-            case .currentWeatherDescription: return "Солнечно"
-            default: return "No text"
-            }
-        }
-        
-        var value: Double {
-            switch self {
-            case .currentTemp: return 25
-            case .currentMinTemp: return 16
-            case .currentMaxTemp: return 25
-            case .minTemp: return 13
-            case .maxTemp: return 28
-            default: return 0
-            }
-        }
-    }
+
     var viewModel: WeatherViewModelInput!
     var dataSource: [WeatherViewModel.Section] = []
     let bottomView = BottomView()
-    private let weatherData = MOCKData.data
     private let background = UIImageView()
     private let currentWeatherView = CurrentWeatherView()
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let scrollView = UIScrollView()
     private let titleView = UIView()
     private var weekBarColor = UIColor()
-    private var city: Int = 0
     
     override func viewDidLoad() {
         
@@ -68,10 +34,6 @@ class WeatherViewController: UIViewController {
         viewModel?.viewDidLoad()
     }
     
-    func setupWeatherView(_ data: InputData) {
-        city = data.city
-    }
-    
     private func setupBackground() {
         view.addSubview(background)
         background.contentMode = .scaleAspectFill
@@ -80,7 +42,7 @@ class WeatherViewController: UIViewController {
         }
     }
     
-    private func setupCellsColor (_ data: MOCKData?, _ cell: UITableViewCell) {
+    private func setupCellsColor (_ data: CityWeatherData?, _ cell: UITableViewCell) {
         guard let data else { return }
         switch data.titleData.backgroundImage {
         case UIImage(image: .sunSky), UIImage(image: .clouds):
@@ -179,18 +141,18 @@ extension WeatherViewController: UITableViewDelegate {
             (cell as? TempRangeCell)?.setupDayRange(data, weekBarColor)
         }
         cell.selectionStyle = .none
-        setupCellsColor(weatherData[city], cell)
+        cell.backgroundColor = .blueBackground
         bottomView.backgroundColor = cell.backgroundColor
         return cell
     }
 }
 
 extension WeatherViewController: WeatherViewModelOutput {
-    func setupCurrentWeatherView(with data: TitleData) {
+    func setupCurrentWeatherView(with data: CityWeatherData) {
         currentWeatherView.setupCurrentWeather(data)
     }
     
-    func setupBackgroundImage(with data: MOCKData?) {
+    func setupBackgroundImage(with data: CityWeatherData?) {
         guard let data else { return }
         background.image = data.titleData.backgroundImage
     }
