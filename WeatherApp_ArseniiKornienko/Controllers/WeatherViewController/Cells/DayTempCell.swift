@@ -99,7 +99,7 @@ extension DayTempCell {
         func setupHourWeather(_ data: DayTempData) {
             timeLabel.text = data.time
             icon.image = data.icon
-            tempLabel.text = data.temp.formattedTemp()
+            tempLabel.text = data.temp?.formattedTemp()
         }
         
         private func setupTimeLabel() {
