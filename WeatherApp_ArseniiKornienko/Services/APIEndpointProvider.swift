@@ -66,7 +66,7 @@ class APIEndpointProvider {
         urlComponents.scheme = scheme
         urlComponents.host = host
         urlComponents.path = apiVersion
-        baseUrl = urlComponents.url!
+        baseUrl = urlComponents.url ?? URL.homeDirectory
     }
     
     func getURL(for endpoint: Endpoint) -> URL {
