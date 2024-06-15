@@ -8,11 +8,12 @@
 import UIKit
 import SnapKit
 
-class WeatherViewController: UIViewController {
+class WeatherViewController: BaseViewController {
 
     var viewModel: WeatherViewModelInput!
     var dataSource: [WeatherViewModel.Section] = []
     let bottomView = BottomView()
+    var errorMessage = ""
     private let background = UIImageView()
     private let currentWeatherView = CurrentWeatherView()
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -32,6 +33,16 @@ class WeatherViewController: UIViewController {
         setupTableView()
         viewModel?.output = self
         viewModel?.viewDidLoad()
+        presentAlert()
+    }
+    
+    func presentAlert() {
+        if errorMessage.isEmpty == false {
+            presentAlert(title: Constants.alertTitle.rawValue, 
+                         subtitle: errorMessage,
+                         actionTitle: Constants.alertActionTitle.rawValue) {
+            }
+        } else { return }
     }
     
     private func setupBackground() {
