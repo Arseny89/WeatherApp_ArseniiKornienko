@@ -92,7 +92,7 @@ final class WeatherViewModel: WeatherViewModelInput {
                     items: [
                         .title(data: TitleCell.InputData(title: Constants.dayTemp.title,
                                                          icon: Constants.dayTemp.icon)),
-                        .dayTemp(data: weatherData.dayTempData!)
+                        .dayTemp(data: weatherData.dayTempData ?? [DayTempData.emptyData])
                     ])]
         //        ,Section(icon: nil,
         //                               title: nil,
