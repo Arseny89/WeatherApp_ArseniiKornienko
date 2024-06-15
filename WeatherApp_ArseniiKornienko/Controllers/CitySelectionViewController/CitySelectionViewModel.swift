@@ -15,6 +15,7 @@ protocol CitySelectionViewModelInput {
 
 protocol CitySelectionViewModelOutput: AnyObject {
     var sections: [CitySelectionViewModel.Section] { get set }
+    var errorMessage: String { get set }
 }
 
 extension CitySelectionViewModel {
@@ -41,6 +42,10 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
 }
 
 extension CitySelectionViewModel: WeatherProviderDelegate {
+    func setAlertMessage(_ message: String) {
+        output?.errorMessage = message
+    }
+    
     func setCurrentWeather(_ currentWeather: [CityWeatherData]) {
         prepareSections(with: currentWeather)
     }
