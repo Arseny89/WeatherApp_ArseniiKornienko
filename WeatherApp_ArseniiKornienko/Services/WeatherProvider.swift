@@ -10,17 +10,18 @@ import SnapKit
 
 protocol WeatherProviderDelegate: AnyObject {
     func setCurrentWeather(_ data: [CityWeatherData])
+    func setAlertMessage(_ message: String)
 }
 
 final class WeatherProvider {
     weak var delegate: WeatherProviderDelegate?
     let currentCoordinates = (lat: 34.142509, lon: -118.255081)
     var currentCityId = 5352423
-    let endpointProvider = APIEndpointProvider(for: .config)
     var weatherCache: [Int: CurrentWeatherResponse] = [:]
     var weatherDataCache: [Int: CityWeatherData] = [:]
     var forecastCache: [Int: ForecastResponse] = [:]
     var currentCityWeather: CityWeatherData?
+    private let dataProvider = APIDataProvider()
     private var notificationCenter = NotificationCenter.default
     func appMovedToBackground() {
         notificationCenter.addObserver(
@@ -32,115 +33,48 @@ final class WeatherProvider {
     
     func sceneWillEnterForeground() {
         let id = currentCityId
-        getForecast(for: currentCoordinates) { [weak self] forecast in
+        getForecast(for: currentCityId) { [weak self] forecast in
             guard let self else { return }
             forecastCache[id] = forecast
+        } errorHandler: { error in
         }
         
-        getCurrentWeather(for: currentCoordinates) {[weak self] currentWeather in
+        getCurrentWeather(for: currentCityId) {[weak self] currentWeather in
             guard let self else { return }
             weatherCache[id] = currentWeather
             let weatherData = prepareCityWeatherData(for: id)
             weatherDataCache[id] = weatherData
             delegate?.setCurrentWeather([weatherData])
+        } errorHandler: { [weak self] error in
+            guard let self else { return }
+            let errorMessage = error.description
+            delegate?.setAlertMessage(errorMessage)
         }
     }
     
-    func getForecast(for coords: (lat: Double, lon: Double),
-                     completion: @escaping (ForecastResponse) -> Void) {
-        let url = endpointProvider.getURL(for: Endpoint.forecast(lat: coords.lat,
-                                                                 lon: coords.lon))
-        let request = URLRequest(url: url)
-        URLSession.shared.dataTask(with: request) {data, response, error in
-            if let error {
-                print(error.localizedDescription)
-            } else {
-                guard let data,
-                      let statusCode = (response as? HTTPURLResponse)?.statusCode
-                else { return }
-                
-                if (200...299) ~= statusCode {
-                    let decoder = JSONDecoder()
-                    do {
-                        let forecast = try decoder.decode(ForecastResponse.self,
-                                                          from: data)
-                        completion(forecast)
-                    } catch {
-                        print("Decoding error")
-                    }
-                }
-            }
-        }.resume()
+    func getForecast(for id: Int,
+                     completion: @escaping (ForecastResponse) -> Void,
+                     errorHandler: @escaping (AppError) -> Void?) {
+        let endpoint: Endpoint = id == currentCityId ?
+            .forecast(lat: currentCoordinates.lat,
+                      lon: currentCoordinates.lon) :
+            .forecastId(id: id)
+        dataProvider.getData(endpoint,
+                             completion: completion,
+                             errorHandler: errorHandler)
+        
     }
     
-    func getCurrentWeather(for coords: (lat: Double, lon: Double),
-                           completion: @escaping (CurrentWeatherResponse) -> Void) {
-        let url = endpointProvider.getURL(for: Endpoint.currentWeather(lat: coords.lat,
-                                                                       lon: coords.lon))
-        let request = URLRequest(url: url)
-        URLSession.shared.dataTask(with: request) {data, response, error in
-            if let error {
-                print(error.localizedDescription)
-            } else {
-                guard let data,
-                      let statusCode = (response as? HTTPURLResponse)?.statusCode
-                else { return }
-                
-                if (200...299) ~= statusCode {
-                    let decoder = JSONDecoder()
-                    do {
-                        let currentWeather = try decoder.decode(CurrentWeatherResponse.self, from: data)
-                        completion(currentWeather)
-                    } catch {
-                        print("Decoding error")
-                    }
-                }
-            }
-        }.resume()
-    }
-    
-    func getWeatherForCity(for id: Int,
-                           completion: @escaping (CurrentWeatherResponse) -> Void) {
-        let url = endpointProvider.getURL(for: Endpoint.currentWeatherId(id: id))
-        let request = URLRequest(url: url)
-        URLSession.shared.dataTask(with: request) {data, response, error in
-            if let error {
-                print(error.localizedDescription)
-            } else {
-                guard let data,
-                      let statusCode = (response as? HTTPURLResponse)?.statusCode
-                else { return }
-                
-                if (200...299) ~= statusCode {
-                    let decoder = JSONDecoder()
-                    do {
-                        let currentWeather = try decoder.decode(CurrentWeatherResponse.self, from: data)
-                        completion(currentWeather)
-                    } catch {
-                        print("Decoding error")
-                    }
-                }
-            }
-        }.resume()
-    }
-    
-    func getForecastForCity(for id: Int,
-                            completion: @escaping (CurrentWeatherResponse) -> Void) {
-        let url = endpointProvider.getURL(for: Endpoint.forecastId(id: id))
-        let request = URLRequest(url: url)
-        URLSession.shared.dataTask(with: request) {data, response, error in
-            guard let data,
-                  let statusCode = (response as? HTTPURLResponse)?.statusCode
-            else { return }
-            
-            if (200...299) ~= statusCode {
-            } else {
-                print(error?.localizedDescription as Any)
-            }
-            let decoder = JSONDecoder()
-            let forecast = try? decoder.decode(ForecastResponse.self,
-                                               from: data)
-        }.resume()
+    func getCurrentWeather(for id: Int,
+                           completion: @escaping (CurrentWeatherResponse) -> Void,
+                           errorHandler: @escaping (AppError) -> Void?) {
+        let endpoint: Endpoint = id == currentCityId ?
+            .currentWeather(lat: currentCoordinates.lat,
+                            lon: currentCoordinates.lon) :
+            .currentWeatherId(id: id)
+        dataProvider.getData(endpoint,
+                             completion: completion,
+                             errorHandler: errorHandler)
     }
     
     func prepareCityWeatherData(for id: Int) -> CityWeatherData {
