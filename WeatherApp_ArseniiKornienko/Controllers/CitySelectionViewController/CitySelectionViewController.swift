@@ -34,7 +34,7 @@ final class CitySelectionViewController: UIViewController {
             reloadDataSource()
         }
     }
-    
+    var errorMessage: String = ""
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
     private var snapshot: NSDiffableDataSourceSnapshot<Section, Item>! = nil
     private var cityCollectionView: UICollectionView?
@@ -42,7 +42,6 @@ final class CitySelectionViewController: UIViewController {
     private let weatherView = WeatherViewController()
     private let citySearchViewController = CitySearchViewController()
     private let cityTableView = UITableView()
-    private let weatherProvider = WeatherProvider()
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -115,10 +114,12 @@ final class CitySelectionViewController: UIViewController {
     
     private func presentCityWeater(with data: CityWeatherData?) {
         let viewController = WeatherViewController()
+        viewController.errorMessage = errorMessage
         viewController.viewModel = WeatherViewModel(with: data)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true)
+        errorMessage = ""
     }
     
     private func setupSearchController() -> UISearchController {
