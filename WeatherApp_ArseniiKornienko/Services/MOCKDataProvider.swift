@@ -27,7 +27,7 @@ struct TitleData: Hashable {
 struct DayTempData: Hashable {
     let date: Date
     let icon: UIImage?
-    let temp: Double
+    let temp: Double?
     let time: String
 }
 
@@ -70,5 +70,14 @@ extension CityWeatherData {
             dayTempData: nil,
             tempRangeData: nil
         )
+    }
+}
+
+extension DayTempData {
+    static var emptyData: DayTempData {
+        DayTempData(date: Date(),
+                    icon: nil,
+                    temp: nil,
+                    time: "--")
     }
 }
