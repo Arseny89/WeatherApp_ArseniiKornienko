@@ -33,13 +33,17 @@ final class WeatherProvider {
     
     func sceneWillEnterForeground() {
         let id = currentCityId
-        getForecast(for: currentCityId) { [weak self] forecast in
+        getData(for: currentCityId,
+                          response: ForecastResponse.self)
+        { [weak self] forecast in
             guard let self else { return }
             forecastCache[id] = forecast
         } errorHandler: { error in
         }
         
-        getCurrentWeather(for: currentCityId) {[weak self] currentWeather in
+        getData(for: currentCityId,
+                          response: CurrentWeatherResponse.self)
+        {[weak self] currentWeather in
             guard let self else { return }
             weatherCache[id] = currentWeather
             let weatherData = prepareCityWeatherData(for: id)
@@ -52,26 +56,21 @@ final class WeatherProvider {
         }
     }
     
-    func getForecast(for id: Int,
-                     completion: @escaping (ForecastResponse) -> Void,
-                     errorHandler: @escaping (AppError) -> Void?) {
-        let endpoint: Endpoint = id == currentCityId ?
-            .forecast(lat: currentCoordinates.lat,
-                      lon: currentCoordinates.lon) :
-            .forecastId(id: id)
-        dataProvider.getData(endpoint,
-                             completion: completion,
-                             errorHandler: errorHandler)
-        
-    }
-    
-    func getCurrentWeather(for id: Int,
-                           completion: @escaping (CurrentWeatherResponse) -> Void,
+    func getData<T: Decodable>(for id: Int, response: T.Type,
+                           completion: @escaping (T) -> Void,
                            errorHandler: @escaping (AppError) -> Void?) {
-        let endpoint: Endpoint = id == currentCityId ?
-            .currentWeather(lat: currentCoordinates.lat,
-                            lon: currentCoordinates.lon) :
-            .currentWeatherId(id: id)
+        let endpoint: Endpoint
+        if response == CurrentWeatherResponse.self {
+            endpoint = id == currentCityId ?
+                .currentWeather(lat: currentCoordinates.lat,
+                                lon: currentCoordinates.lon) :
+                .currentWeatherId(id: id)
+        } else {
+            endpoint = id == currentCityId ?
+                .forecast(lat: currentCoordinates.lat,
+                                lon: currentCoordinates.lon) :
+                .forecastId(id: id)
+        }
         dataProvider.getData(endpoint,
                              completion: completion,
                              errorHandler: errorHandler)
