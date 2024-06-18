@@ -37,8 +37,8 @@ class WeatherViewController: BaseViewController {
     }
     
     func presentAlert() {
-        if errorMessage.isEmpty == false {
-            presentAlert(title: Constants.alertTitle.rawValue, 
+        if !errorMessage.isEmpty {
+            presentAlert(title: Constants.alertTitle.rawValue,
                          subtitle: errorMessage,
                          actionTitle: Constants.alertActionTitle.rawValue) {
             }
