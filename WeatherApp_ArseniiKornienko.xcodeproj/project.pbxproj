@@ -167,6 +167,7 @@
 		0E11F50F2BFAF37900D82550 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				0E887B122C1D000400AB7502 /* APIDataProvider.swift */,
 				0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */,
 				0E4B6A3A2C10F43200058097 /* WeatherProvider.swift */,
 				0E887AF42C167A5B00AB7502 /* APIEndpointProvider.swift */,
@@ -248,7 +249,6 @@
 				0E887B022C16AC7500AB7502 /* ForecastResponse.swift */,
 				0E887B042C16AC7D00AB7502 /* CityData.swift */,
 				0E887B082C1BF89100AB7502 /* WeatherData.swift */,
-				0E887B122C1D000400AB7502 /* APIDataProvider.swift */,
 				0E887B142C1D352900AB7502 /* APIError.swift */,
 			);
 			path = Models;
