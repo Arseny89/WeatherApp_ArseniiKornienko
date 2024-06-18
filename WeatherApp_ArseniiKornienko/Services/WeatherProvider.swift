@@ -34,7 +34,7 @@ final class WeatherProvider {
     func sceneWillEnterForeground() {
         let id = currentCityId
         getData(for: currentCityId,
-                          response: ForecastResponse.self)
+                response: ForecastResponse.self)
         { [weak self] forecast in
             guard let self else { return }
             forecastCache[id] = forecast
@@ -42,7 +42,7 @@ final class WeatherProvider {
         }
         
         getData(for: currentCityId,
-                          response: CurrentWeatherResponse.self)
+                response: CurrentWeatherResponse.self)
         {[weak self] currentWeather in
             guard let self else { return }
             weatherCache[id] = currentWeather
@@ -57,8 +57,8 @@ final class WeatherProvider {
     }
     
     func getData<T: Decodable>(for id: Int, response: T.Type,
-                           completion: @escaping (T) -> Void,
-                           errorHandler: @escaping (AppError) -> Void?) {
+                               completion: @escaping (T) -> Void,
+                               errorHandler: @escaping (AppError) -> Void?) {
         let endpoint: Endpoint
         if response == CurrentWeatherResponse.self {
             endpoint = id == currentCityId ?
@@ -68,7 +68,7 @@ final class WeatherProvider {
         } else {
             endpoint = id == currentCityId ?
                 .forecast(lat: currentCoordinates.lat,
-                                lon: currentCoordinates.lon) :
+                          lon: currentCoordinates.lon) :
                 .forecastId(id: id)
         }
         dataProvider.getData(endpoint,
