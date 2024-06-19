@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ForecastResponse: Codable {
+struct ForecastResponse: Decodable {
     let count: Int
     let city: City
     let list: [HourlyWeatherItem]
@@ -23,7 +23,7 @@ struct City: Codable {
     let name: String
     let coordinates: Coordinates
     let country: String
-    let timezone: Int
+    let timezone: TimeZone
     let sunrise: Int
     let sunset: Int
     
@@ -34,6 +34,18 @@ struct City: Codable {
         case timezone
         case sunrise
         case sunset
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.coordinates = try container.decode(Coordinates.self, forKey: .coordinates)
+        self.country = try container.decode(String.self, forKey: .country)
+        
+        let timeZoneValue = try container.decode(Int.self, forKey: .timezone)
+        self.timezone = TimeZone(secondsFromGMT: timeZoneValue) ?? TimeZone.current
+        self.sunrise = try container.decode(Int.self, forKey: .sunrise)
+        self.sunset = try container.decode(Int.self, forKey: .sunset)
     }
 }
 
@@ -47,15 +59,22 @@ struct Coordinates: Codable {
     }
 }
 
-struct HourlyWeatherItem: Codable {
+struct HourlyWeatherItem: Decodable {
     let main: WeatherItem
-    let dateText: String
+    let date: Date
     let weather: [WeatherConditions]
     
     enum CodingKeys: String, CodingKey {
         case main
-        case dateText = "dt_txt"
+        case dateUnix = "dt"
         case weather
+    }
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.main = try container.decode(WeatherItem.self, forKey: .main)
+        let dateUnix = try container.decode(Double.self, forKey: .dateUnix)
+        self.date = Date(timeIntervalSince1970: dateUnix)
+        self.weather = try container.decode([WeatherConditions].self, forKey: .weather)
     }
 }
 
@@ -69,10 +88,4 @@ struct WeatherItem: Codable {
         case maxTemp = "temp_max"
         case minTemp = "temp_min"
     }
-}
-
-struct WeatherConditions: Codable {
-    let main: String
-    let description: String
-    let icon: String
 }

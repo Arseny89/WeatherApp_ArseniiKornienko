@@ -24,7 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneWillEnterForeground(_ scene: UIScene) {
-        weatherProvider.getCurrentWeather()
+        weatherProvider.sceneWillEnterForeground()
         weatherProvider.appMovedToBackground()
     }
 }

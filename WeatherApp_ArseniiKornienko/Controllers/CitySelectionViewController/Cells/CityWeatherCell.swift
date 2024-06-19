@@ -40,8 +40,11 @@ final class CityWeatherCell: UICollectionViewCell {
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
         descriptionLabel.text = data.description
-        currentTempLabel.text = "\(data.currentTemp)º"
-        tempLimitsLabel.text = "Макс.:\(data.maxTemp)º, мин.:\(data.minTemp)º "
+        currentTempLabel.text = data.currentTemp?.formattedTemp()
+        guard let maxTemp = data.maxTemp,
+              let minTemp = data.minTemp else { return }
+            tempLimitsLabel.text =
+            "Макс: \(maxTemp.formattedTemp()), Мин: \(minTemp.formattedTemp())"
         backgroundImage.image = data.backgroundImage
     }
     

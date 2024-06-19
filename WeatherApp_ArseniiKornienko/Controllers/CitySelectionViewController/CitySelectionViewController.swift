@@ -29,8 +29,12 @@ final class CitySelectionViewController: UIViewController {
     }
     
     var viewModel: CitySelectionViewModelInput!
-    var sections: [Section] = []
-    
+    var sections: [Section] = [] {
+        didSet {
+            reloadDataSource()
+        }
+    }
+    var errorMessage: String = ""
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
     private var snapshot: NSDiffableDataSourceSnapshot<Section, Item>! = nil
     private var cityCollectionView: UICollectionView?
@@ -45,11 +49,10 @@ final class CitySelectionViewController: UIViewController {
         title = Constants.title.text
         
         viewModel?.output = self
-        viewModel?.viewDidLoad()
         setupNavigationBar()
         setupCityCollectionView()
         setupUnitSelectionView()
-        presentCityWeater(withCityIndex: 0)
+        presentCityWeater(with: sections.first?.items.first ?? .emptyData)
         createDataSource()
         reloadDataSource()
     }
@@ -109,13 +112,14 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    private func presentCityWeater(withCityIndex index: Int) {
+    private func presentCityWeater(with data: CityWeatherData?) {
         let viewController = WeatherViewController()
-        viewController.viewModel = WeatherViewModel(with: MOCKData.data[index])
-        viewController.setupWeatherView(WeatherViewController.InputData(city: index))
+        viewController.errorMessage = errorMessage
+        viewController.viewModel = WeatherViewModel(with: data)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true)
+        errorMessage = ""
     }
     
     private func setupSearchController() -> UISearchController {
@@ -198,7 +202,8 @@ extension CitySelectionViewController: UnitSelectionDelegate {
 //MARK: CityCollectionView Delegate
 extension CitySelectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presentCityWeater(withCityIndex: indexPath.row)
+        let selectedCity = sections[indexPath.section].items[indexPath.row]
+        presentCityWeater(with: selectedCity)
     }
 }
 
