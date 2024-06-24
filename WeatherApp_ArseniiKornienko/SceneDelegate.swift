@@ -8,23 +8,24 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    
     var window: UIWindow?
-    private let weatherProvider = WeatherProvider()
+    private let weatherProvider: WeatherProvider = WeatherProviderImpl()
+    private let controller = CitySelectionViewController()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        let сontroller = CitySelectionViewController()
-        сontroller.viewModel = CitySelectionViewModel(weatherProvider: weatherProvider)
+        
+        controller.viewModel = CitySelectionViewModel(weatherProvider: weatherProvider)
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = UINavigationController(rootViewController: сontroller)
+        window?.rootViewController = UINavigationController(rootViewController: controller)
         window?.makeKeyAndVisible()
     }
     
     func sceneWillEnterForeground(_ scene: UIScene) {
-        weatherProvider.sceneWillEnterForeground()
+        controller.sceneWillEnterForeground()
         weatherProvider.appMovedToBackground()
     }
 }
