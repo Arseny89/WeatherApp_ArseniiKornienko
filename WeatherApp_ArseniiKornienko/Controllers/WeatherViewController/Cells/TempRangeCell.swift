@@ -19,15 +19,6 @@ final class TempRangeCell: UITableViewCell {
         var currentTemp: Double? = 0
     }
     
-    private enum Constants {
-        case title
-        
-        var text: String {
-            switch self {
-            case .title: return "Прогноз на 10 дней"
-            }
-        }
-    }
     static let id = String(describing: TempRangeCell.self)
     private let dayView = UIView()
     
@@ -72,7 +63,7 @@ final class TempRangeCell: UITableViewCell {
             }
         }
         
-        if data.day != "Сегодня"  {
+        if data.day != "Today"  {
             view.currentTempView.isHidden = true
         }
         
