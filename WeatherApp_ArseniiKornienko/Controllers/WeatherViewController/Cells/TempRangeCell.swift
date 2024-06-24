@@ -55,7 +55,7 @@ final class TempRangeCell: UITableViewCell {
             let dayTempDiff = data.maxDayTemp - data.minDayTemp
             let currentTempOffset = abs(data.minDayTemp - currentTemp) / dayTempDiff
             view.currentTempView.snp.remakeConstraints { make in
-                _ = currentTempOffset == 0 ?
+                _ = currentTempOffset == 0 || dayTempDiff == 0 ?
                 make.centerX.equalTo(view.dayBar.snp.leading) :
                 make.centerX.equalTo(view.dayBar.snp.trailing).multipliedBy(currentTempOffset)
                 make.size.equalTo(6)
@@ -63,7 +63,7 @@ final class TempRangeCell: UITableViewCell {
             }
         }
         
-        if data.day != "Today"  {
+        if data.currentTemp == nil  {
             view.currentTempView.isHidden = true
         }
         
