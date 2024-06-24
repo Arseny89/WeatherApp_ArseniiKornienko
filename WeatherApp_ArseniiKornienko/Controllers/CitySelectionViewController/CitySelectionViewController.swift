@@ -11,7 +11,6 @@ import WebKit
 
 final class CitySelectionViewController: UIViewController {
     typealias Section = CitySelectionViewModel.Section
-    typealias Item = CitySelectionViewModel.Item
     private enum Constants {
         case infoButtonTitle
         case url
@@ -32,11 +31,13 @@ final class CitySelectionViewController: UIViewController {
     var sections: [Section] = [] {
         didSet {
             reloadDataSource()
+            setupDataToPresentedViewController()
         }
     }
     var errorMessage: String = ""
-    private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
-    private var snapshot: NSDiffableDataSourceSnapshot<Section, Item>! = nil
+    private var cityID: Int?
+    private var dataSource: UICollectionViewDiffableDataSource<Section, CityWeatherData>?
+    private var snapshot: NSDiffableDataSourceSnapshot<Section, CityWeatherData>! = nil
     private var cityCollectionView: UICollectionView?
     private let unitSelectionView = UnitSelectionView()
     private let weatherView = WeatherViewController()
@@ -52,13 +53,17 @@ final class CitySelectionViewController: UIViewController {
         setupNavigationBar()
         setupCityCollectionView()
         setupUnitSelectionView()
-        presentCityWeater(with: sections.first?.items.first ?? .emptyData)
+        presentCityWeather(with: sections.first?.items.first ?? .emptyData)
         createDataSource()
         reloadDataSource()
     }
     
+    func sceneWillEnterForeground() {
+        viewModel.getDataForCityList(forced: false)
+    }
+    
     private func reloadDataSource() {
-        snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot = NSDiffableDataSourceSnapshot<Section, CityWeatherData>()
         snapshot.appendSections(sections)
         for section in sections {
             snapshot.appendItems(section.items, toSection: section)
@@ -68,7 +73,7 @@ final class CitySelectionViewController: UIViewController {
     
     private func createDataSource() {
         guard let cityCollectionView else { return }
-        dataSource = UICollectionViewDiffableDataSource<Section, Item>(
+        dataSource = UICollectionViewDiffableDataSource<Section, CityWeatherData>(
             collectionView: cityCollectionView
         ) { [weak self] collectionView, indexPath, itemIdentifier in
             guard let self else { return UICollectionViewCell() }
@@ -112,9 +117,10 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    private func presentCityWeater(with data: CityWeatherData?) {
+    private func presentCityWeather(with data: CityWeatherData?) {
         let viewController = WeatherViewController()
         viewController.errorMessage = errorMessage
+        viewController.cityID = data?.id
         viewController.viewModel = WeatherViewModel(with: data)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
@@ -138,9 +144,9 @@ final class CitySelectionViewController: UIViewController {
         navigationBar?.tintColor = .white
         navigationBar?.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
-        
         navigationItem.searchController = setupSearchController()
-        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProvider())
+        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl())
+        citySearchViewController.delegate = self
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(icon: .ellipsisCircle),
                                                             style: .plain,
@@ -176,6 +182,17 @@ final class CitySelectionViewController: UIViewController {
         return layoutSection
     }
     
+    private func setupDataToPresentedViewController() {
+        DispatchQueue.main.async { [self] in
+            if let weatherData = sections.first?.items,
+               let presentedCityWeatherController = presentedViewController as? WeatherViewController,
+               let data = weatherData.first(where: { $0.id == presentedCityWeatherController.cityID }) {
+                
+                presentedCityWeatherController.viewModel.setup(data)
+            }
+        }
+    }
+    
     @objc private func onSwitchButtonTap(button: UIButton) {
         let isSelectionHidden = unitSelectionView.isHidden
         unitSelectionView.isHidden = isSelectionHidden ? false : true
@@ -203,9 +220,15 @@ extension CitySelectionViewController: UnitSelectionDelegate {
 extension CitySelectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedCity = sections[indexPath.section].items[indexPath.row]
-        presentCityWeater(with: selectedCity)
+        presentCityWeather(with: selectedCity)
     }
 }
 
-extension CitySelectionViewController: CitySelectionViewModelOutput {    
+extension CitySelectionViewController: CitySelectionViewModelOutput {
+}
+extension CitySelectionViewController: CitySearchViewControllerDelegate {
+    func reloadData() {
+        navigationItem.searchController?.searchBar.text = nil
+        viewModel.getDataForCityList(forced: true)
+    }
 }
