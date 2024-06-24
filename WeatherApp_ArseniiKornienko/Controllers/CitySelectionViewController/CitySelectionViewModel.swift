@@ -11,6 +11,7 @@ import SnapKit
 
 protocol CitySelectionViewModelInput {
     var output: CitySelectionViewModelOutput? { get set }
+    func getDataForCityList(forced: Bool)
 }
 
 protocol CitySelectionViewModelOutput: AnyObject {
@@ -20,34 +21,46 @@ protocol CitySelectionViewModelOutput: AnyObject {
 
 extension CitySelectionViewModel {
     struct Section: Hashable {
-        let items: [Item]
+        let items: [CityWeatherData]
     }
 }
 
 final class CitySelectionViewModel: CitySelectionViewModelInput {
     
-    typealias Item = CityWeatherData
     weak var output: CitySelectionViewModelOutput?
+    var storageManager = StorageManager()
+    var selectedCityList = CityListProviderImpl().selectedCityList
     private var weatherProvider: WeatherProvider?
     
     init(weatherProvider: WeatherProvider) {
         self.weatherProvider = weatherProvider
         self.weatherProvider?.delegate = self
+        prepareSections(with: selectedCityList.map(\.weatherData))
+        getDataForCityList(forced: false)
+    }
+    
+    func getDataForCityList(forced: Bool) {
+        weatherProvider?.getDataForCityList(selectedCityList, forced: forced) { [weak self] data in
+            guard let self else { return }
+            let sortedData = selectedCityList.compactMap { data[$0.id] ?? $0.weatherData }
+            prepareSections(with: sortedData)
+        }
     }
     
     private func prepareSections(with data: [CityWeatherData]) {
-        output?.sections = [Section.init(items: data)]
+        output?.sections = [Section(items: data)]
     }
-    
 }
 
 extension CitySelectionViewModel: WeatherProviderDelegate {
+    
     func setAlertMessage(_ message: String) {
         output?.errorMessage = message
     }
     
-    func setCurrentWeather(_ currentWeather: [CityWeatherData]) {
-        prepareSections(with: currentWeather)
+    func setCurrentWeather(_ currentWeather: [Int: CityWeatherData]) {
+        let sortedData = selectedCityList.compactMap { currentWeather[$0.id] ?? $0.weatherData }
+        prepareSections(with: sortedData)
     }
 }
 
