@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 enum StorageKey: String {
     case cityWeather
     case cityList
