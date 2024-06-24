@@ -12,6 +12,7 @@ import SnapKit
 protocol WeatherViewModelInput {
     var output: WeatherViewModelOutput? { get set }
     func viewDidLoad()
+    func setup(_ weatherData: CityWeatherData)
 }
 
 protocol WeatherViewModelOutput: AnyObject {
@@ -45,8 +46,8 @@ final class WeatherViewModel: WeatherViewModelInput {
         
         var title: String {
             switch self {
-            case .dayTemp: return "ПОЧАСОВОЙ ПРОГНОЗ"
-            case .tempRange: return "ПРОГНОЗ НА 10 ДНЕЙ"
+            case .dayTemp: return "HOURLY FORECAST"
+            case .tempRange: return "5-DAY FORECAST"
             }
         }
         
@@ -71,6 +72,12 @@ final class WeatherViewModel: WeatherViewModelInput {
         self.weatherData = weatherData ?? .emptyData
     }
     
+    func setup(_ weatherData: CityWeatherData) {
+        self.weatherData = weatherData
+        
+        viewDidLoad()
+    }
+    
     func viewDidLoad() {
         output?.setupCurrentWeatherView(with: weatherData)
         output?.setupBackgroundImage(with: weatherData)
@@ -78,13 +85,14 @@ final class WeatherViewModel: WeatherViewModelInput {
     }
     
     private func prepareDataSource(from weatherData: CityWeatherData) {
-        //        var forecastItems: [Item] = weatherData.tempRangeData!.map { .tempRange(data: $0) }
-        //        
-        //        forecastItems.insert(
-        //            .title(data: TitleCell.InputData(title: Constants.tempRange.title,
-        //                                             icon: Constants.tempRange.icon)),
-        //            at: 0
-        //        )
+        guard let tempRangeData = weatherData.tempRangeData else { return }
+        var forecastItems: [Item] = tempRangeData.map { .tempRange(data: $0) }
+        
+        forecastItems.insert(
+            .title(data: TitleCell.InputData(title: Constants.tempRange.title,
+                                             icon: Constants.tempRange.icon)),
+            at: 0
+        )
         
         output?.dataSource = [
             Section(icon: nil,
@@ -93,10 +101,10 @@ final class WeatherViewModel: WeatherViewModelInput {
                         .title(data: TitleCell.InputData(title: Constants.dayTemp.title,
                                                          icon: Constants.dayTemp.icon)),
                         .dayTemp(data: weatherData.dayTempData ?? [DayTempData.emptyData])
-                    ])]
-        //        ,Section(icon: nil,
-        //                               title: nil,
-        //                               items: forecastItems)]
+                    ])
+            ,Section(icon: nil,
+                     title: nil,
+                     items: forecastItems)]
     }
 }
 
