@@ -11,11 +11,11 @@ import UIKit
 protocol CitySearchViewModelInput {
     var output: CitySearchViewModelOutput? { get set }
     func filterCity(with searchText: String)
-    func getAttributedText(for indexPath: IndexPath) -> NSAttributedString?
     func select(_ city: CityData)
 }
 
 protocol CitySearchViewModelOutput: AnyObject {
+    var searchText: String { get set }
     var cityList: [CityData] { get set }
 }
 
@@ -23,43 +23,21 @@ final class CitySearchViewModel: CitySearchViewModelInput {
     
     weak var output: CitySearchViewModelOutput?
     
-    private var cityListProvider: CityListProvider = CityListProviderImpl()
-    private var searchText = ""
+    private var cityListProvider = CityListProviderImpl.shared
     
     init(cityListProvider: CityListProvider) {
         self.cityListProvider = cityListProvider
-        output?.cityList = cityListProvider.cityList
     }
     
     func filterCity(with searchText: String) {
-        self.searchText = searchText
+        output?.searchText = searchText
         if searchText.isEmpty {
             output?.cityList = []
         } else {
-            output?.cityList = cityListProvider.cityList.filter {
-                $0.name.lowercased().contains(searchText)
-                || $0.state.lowercased().contains(searchText)
-                || $0.country.lowercased().contains(searchText)
+            cityListProvider.getCityList(with: searchText) { [weak self] cityList in
+                self?.output?.cityList = cityList ?? []
             }
         }
-    }
-    
-    func getAttributedText(for indexPath: IndexPath) -> NSAttributedString? {
-        guard let city = output?.cityList[indexPath.row] else { return nil }
-        var text = ["\(city.name)", "\(city.country)"]
-        switch city.state.isEmpty {
-        case false: text.insert("\(city.state)", at: 1)
-        default: break
-        }
-        
-        let attributedText = NSMutableAttributedString(
-            string: text.joined(separator: ", "),
-            attributes: [.foregroundColor: UIColor.white.withAlphaComponent(0.5)]
-        )
-        let textRange = (text.joined().lowercased() as NSString).range(of: searchText)
-        attributedText.addAttributes([.foregroundColor: UIColor.white], range: textRange)
-        
-        return attributedText
     }
     
     func select(_ city: CityData) {
