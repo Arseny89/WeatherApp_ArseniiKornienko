@@ -183,10 +183,10 @@ final class CitySelectionViewController: UIViewController {
     }
     
     private func setupDataToPresentedViewController() {
-        DispatchQueue.main.async { [self] in
-            guard let weatherData = sections.first?.items,
+        DispatchQueue.main.async { [weak self] in
+            guard let weatherData = self?.sections.first?.items,
                   let presentedCityWeatherController =
-                    presentedViewController as? WeatherViewController,
+                    self?.presentedViewController as? WeatherViewController,
                   let data = weatherData.first(where: {
                       $0.id == presentedCityWeatherController.cityID
                   }) else {
