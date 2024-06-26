@@ -62,8 +62,9 @@ class CityListProviderImpl: CityListProvider {
             }
             
             let decoder = JSONDecoder()
-            cityList = try! decoder.decode([CityData].self, from: data)
-            
+            guard let decodedData = try?
+                    decoder.decode([CityData].self, from: data) else { return }
+            cityList = decodedData
             cdStorageManager.set(cityList) { [weak self] result in
                 self?.storageManager.set(result, .cityListStored)
             }
