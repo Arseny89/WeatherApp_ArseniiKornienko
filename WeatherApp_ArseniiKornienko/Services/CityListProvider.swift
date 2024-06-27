@@ -17,25 +17,30 @@ protocol CityListProvider: AnyObject {
 
 class CityListProviderImpl: CityListProvider {
     static let shared: CityListProvider = CityListProviderImpl()
+    var currentCoordinates: Coordinates?
     var selectedCityList: [CityData] {
         get {
             let cityList:[CityData]? = storageManager.object(for: .cityList)
-            return cityList ?? [currentPlace]
+            if let currentPlace {
+                return cityList ?? [currentPlace]
+            } else {
+                return cityList ?? []
+            }
         }
         
         set {
             storageManager.set(newValue, .cityList)
         }
     }
-    
+    let locationProvider = LocationProvider()
     let currentCityId = 5352423
-    var currentCoordinates = Coordinates(latitude: 34.142509, longitude: -118.255081)
-    var currentPlace: CityData {
-        CityData(id: currentCityId,
-                 name: "",
-                 state: "",
-                 country: "",
-                 coordinates: currentCoordinates)
+    var currentPlace: CityData? {
+        guard let currentCoordinates else { return nil }
+        return CityData(id: currentCityId,
+                        name: "",
+                        state: "",
+                        country: "",
+                        coordinates: currentCoordinates)
     }
     var cityList: [CityData] = []
     private let storageManager = StorageManager()
@@ -51,24 +56,25 @@ class CityListProviderImpl: CityListProvider {
         }
     }
     
-    init() {
-        if storageManager.object(for: .cityListStored) != true {
-            guard let path = Bundle.main.path(forResource: Constants.cityList.name, ofType: "json"),
-                  let data = try? Data(
-                    contentsOf: URL(fileURLWithPath: path),
-                    options: .mappedIfSafe
-                  ) else { assertionFailure("\(Constants.cityList.name).json not found")
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            guard let decodedData = try?
-                    decoder.decode([CityData].self, from: data) else { return }
-            cityList = decodedData
-            cdStorageManager.set(cityList) { [weak self] result in
-                self?.storageManager.set(result, .cityListStored)
-            }
-        }
+   private init() {
+           locationProvider.delegate = self
+           if storageManager.object(for: .cityListStored) != true {
+               guard let path = Bundle.main.path(forResource: Constants.cityList.name, ofType: "json"),
+                     let data = try? Data(
+                        contentsOf: URL(fileURLWithPath: path),
+                        options: .mappedIfSafe
+                     ) else { assertionFailure("\(Constants.cityList.name).json not found")
+                   return
+               }
+               
+               let decoder = JSONDecoder()
+               guard let decodedData = try?
+                        decoder.decode([CityData].self, from: data) else { return }
+               cityList = decodedData
+               cdStorageManager.set(cityList) { [weak self] result in
+                   self?.storageManager.set(result, .cityListStored)
+               }
+           }
     }
     
     func restoreList() {
@@ -97,4 +103,13 @@ class CityListProviderImpl: CityListProvider {
             cdStorageManager.fetch(completion: completion)
         }
     }
+}
+
+extension CityListProviderImpl: LocationProviderDelegate {
+    func setCurrentLocation(coordinates: Coordinates?) {
+        currentCoordinates = coordinates
+    }
+        
+        func presentAlert(alert: UIAlertController) {
+        }
 }
