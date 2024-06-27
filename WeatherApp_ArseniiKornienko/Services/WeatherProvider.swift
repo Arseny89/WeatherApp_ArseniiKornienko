@@ -22,7 +22,6 @@ protocol WeatherProvider {
 
 final class WeatherProviderImpl: WeatherProvider {
     weak var delegate: WeatherProviderDelegate?
-    let currentCoordinates = (lat: 34.142509, lon: -118.255081)
     var currentCityId = 5352423
     
     var weatherCache: [Int: CurrentWeatherResponse] = [:]
@@ -31,7 +30,6 @@ final class WeatherProviderImpl: WeatherProvider {
     var currentCityWeather: CityWeatherData?
     var currentCityList: [Int: CityWeatherData] = [:]
     private let storageManager = StorageManager()
-    private var selectedCityList = CityListProviderImpl.shared.selectedCityList
     private let dataProvider = APIDataProvider()
     private var notificationCenter = NotificationCenter.default
     private var isNeedUploadNewWeatherData: Bool {
@@ -50,20 +48,16 @@ final class WeatherProviderImpl: WeatherProvider {
         )
     }
     
-    func getData<T: Decodable>(for id: Int, response: T.Type,
+    func getData<T: Decodable>(for coordinates: Coordinates, response: T.Type,
                                completion: @escaping (T) -> Void,
                                errorHandler: @escaping (AppError) -> Void?) {
         let endpoint: Endpoint
         if response == CurrentWeatherResponse.self {
-            endpoint = id == currentCityId ?
-                .currentWeather(lat: currentCoordinates.lat,
-                                lon: currentCoordinates.lon) :
-                .currentWeatherId(id: id)
+            endpoint = .currentWeather(lat: coordinates.latitude,
+                                       lon: coordinates.longitude)
         } else {
-            endpoint = id == currentCityId ?
-                .forecast(lat: currentCoordinates.lat,
-                          lon: currentCoordinates.lon) :
-                .forecastId(id: id)
+            endpoint = .forecast(lat: coordinates.latitude,
+                                 lon: coordinates.longitude)
         }
         dataProvider.getData(endpoint,
                              completion: completion,
@@ -124,7 +118,7 @@ final class WeatherProviderImpl: WeatherProvider {
         if isNeedUploadNewWeatherData || forced {
             var cityListWeather: [Int: CityWeatherData] = [:]
             list.enumerated().forEach { index, data in
-                getData(for: data.id, response: ForecastResponse.self) { [weak self] forecast in
+                getData(for: data.coordinates, response: ForecastResponse.self) { [weak self] forecast in
                     guard let self else { return }
                     forecastCache[data.id] = forecast
                 } errorHandler: { [weak self] error in
@@ -132,7 +126,7 @@ final class WeatherProviderImpl: WeatherProvider {
                     let errorMessage = error.description
                     delegate?.setAlertMessage(errorMessage)
                 }
-                getData(for: data.id,
+                getData(for: data.coordinates,
                         response: CurrentWeatherResponse.self)
                 {[weak self] currentWeather in
                     guard let self else { return }
