@@ -12,6 +12,7 @@ protocol CitySearchViewModelInput {
     var output: CitySearchViewModelOutput? { get set }
     func filterCity(with searchText: String)
     func getAttributedText(for indexPath: IndexPath) -> NSAttributedString?
+    func select(_ city: CityData)
 }
 
 protocol CitySearchViewModelOutput: AnyObject {
@@ -19,9 +20,10 @@ protocol CitySearchViewModelOutput: AnyObject {
 }
 
 final class CitySearchViewModel: CitySearchViewModelInput {
+    
     weak var output: CitySearchViewModelOutput?
     
-    private var cityListProvider: CityListProvider
+    private var cityListProvider: CityListProvider = CityListProviderImpl()
     private var searchText = ""
     
     init(cityListProvider: CityListProvider) {
@@ -58,5 +60,9 @@ final class CitySearchViewModel: CitySearchViewModelInput {
         attributedText.addAttributes([.foregroundColor: UIColor.white], range: textRange)
         
         return attributedText
+    }
+    
+    func select(_ city: CityData) {
+        cityListProvider.addCity(city: city)
     }
 }

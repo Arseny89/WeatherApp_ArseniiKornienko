@@ -14,6 +14,7 @@ class WeatherViewController: BaseViewController {
     var dataSource: [WeatherViewModel.Section] = []
     let bottomView = BottomView()
     var errorMessage = ""
+    var cityID: Int?
     private let background = UIImageView()
     private let currentWeatherView = CurrentWeatherView()
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -149,7 +150,7 @@ extension WeatherViewController: UITableViewDelegate {
             
         case .tempRange(let data):
             cell = tableView.dequeue(TempRangeCell.self, for: indexPath)
-            (cell as? TempRangeCell)?.setupDayRange(data, weekBarColor)
+            (cell as? TempRangeCell)?.setupDayRange(data, cell.backgroundColor?.darker(by: 10) ?? UIColor.darkBlue)
         }
         cell.selectionStyle = .none
         cell.backgroundColor = .blueBackground

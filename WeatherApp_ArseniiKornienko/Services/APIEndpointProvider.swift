@@ -88,8 +88,7 @@ class APIEndpointProvider {
         }
         url.append(queryItems: [
             URLQueryItem(name: "units", value: "metric"),
-            URLQueryItem(name: "appID", value: appID),
-            URLQueryItem(name: "lang", value: "ru")
+            URLQueryItem(name: "appID", value: appID)
         ])
         return url
     }

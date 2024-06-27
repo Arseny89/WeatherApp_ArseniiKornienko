@@ -9,51 +9,45 @@ import UIKit
 import SnapKit
 
 protocol WeatherProviderDelegate: AnyObject {
-    func setCurrentWeather(_ data: [CityWeatherData])
+    func setCurrentWeather(_ data: [Int: CityWeatherData])
     func setAlertMessage(_ message: String)
 }
 
-final class WeatherProvider {
+protocol WeatherProvider {
+    var delegate: WeatherProviderDelegate? { get set }
+    func getDataForCityList(_ data: [CityData], forced: Bool, 
+                            completionHandler: @escaping ([Int: CityWeatherData]) -> Void)
+    func appMovedToBackground()
+}
+
+final class WeatherProviderImpl: WeatherProvider {
     weak var delegate: WeatherProviderDelegate?
     let currentCoordinates = (lat: 34.142509, lon: -118.255081)
     var currentCityId = 5352423
+    
     var weatherCache: [Int: CurrentWeatherResponse] = [:]
     var weatherDataCache: [Int: CityWeatherData] = [:]
     var forecastCache: [Int: ForecastResponse] = [:]
     var currentCityWeather: CityWeatherData?
+    var currentCityList: [Int: CityWeatherData] = [:]
+    private let storageManager = StorageManager()
+    private var selectedCityList = CityListProviderImpl().selectedCityList
     private let dataProvider = APIDataProvider()
     private var notificationCenter = NotificationCenter.default
+    private var isNeedUploadNewWeatherData: Bool {
+        guard let prevUploadData: Date = storageManager.object(for: .weatherUploadDate),
+              let nextUploadDate = Calendar.current.date(byAdding: .hour, value: 1, to: prevUploadData) else {
+            return true
+        }
+        
+        return weatherDataCache.isEmpty || nextUploadDate < Date()
+    }
     func appMovedToBackground() {
         notificationCenter.addObserver(
             self, selector: #selector(notificate),
             name: UIApplication.willResignActiveNotification,
             object: nil
         )
-    }
-    
-    func sceneWillEnterForeground() {
-        let id = currentCityId
-        getData(for: currentCityId,
-                response: ForecastResponse.self)
-        { [weak self] forecast in
-            guard let self else { return }
-            forecastCache[id] = forecast
-        } errorHandler: { error in
-        }
-        
-        getData(for: currentCityId,
-                response: CurrentWeatherResponse.self)
-        {[weak self] currentWeather in
-            guard let self else { return }
-            weatherCache[id] = currentWeather
-            let weatherData = prepareCityWeatherData(for: id)
-            weatherDataCache[id] = weatherData
-            delegate?.setCurrentWeather([weatherData])
-        } errorHandler: { [weak self] error in
-            guard let self else { return }
-            let errorMessage = error.description
-            delegate?.setAlertMessage(errorMessage)
-        }
     }
     
     func getData<T: Decodable>(for id: Int, response: T.Type,
@@ -78,7 +72,7 @@ final class WeatherProvider {
     
     func prepareCityWeatherData(for id: Int) -> CityWeatherData {
         guard let weatherData = weatherCache[id] else { return .emptyData}
-        let title =  id == currentCityId ? "Текущее место" : weatherData.name
+        let title =  id == currentCityId ? "My Location" : weatherData.name
         let subtitle = id == currentCityId
         ? weatherData.name
         ?? "\(weatherData.coordinates.latitude) \(weatherData.coordinates.longitude)"
@@ -95,7 +89,7 @@ final class WeatherProvider {
         return CityWeatherData(id: id,
                                titleData: titleData,
                                dayTempData: prepareDayTempData(for: forecastCache[id]),
-                               tempRangeData: nil)
+                               tempRangeData: prepareDayData(for: forecastCache[id], and: weatherCache[id]!))
     }
     
     func prepareDayTempData(for forecast: ForecastResponse?) -> [DayTempData]? {
@@ -124,6 +118,93 @@ final class WeatherProvider {
                 item.date >= nowDate
                 && item.date <= calendar.nextDay(for: nowDate)
             }
+    }
+    
+    func getDataForCityList(_ list: [CityData], forced: Bool, completionHandler: @escaping ([Int: CityWeatherData]) -> Void) {
+        if isNeedUploadNewWeatherData || forced {
+            var cityListWeather: [Int: CityWeatherData] = [:]
+            list.enumerated().forEach { index, data in
+                getData(for: data.id, response: ForecastResponse.self) { [weak self] forecast in
+                    guard let self else { return }
+                    forecastCache[data.id] = forecast
+                } errorHandler: { [weak self] error in
+                    guard let self else { return }
+                    let errorMessage = error.description
+                    delegate?.setAlertMessage(errorMessage)
+                }
+                getData(for: data.id,
+                        response: CurrentWeatherResponse.self)
+                {[weak self] currentWeather in
+                    guard let self else { return }
+                    weatherCache[data.id] = currentWeather
+                    let weatherData = prepareCityWeatherData(for: data.id)
+                    cityListWeather[data.id] = weatherData
+                    completionHandler(cityListWeather)
+                } errorHandler: { [weak self] error in
+                    guard let self else { return }
+                    let errorMessage = error.description
+                    delegate?.setAlertMessage(errorMessage)
+                }
+            }
+            storageManager.set(Date(), .weatherUploadDate)
+        } else {
+            delegate?.setCurrentWeather(weatherDataCache)
+        }
+    }
+    
+    func prepareDayData(for forecast: ForecastResponse?, and weatherData: CurrentWeatherResponse) -> [TempRangeData]? {
+        guard let forecast else { return nil }
+        var calendar = Calendar.current
+        calendar.timeZone = forecast.city.timezone
+        
+        var tempData: [Int: [HourlyWeatherItem]] = [:]
+        forecast.list.forEach { item in
+            let day = calendar.component(.day, from: item.date)
+            
+            if var dates = tempData[day]{
+                dates.append(item)
+                tempData[day] = dates
+            } else {
+                tempData[day] = [item]
+            }
+        }
+        
+        let minTemp = forecast.list.map { $0.main.minTemp }.min() ?? 0
+        let maxTemp = forecast.list.map { $0.main.maxTemp }.max() ?? 1
+        
+        let dayData = tempData
+            .sorted { $0.key < $1.key }
+            .map { key, items in
+                let minDayTemp = items.map { $0.main.minTemp }.min() ?? 0
+                let maxDayTemp = items.map { $0.main.maxTemp }.max() ?? 1
+                
+                let todayKey = calendar.component(.day, from: Date())
+                if key == todayKey {
+                    return TempRangeData(day: "Today",
+                                         icon: weatherData.weather.first?.icon.image
+                        .withRenderingMode(.alwaysOriginal),
+                                         minDayTemp: minDayTemp,
+                                         maxDayTemp: maxDayTemp,
+                                         minTemp: minTemp, // Data not available
+                                         maxTemp: maxTemp, // Data not available
+                                         currentTemp: weatherData.main.temp
+                    )
+                } else {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "EEE"
+                    dateFormatter.timeZone = forecast.city.timezone
+                    
+                    return TempRangeData(day: dateFormatter.string(from: items.first?.date ?? Date()),
+                                         icon: items.first?.weather.first?.icon.image
+                        .withRenderingMode(.alwaysOriginal),
+                                         minDayTemp: minDayTemp,
+                                         maxDayTemp: maxDayTemp,
+                                         minTemp: minTemp,
+                                         maxTemp: maxTemp,
+                                         currentTemp: nil)
+                }
+            }
+        return dayData
     }
     
     @objc func notificate() {

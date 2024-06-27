@@ -19,15 +19,6 @@ final class TempRangeCell: UITableViewCell {
         var currentTemp: Double? = 0
     }
     
-    private enum Constants {
-        case title
-        
-        var text: String {
-            switch self {
-            case .title: return "Прогноз на 10 дней"
-            }
-        }
-    }
     static let id = String(describing: TempRangeCell.self)
     private let dayView = UIView()
     
@@ -64,7 +55,7 @@ final class TempRangeCell: UITableViewCell {
             let dayTempDiff = data.maxDayTemp - data.minDayTemp
             let currentTempOffset = abs(data.minDayTemp - currentTemp) / dayTempDiff
             view.currentTempView.snp.remakeConstraints { make in
-                _ = currentTempOffset == 0 ?
+                _ = currentTempOffset == 0 || dayTempDiff == 0 ?
                 make.centerX.equalTo(view.dayBar.snp.leading) :
                 make.centerX.equalTo(view.dayBar.snp.trailing).multipliedBy(currentTempOffset)
                 make.size.equalTo(6)
@@ -72,7 +63,7 @@ final class TempRangeCell: UITableViewCell {
             }
         }
         
-        if data.day != "Сегодня"  {
+        if data.currentTemp == nil  {
             view.currentTempView.isHidden = true
         }
         
