@@ -43,12 +43,14 @@ final class CitySelectionViewController: UIViewController {
     private let weatherView = WeatherViewController()
     private let citySearchViewController = CitySearchViewController()
     private let cityTableView = UITableView()
+    private let locationProvider = LocationProvider()
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .black
         title = Constants.title.text
         
+        setupLocationProvider()
         viewModel?.output = self
         setupNavigationBar()
         setupCityCollectionView()
@@ -60,6 +62,11 @@ final class CitySelectionViewController: UIViewController {
     
     func sceneWillEnterForeground() {
         viewModel.getDataForCityList(forced: false)
+    }
+    
+    private func setupLocationProvider() {
+        locationProvider.delegate = self
+        locationProvider.getCurrentLocation()
     }
     
     private func reloadDataSource() {
@@ -227,12 +234,25 @@ extension CitySelectionViewController: UICollectionViewDelegate {
         presentCityWeather(with: selectedCity)
     }
 }
-
+//MARK: ViewModel delegate
 extension CitySelectionViewController: CitySelectionViewModelOutput {
 }
+
+//MARK: searchController delegate
 extension CitySelectionViewController: CitySearchViewControllerDelegate {
     func reloadData() {
         navigationItem.searchController?.searchBar.text = nil
         viewModel.getDataForCityList(forced: true)
+    }
+}
+
+//MARK: Location provider delegate
+extension CitySelectionViewController: LocationProviderDelegate {
+    func setCurrentLocation(coordinates: Coordinates?) {
+        
+    }
+    
+    func presentAlert(alert: UIAlertController) {
+        present(alert, animated: true)
     }
 }
