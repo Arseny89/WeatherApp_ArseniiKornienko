@@ -17,6 +17,7 @@ final class CitySearchViewController: UIViewController {
             tableView.reloadData()
         }
     }
+    var searchText = ""
     var delegate: CitySearchViewControllerDelegate?
     private let tableView = UITableView()
     private let cityCellId = "cityNameCell"
@@ -36,6 +37,24 @@ final class CitySearchViewController: UIViewController {
             make.edges.equalToSuperview()
         }
     }
+    
+    private func getAttributedText(for indexPath: IndexPath) -> NSAttributedString? {
+        let city = cityList[indexPath.row]
+        var text = ["\(city.name)", "\(city.country)"]
+        switch city.state.isEmpty {
+        case false: text.insert("\(city.state)", at: 1)
+        default: break
+        }
+        
+        let attributedText = NSMutableAttributedString(
+            string: text.joined(separator: ", "),
+            attributes: [.foregroundColor: UIColor.white.withAlphaComponent(0.5)]
+        )
+        let textRange = (text.joined().lowercased() as NSString).range(of: searchText)
+        attributedText.addAttributes([.foregroundColor: UIColor.white], range: textRange)
+        
+        return attributedText
+    }
 }
 
 //MARK: TableView Delegate
@@ -46,7 +65,7 @@ extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cityCellId, for: indexPath)
-        cell.textLabel?.attributedText = viewModel.getAttributedText(for: indexPath)
+        cell.textLabel?.attributedText = getAttributedText(for: indexPath)
         cell.backgroundColor = .clear
         let bgColorView = UIView()
         bgColorView.backgroundColor = .white.withAlphaComponent(0.3)

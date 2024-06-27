@@ -145,7 +145,7 @@ final class CitySelectionViewController: UIViewController {
         navigationBar?.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationItem.searchController = setupSearchController()
-        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl())
+        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl.shared)
         citySearchViewController.delegate = self
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(icon: .ellipsisCircle),
@@ -183,10 +183,10 @@ final class CitySelectionViewController: UIViewController {
     }
     
     private func setupDataToPresentedViewController() {
-        DispatchQueue.main.async { [self] in
-            guard let weatherData = sections.first?.items,
+        DispatchQueue.main.async { [weak self] in
+            guard let weatherData = self?.sections.first?.items,
                   let presentedCityWeatherController =
-                    presentedViewController as? WeatherViewController,
+                    self?.presentedViewController as? WeatherViewController,
                   let data = weatherData.first(where: {
                       $0.id == presentedCityWeatherController.cityID
                   }) else {

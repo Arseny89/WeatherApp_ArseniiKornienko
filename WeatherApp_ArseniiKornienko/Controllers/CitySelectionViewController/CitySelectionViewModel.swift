@@ -29,7 +29,7 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
     
     weak var output: CitySelectionViewModelOutput?
     var storageManager = StorageManager()
-    var selectedCityList = CityListProviderImpl().selectedCityList
+    var selectedCityList = CityListProviderImpl.shared.selectedCityList
     private var weatherProvider: WeatherProvider?
     
     init(weatherProvider: WeatherProvider) {

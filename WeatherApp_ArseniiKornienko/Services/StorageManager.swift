@@ -11,6 +11,7 @@ enum StorageKey: String {
     case cityWeather
     case cityList
     case weatherUploadDate
+    case cityListStored
 }
 
 class StorageManager {

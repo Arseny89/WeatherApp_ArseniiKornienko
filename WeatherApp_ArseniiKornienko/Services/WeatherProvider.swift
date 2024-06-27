@@ -31,7 +31,7 @@ final class WeatherProviderImpl: WeatherProvider {
     var currentCityWeather: CityWeatherData?
     var currentCityList: [Int: CityWeatherData] = [:]
     private let storageManager = StorageManager()
-    private var selectedCityList = CityListProviderImpl().selectedCityList
+    private var selectedCityList = CityListProviderImpl.shared.selectedCityList
     private let dataProvider = APIDataProvider()
     private var notificationCenter = NotificationCenter.default
     private var isNeedUploadNewWeatherData: Bool {
