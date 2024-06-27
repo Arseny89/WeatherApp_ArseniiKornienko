@@ -44,6 +44,7 @@
 		0E887B212C2A268600AB7502 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B1F2C2A268600AB7502 /* CoreData.xcdatamodeld */; };
 		0E887B292C2A48F900AB7502 /* CDStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B282C2A48F900AB7502 /* CDStorageManager.swift */; };
 		0E887B2B2C2A512A00AB7502 /* CityCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B2A2C2A512A00AB7502 /* CityCoreData.swift */; };
+		0E887B362C2D027C00AB7502 /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B352C2D027C00AB7502 /* LocationProvider.swift */; };
 		0ED012AF2BE76180005D48D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ED012AE2BE76180005D48D7 /* AppDelegate.swift */; };
 		0ED012B12BE76180005D48D7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ED012B02BE76180005D48D7 /* SceneDelegate.swift */; };
 		0ED012B32BE76180005D48D7 /* WeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ED012B22BE76180005D48D7 /* WeatherViewController.swift */; };
@@ -108,6 +109,7 @@
 		0E887B202C2A268600AB7502 /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
 		0E887B282C2A48F900AB7502 /* CDStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDStorageManager.swift; sourceTree = "<group>"; };
 		0E887B2A2C2A512A00AB7502 /* CityCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityCoreData.swift; sourceTree = "<group>"; };
+		0E887B352C2D027C00AB7502 /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
 		0ED012AB2BE76180005D48D7 /* WeatherApp_ArseniiKornienko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp_ArseniiKornienko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0ED012AE2BE76180005D48D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0ED012B02BE76180005D48D7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				0E887AFA2C16935900AB7502 /* CityListProvider.swift */,
 				0E887B1B2C21205200AB7502 /* StorageManager.swift */,
 				0E887B282C2A48F900AB7502 /* CDStorageManager.swift */,
+				0E887B352C2D027C00AB7502 /* LocationProvider.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -520,6 +523,7 @@
 				0E510DC02BF49018007EB1A8 /* DetailedWeatherViewController.swift in Sources */,
 				0E887B212C2A268600AB7502 /* CoreData.xcdatamodeld in Sources */,
 				0E887B032C16AC7500AB7502 /* ForecastResponse.swift in Sources */,
+				0E887B362C2D027C00AB7502 /* LocationProvider.swift in Sources */,
 				0E4B6A302C08544900058097 /* WeatherViewModel.swift in Sources */,
 				0E11F5132BFEFFCD00D82550 /* UnitSelectionView.swift in Sources */,
 				0E887AFB2C16935900AB7502 /* CityListProvider.swift in Sources */,
@@ -703,6 +707,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherApp_ArseniiKornienko/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "To get current weather";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "To get current weather";
+				INFOPLIST_KEY_NSLocationUsageDescription = "To get current weather";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To get current weather";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -731,6 +740,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherApp_ArseniiKornienko/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "To get current weather";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "To get current weather";
+				INFOPLIST_KEY_NSLocationUsageDescription = "To get current weather";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To get current weather";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
