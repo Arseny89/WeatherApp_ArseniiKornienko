@@ -225,9 +225,9 @@
 			isa = PBXGroup;
 			children = (
 				0E816D3D2BEB2562007CC983 /* CitySelectionViewController.swift */,
+				0E4B6A332C0EAF6600058097 /* CitySelectionViewModel.swift */,
 				0E4B6A282C08376600058097 /* Views */,
 				0E4B6A352C0EB07200058097 /* Cells */,
-				0E4B6A332C0EAF6600058097 /* CitySelectionViewModel.swift */,
 			);
 			path = CitySelectionViewController;
 			sourceTree = "<group>";
