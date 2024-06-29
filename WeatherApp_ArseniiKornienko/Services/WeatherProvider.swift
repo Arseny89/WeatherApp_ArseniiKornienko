@@ -17,13 +17,14 @@ protocol WeatherProvider {
     var delegate: WeatherProviderDelegate? { get set }
     func getDataForCityList(_ data: [CityData], forced: Bool, 
                             completionHandler: @escaping ([Int: CityWeatherData]) -> Void)
+    func getForecastForCity(for data: CityData,
+                            completionHandler: @escaping ([Int: CityWeatherData]) -> Void)
     func appMovedToBackground()
 }
 
 final class WeatherProviderImpl: WeatherProvider {
     weak var delegate: WeatherProviderDelegate?
-    var currentCityId = 5352423
-    
+    var currentCityId = 0
     var weatherCache: [Int: CurrentWeatherResponse] = [:]
     var weatherDataCache: [Int: CityWeatherData] = [:]
     var forecastCache: [Int: ForecastResponse] = [:]
@@ -146,6 +147,18 @@ final class WeatherProviderImpl: WeatherProvider {
         }
     }
     
+    func getForecastForCity(for data: CityData, completionHandler: @escaping ([Int: CityWeatherData]) -> Void) {
+        getData(for: data.coordinates ,
+                response: ForecastResponse.self) { [weak self] forecast in
+            guard let self else { return }
+            forecastCache[data.id] = forecast
+        } errorHandler: { [weak self] error in
+            guard let self else { return }
+            let errorMessage = error.description
+            delegate?.setAlertMessage(errorMessage)
+        }
+    }
+
     func prepareDayData(for forecast: ForecastResponse?, and weatherData: CurrentWeatherResponse) -> [TempRangeData]? {
         guard let forecast else { return nil }
         var calendar = Calendar.current
