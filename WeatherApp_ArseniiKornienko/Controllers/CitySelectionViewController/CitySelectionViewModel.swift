@@ -11,7 +11,8 @@ import SnapKit
 
 protocol CitySelectionViewModelInput {
     var output: CitySelectionViewModelOutput? { get set }
-    func getDataForCityList(forced: Bool)
+    func getData(forced: Bool)
+    func getForecastForCity(with id: Int?)
 }
 
 protocol CitySelectionViewModelOutput: AnyObject {
@@ -36,15 +37,30 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
         self.weatherProvider = weatherProvider
         self.weatherProvider?.delegate = self
         prepareSections(with: selectedCityList.map(\.weatherData))
-        getDataForCityList(forced: false)
+        getDataForCityList(for: selectedCityList, forced: false)
     }
     
-    func getDataForCityList(forced: Bool) {
-        weatherProvider?.getDataForCityList(selectedCityList, forced: forced) { [weak self] data in
+    func getDataForCityList(for list: [CityData], forced: Bool) {
+        weatherProvider?.getDataForCityList(list, forced: forced) { [weak self] data in
             guard let self else { return }
             let sortedData = selectedCityList.compactMap { data[$0.id] ?? $0.weatherData }
             prepareSections(with: sortedData)
         }
+    }
+    
+    func getForecastForCity(with id: Int?) {
+        guard let id, let cityData = selectedCityList.first(where: { $0.id == id }) else { return }
+        
+        weatherProvider?.getForecastForCity(for: cityData) { [weak self] data in
+            guard let self else { return }
+            
+            let sortedData = selectedCityList.compactMap { data[$0.id] ?? $0.weatherData }
+            prepareSections(with: sortedData)
+        }
+    }
+    
+    func getData(forced: Bool) {
+        getDataForCityList(for: selectedCityList, forced: forced)
     }
     
     private func prepareSections(with data: [CityWeatherData]) {
