@@ -49,7 +49,7 @@ struct City: Codable {
     }
 }
 
-struct Coordinates: Codable {
+struct Coordinates: Codable, Equatable {
     let latitude: Double
     let longitude: Double
     
