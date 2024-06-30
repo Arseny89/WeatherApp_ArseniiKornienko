@@ -25,10 +25,6 @@ final class CitySearchViewModel: CitySearchViewModelInput {
     
     private var cityListProvider = CityListProviderImpl.shared
     
-    init(cityListProvider: CityListProvider) {
-        self.cityListProvider = cityListProvider
-    }
-    
     func filterCity(with searchText: String) {
         output?.searchText = searchText
         if searchText.isEmpty {

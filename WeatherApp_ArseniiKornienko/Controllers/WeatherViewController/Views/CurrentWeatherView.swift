@@ -19,11 +19,12 @@ final class CurrentWeatherView: UIView {
         let backgroundImage: UIImage
     }
     
-    private let titleLabel = UILabel()
-    private let currentTemp = UILabel()
-    private let subtitleLabel = UILabel()
-    private let descriptionLabel = UILabel()
-    private let tempLimits = UILabel()
+    let titleLabel = UILabel()
+    let currentTemp = UILabel()
+    let subtitleLabel = UILabel()
+    let descriptionLabel = UILabel()
+    let tempLimits = UILabel()
+    let hiddenLabel = UILabel()
     private let stackView  = UIStackView()
     
     override init(frame: CGRect) {
@@ -32,6 +33,7 @@ final class CurrentWeatherView: UIView {
         setupStackView()
         setupTitleLabel()
         setupSubtitleLabel()
+        setupHiddenLabel()
         setupCurrentTemp()
         setupDescriptionLabel()
         setupTempLimits()
@@ -51,6 +53,7 @@ final class CurrentWeatherView: UIView {
         else {
             return
         }
+        hiddenLabel.text = "\(temp) | \(data.titleData.description ?? "")"
         currentTemp.text = temp
         tempLimits.text = "Макс.: \(maxTemp), Мин.: \(minTemp)"
     }
@@ -58,7 +61,6 @@ final class CurrentWeatherView: UIView {
     private func setupStackView() {
         addSubview(stackView)
         stackView.axis = .vertical
-        stackView.spacing = 4
         stackView.distribution = .fillProportionally
         
         stackView.snp.makeConstraints { make in
@@ -71,13 +73,19 @@ final class CurrentWeatherView: UIView {
         titleLabel.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
+        titleLabel.snp.makeConstraints { make in
+            make.height.equalTo(30)
+        }
     }
     
     private func setupSubtitleLabel() {
         stackView.addArrangedSubview(subtitleLabel)
-        subtitleLabel.font = UIFont.systemFont(ofSize: 25, weight: .medium)
+        subtitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
         subtitleLabel.textColor = .white
         subtitleLabel.textAlignment = .center
+        subtitleLabel.snp.makeConstraints { make in
+            make.height.equalTo(25)
+        }
     }
     
     private func setupCurrentTemp() {
@@ -99,5 +107,16 @@ final class CurrentWeatherView: UIView {
         tempLimits.font = UIFont.systemFont(ofSize: 25, weight: .medium)
         tempLimits.textColor = .white
         tempLimits.textAlignment = .center
+    }
+    
+    private func setupHiddenLabel() {
+        stackView.addArrangedSubview(hiddenLabel)
+        hiddenLabel.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        hiddenLabel.textColor = .white
+        hiddenLabel.textAlignment = .center
+        hiddenLabel.alpha = 0
+        hiddenLabel.snp.makeConstraints { make in
+            make.height.equalTo(20)
+        }
     }
 }

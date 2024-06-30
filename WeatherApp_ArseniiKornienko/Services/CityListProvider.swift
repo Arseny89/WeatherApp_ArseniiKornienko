@@ -17,26 +17,11 @@ protocol CityListProvider: AnyObject {
 
 class CityListProviderImpl: CityListProvider {
     static let shared: CityListProvider = CityListProviderImpl()
-    var selectedCityList: [CityData] {
-        get {
-            let cityList:[CityData]? = storageManager.object(for: .cityList)
-            return cityList ?? [currentPlace]
-        }
-        
-        set {
-            storageManager.set(newValue, .cityList)
-        }
-    }
-    
-    let currentCityId = 5352423
-    var currentCoordinates = Coordinates(latitude: 34.142509, longitude: -118.255081)
-    var currentPlace: CityData {
-        CityData(id: currentCityId,
-                 name: "",
-                 state: "",
-                 country: "",
-                 coordinates: currentCoordinates)
-    }
+    let locationProvider = LocationProvider()
+    var currentCityId = 0
+    var currentCoordinates: Coordinates?
+    var currentPlace: CityData?
+    var selectedCityList: [CityData] = StorageManager().object(for: .cityList) ?? []
     var cityList: [CityData] = []
     private let storageManager = StorageManager()
     private let cdStorageManager = CDStorageManager()
@@ -52,22 +37,41 @@ class CityListProviderImpl: CityListProvider {
     }
     
     init() {
-        if storageManager.object(for: .cityListStored) != true {
-            guard let path = Bundle.main.path(forResource: Constants.cityList.name, ofType: "json"),
-                  let data = try? Data(
+       locationProvider.delegate = self
+       if storageManager.object(for: .cityListStored) != true {
+           guard let path = Bundle.main.path(forResource: Constants.cityList.name, ofType: "json"),
+                 let data = try? Data(
                     contentsOf: URL(fileURLWithPath: path),
                     options: .mappedIfSafe
-                  ) else { assertionFailure("\(Constants.cityList.name).json not found")
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            guard let decodedData = try?
+                 ) else { assertionFailure("\(Constants.cityList.name).json not found")
+               return
+           }
+           
+           let decoder = JSONDecoder()
+           guard let decodedData = try?
                     decoder.decode([CityData].self, from: data) else { return }
-            cityList = decodedData
-            cdStorageManager.set(cityList) { [weak self] result in
-                self?.storageManager.set(result, .cityListStored)
-            }
+           cityList = decodedData
+           cdStorageManager.set(cityList) { [weak self] result in
+               self?.storageManager.set(result, .cityListStored)
+           }
+       }
+   }
+    
+    func setCurrentPlace() {
+        guard let currentCoordinates else { return }
+        currentPlace = CityData(id: currentCityId,
+                                name: "",
+                                state: "",
+                                country: "",
+                                coordinates: currentCoordinates)
+    }
+    
+    func getSelectedCityList() {
+        guard let currentPlace else { return }
+        if selectedCityList.isEmpty {
+            addCity(city: currentPlace)
+        } else {
+            selectedCityList = storageManager.object(for: .cityList) ?? []
         }
     }
     
@@ -96,5 +100,16 @@ class CityListProviderImpl: CityListProvider {
         } else {
             cdStorageManager.fetch(completion: completion)
         }
+    }
+}
+
+extension CityListProviderImpl: LocationProviderDelegate {
+    func setCurrentLocation(coordinates: Coordinates?) {
+        currentCoordinates = coordinates
+        setCurrentPlace()
+        getSelectedCityList()
+    }
+        
+    func presentAlert(alert: UIAlertController) {
     }
 }
