@@ -27,7 +27,7 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    var viewModel: CitySelectionViewModelInput!
+    var viewModel: CitySelectionViewModelInput?
     var sections: [Section] = [] {
         didSet {
             reloadDataSource()
@@ -43,23 +43,32 @@ final class CitySelectionViewController: UIViewController {
     private let weatherView = WeatherViewController()
     private let citySearchViewController = CitySearchViewController()
     private let cityTableView = UITableView()
+    private let locationProvider = LocationProvider()
+    private let cityListProvider: CityListProvider = CityListProviderImpl.shared
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .black
         title = Constants.title.text
         
+        setupLocationProvider()
         viewModel?.output = self
         setupNavigationBar()
         setupCityCollectionView()
         setupUnitSelectionView()
-        presentCityWeather(with: sections.first?.items.first ?? .emptyData)
         createDataSource()
         reloadDataSource()
+        
+        presentCityWeather(with: sections.first?.items.first ?? .emptyData)
     }
     
     func sceneWillEnterForeground() {
-        viewModel.getDataForCityList(forced: false)
+        viewModel?.getData(forced: false)
+    }
+    
+    private func setupLocationProvider() {
+        locationProvider.delegate = self
+        locationProvider.getCurrentLocation()
     }
     
     private func reloadDataSource() {
@@ -145,7 +154,7 @@ final class CitySelectionViewController: UIViewController {
         navigationBar?.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         navigationBar?.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationItem.searchController = setupSearchController()
-        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl.shared)
+        citySearchViewController.viewModel = CitySearchViewModel()
         citySearchViewController.delegate = self
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(icon: .ellipsisCircle),
@@ -187,13 +196,11 @@ final class CitySelectionViewController: UIViewController {
             guard let weatherData = self?.sections.first?.items,
                   let presentedCityWeatherController =
                     self?.presentedViewController as? WeatherViewController,
-                  let data = weatherData.first(where: {
+                  let _ = weatherData.first(where: {
                       $0.id == presentedCityWeatherController.cityID
                   }) else {
                 return
             }
-            
-            presentedCityWeatherController.viewModel.setup(data)            
         }
     }
     
@@ -227,12 +234,25 @@ extension CitySelectionViewController: UICollectionViewDelegate {
         presentCityWeather(with: selectedCity)
     }
 }
-
+//MARK: ViewModel delegate
 extension CitySelectionViewController: CitySelectionViewModelOutput {
 }
+
+//MARK: searchController delegate
 extension CitySelectionViewController: CitySearchViewControllerDelegate {
     func reloadData() {
         navigationItem.searchController?.searchBar.text = nil
-        viewModel.getDataForCityList(forced: true)
+        viewModel?.getData(forced: true)
+    }
+}
+
+//MARK: Location provider delegate
+extension CitySelectionViewController: LocationProviderDelegate {
+    func setCurrentLocation(coordinates: Coordinates?) {
+        
+    }
+    
+    func presentAlert(alert: UIAlertController) {
+        present(alert, animated: true)
     }
 }
