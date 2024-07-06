@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 class WeatherViewController: BaseViewController {
-
+    
     var viewModel: WeatherViewModelInput!
     var dataSource: [WeatherViewModel.Section] = []
     let bottomView = BottomView()
@@ -20,21 +20,27 @@ class WeatherViewController: BaseViewController {
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let scrollView = UIScrollView()
     private let titleView = UIView()
+    private let topView = UIView()
     private var weekBarColor = UIColor()
+    private var prevLocation = CGFloat()
+    private var totalScroll = CGFloat()
+    private var gestureRecognizer = UIPanGestureRecognizer()
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
-        bottomView.listButton.addTarget(self, action: #selector(onListButtonTap), for: .touchUpInside)
         setupBackground()
-        setupBottomView()
+        setupScrollView()
         setupTitleView()
+        bottomView.listButton.addTarget(self, action: #selector(onListButtonTap), for: .touchUpInside)
+        setupBottomView()
         setupCurrentWeatherView()
         setupTableView()
         viewModel?.output = self
         viewModel?.viewDidLoad()
         presentAlert()
+        setupGestureRecognizer()
     }
     
     func presentAlert() {
@@ -46,11 +52,48 @@ class WeatherViewController: BaseViewController {
         } else { return }
     }
     
+    private func setupGestureRecognizer() {
+        gestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panHandler(_:)))
+        gestureRecognizer.delegate = self
+        scrollView.addGestureRecognizer(gestureRecognizer)
+    }
+    
+    private func setupScrollView() {
+        view.addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.horizontalEdges.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+    }
+    
+    
     private func setupBackground() {
         view.addSubview(background)
         background.contentMode = .scaleAspectFill
+        background.isUserInteractionEnabled = false
         background.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+    }
+    
+    @objc func panHandler(_ gesture: UIPanGestureRecognizer) {
+        let location = gesture.location(in: view).y
+        switch gesture.state {
+        case .began:
+            prevLocation = location
+        default:
+            break
+        }
+        
+        totalScroll += prevLocation - location
+        totalScroll = totalScroll < 0 ? 0 : totalScroll
+        prevLocation = location
+        if totalScroll > 200 {
+            tableView.setContentOffset(CGPoint(x: 0, y: totalScroll - 200), animated: false)
+        } else {
+            scrollView.setContentOffset(.zero, animated: false)
+            updateTitleView()
         }
     }
     
@@ -72,27 +115,46 @@ class WeatherViewController: BaseViewController {
     }
     
     private func setupTableView() {
-        view.addSubview(tableView)
+        scrollView.addSubview(tableView)
         tableView.backgroundColor = .clear
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorColor = .white.withAlphaComponent(0.5)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.isScrollEnabled = false
         tableView.registerCell(TitleCell.self)
         tableView.registerCell(DayTempCell.self)
         tableView.registerCell(TempRangeCell.self)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(titleView.snp.bottom).offset(10)
-            make.horizontalEdges.equalToSuperview()
-            make.bottom.equalTo(bottomView.snp.top)
+            make.top.equalTo(titleView.snp.bottom)
+            make.horizontalEdges.equalTo(background)
+            make.height.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
     
     private func setupTitleView() {
-        view.addSubview(titleView)
+        scrollView.addSubview(titleView)
         titleView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalToSuperview()
             make.centerX.equalToSuperview()
+            make.height.equalTo(300)
+        }
+    }
+    
+    func updateTitleView() {
+        titleView.snp.updateConstraints { update in
+            update.top.equalToSuperview()
+            update.height.equalTo(300 - totalScroll)
+        }
+        let alpha = 1 - (totalScroll/150)
+        currentWeatherView.tempLimits.alpha = alpha
+        currentWeatherView.currentTemp.alpha = alpha
+        currentWeatherView.descriptionLabel.alpha = alpha
+        if alpha <= 0 {
+            currentWeatherView.hiddenLabel.alpha = -3 * alpha
+        } else {
+            currentWeatherView.hiddenLabel.alpha = 0
         }
     }
     
@@ -172,4 +234,8 @@ extension WeatherViewController: WeatherViewModelOutput {
     func reloadData() {
         tableView.reloadData()
     }
+}
+
+extension WeatherViewController: UIGestureRecognizerDelegate {
+
 }
