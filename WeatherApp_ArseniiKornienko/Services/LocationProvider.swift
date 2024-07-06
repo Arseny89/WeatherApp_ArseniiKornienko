@@ -23,17 +23,17 @@ final class LocationProvider: NSObject {
     }
     
     weak var delegate: LocationProviderDelegate?
-    var currentLocation: Coordinates?
     private let locationManager = CLLocationManager()
     
     override init() {
         super.init()
         locationManager.delegate = self
     }
+
     func getCurrentLocation() {
         checkAuthorization()
     }
-    
+
     private func checkAuthorization() {
         switch locationManager.authorizationStatus {
         case .notDetermined:
@@ -55,6 +55,7 @@ final class LocationProvider: NSObject {
             message: Constants.alertMessage.rawValue,
             preferredStyle: .alert
         )
+
         alertController.addAction(UIAlertAction(
             title: Constants.alertRightButton.rawValue,
             style: .default
@@ -63,6 +64,7 @@ final class LocationProvider: NSObject {
             else { return }
             UIApplication.shared.open(settingsURL)
         })
+
         alertController.addAction(UIAlertAction(title: Constants.alertLeftButton.rawValue,
                                                 style: .cancel))
         
@@ -74,10 +76,11 @@ extension LocationProvider: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, 
                          didUpdateLocations locations: [CLLocation]) {
         guard let coordinate = locations.last?.coordinate else { return }
-        
-        currentLocation = Coordinates(latitude: coordinate.latitude, 
-                                      longitude: coordinate.longitude)
-        delegate?.setCurrentLocation(coordinates: currentLocation)
+
+        delegate?.setCurrentLocation(
+            coordinates: Coordinates(latitude: coordinate.latitude,
+                                     longitude: coordinate.longitude)
+        )
     }
     
     func locationManager(_ manager: CLLocationManager, 
@@ -88,5 +91,4 @@ extension LocationProvider: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         checkAuthorization()
     }
-    
 }

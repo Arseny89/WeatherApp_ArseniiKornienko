@@ -240,7 +240,7 @@ extension CitySelectionViewController: CitySelectionViewModelOutput {
 
 //MARK: searchController delegate
 extension CitySelectionViewController: CitySearchViewControllerDelegate {
-    func reloadData() {
+    func select(_ city: CityData) {
         navigationItem.searchController?.searchBar.text = nil
         viewModel?.getData(forced: true)
     }

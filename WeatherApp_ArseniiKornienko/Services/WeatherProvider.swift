@@ -24,7 +24,6 @@ protocol WeatherProvider {
 
 final class WeatherProviderImpl: WeatherProvider {
     weak var delegate: WeatherProviderDelegate?
-    var currentCityId = 0
     var weatherCache: [Int: CurrentWeatherResponse] = [:]
     var weatherDataCache: [Int: CityWeatherData] = [:]
     var forecastCache: [Int: ForecastResponse] = [:]
@@ -67,8 +66,8 @@ final class WeatherProviderImpl: WeatherProvider {
     
     func prepareCityWeatherData(for id: Int) -> CityWeatherData {
         guard let weatherData = weatherCache[id] else { return .emptyData}
-        let title =  id == currentCityId ? "My Location" : weatherData.name
-        let subtitle = id == currentCityId
+        let title =  id == .currentCityId ? "My Location" : weatherData.name
+        let subtitle = id == .currentCityId
         ? weatherData.name
         ?? "\(weatherData.coordinates.latitude) \(weatherData.coordinates.longitude)"
         : nil
@@ -115,10 +114,13 @@ final class WeatherProviderImpl: WeatherProvider {
             }
     }
     
-    func getDataForCityList(_ list: [CityData], forced: Bool, completionHandler: @escaping ([Int: CityWeatherData]) -> Void) {
+    func getDataForCityList(_ list: [CityData],
+                            forced: Bool,
+                            completionHandler: @escaping ([Int: CityWeatherData]) -> Void) {
         if isNeedUploadNewWeatherData || forced {
             var cityListWeather: [Int: CityWeatherData] = [:]
-            list.enumerated().forEach { index, data in
+
+            list.forEach { data in
                 getData(for: data.coordinates, response: ForecastResponse.self) { [weak self] forecast in
                     guard let self else { return }
                     forecastCache[data.id] = forecast
@@ -127,14 +129,16 @@ final class WeatherProviderImpl: WeatherProvider {
                     let errorMessage = error.description
                     delegate?.setAlertMessage(errorMessage)
                 }
+                
                 getData(for: data.coordinates,
-                        response: CurrentWeatherResponse.self)
-                {[weak self] currentWeather in
+                        response: CurrentWeatherResponse.self) { [weak self] currentWeather in
                     guard let self else { return }
+                    
                     weatherCache[data.id] = currentWeather
                     let weatherData = prepareCityWeatherData(for: data.id)
                     cityListWeather[data.id] = weatherData
                     completionHandler(cityListWeather)
+
                 } errorHandler: { [weak self] error in
                     guard let self else { return }
                     let errorMessage = error.description

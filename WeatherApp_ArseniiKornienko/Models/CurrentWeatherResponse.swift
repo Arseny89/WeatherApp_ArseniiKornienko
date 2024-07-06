@@ -15,6 +15,7 @@ struct CurrentWeatherResponse: Decodable {
     let coordinates: Coordinates
     let main: WeatherItem
     let weather: [WeatherConditions]
+
     enum CodingKeys: String, CodingKey {
         case name
         case timezone
@@ -26,8 +27,8 @@ struct CurrentWeatherResponse: Decodable {
     }
     
     struct Sys: Codable {
-        let country: String
-        let sunrise: Int
-        let sunset: Int
+        let country: String?
+        let sunrise: Int?
+        let sunset: Int?
     }
 }

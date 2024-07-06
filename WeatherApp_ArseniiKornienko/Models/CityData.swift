@@ -5,7 +5,7 @@
 //  Created by Арсений Корниенко on 6/9/24.
 //
 
-import Foundation
+import UIKit
 
 struct CityData: Codable {
     let id: Int
@@ -30,7 +30,7 @@ struct CityData: Codable {
                                              description: nil,
                                              minTemp: nil,
                                              maxTemp: nil,
-                                             backgroundImage: nil),
+                                             backgroundImage: UIImage(image: .sunSky)),
                         dayTempData: nil,
                         tempRangeData: nil)
     }
