@@ -35,7 +35,8 @@ final class APIDataProvider {
                                errorHandler: @escaping (AppError) -> Void?) {
         let url = endpointProvider.getURL(for: endpoint)
         let request = URLRequest(url: url)
-        URLSession.shared.dataTask(with: request) {data, response, error in
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
             if let error {
                 errorHandler(.connectivityError)
             } else {
@@ -49,16 +50,14 @@ final class APIDataProvider {
                 if (200...299) ~= statusCode {
                     let decoder = JSONDecoder()
                     do {
-                        let currentWeather = try decoder.decode(T.self,
-                                                                from: data)
+                        let currentWeather = try decoder.decode(T.self, from: data)
                         completion(currentWeather)
                     } catch {
                         errorHandler(.decodeJSONfailed)
                     }
                 } else {
                     do {
-                        let error = try JSONDecoder().decode(APIError.self,
-                                                             from: data)
+                        let error = try JSONDecoder().decode(APIError.self, from: data)
                         errorHandler(.apiError(error))
                     } catch {
                         errorHandler(.unknown)

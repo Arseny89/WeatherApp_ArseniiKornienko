@@ -8,7 +8,7 @@
 import UIKit
 
 struct CityWeatherData: Hashable {
-    let id: Int?
+    let id: Int
     let titleData: TitleData
     let dayTempData: [DayTempData]?
     let tempRangeData: [TempRangeData]?
@@ -59,14 +59,14 @@ private let cloudsGreyImage = UIImage(image: .cloudsGrey) ?? UIImage.checkmark
 extension CityWeatherData {
     static var emptyData: CityWeatherData {
         CityWeatherData(
-            id: nil,
+            id: -1,
             titleData: TitleData(title: "--",
                                  subtitle: "--",
                                  currentTemp: nil,
                                  description: "--",
                                  minTemp: nil,
                                  maxTemp: nil,
-                                 backgroundImage: nil),
+                                 backgroundImage: UIImage(image: .sunSky)),
             dayTempData: nil,
             tempRangeData: nil
         )

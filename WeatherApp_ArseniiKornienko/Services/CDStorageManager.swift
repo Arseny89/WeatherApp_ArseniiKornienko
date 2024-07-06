@@ -9,24 +9,33 @@ import Foundation
 import CoreData
 
 final class CDStorageManager {
-    
+    private let syncQueue = DispatchQueue(label: "CDStorageManager.syncQueue")
     private let persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "CoreData")
         container.loadPersistentStores { _, error in
             if let error { fatalError("Loading failed") }
         }
+
         return container
     }()
-    
+
     private var context: NSManagedObjectContext {
         persistentContainer.viewContext
+    }
+
+    init() {
+        if let url = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).last {
+            print(url.absoluteString)
+        }
     }
 }
 
 extension CDStorageManager {
     //MARK: Upload
     func set(_ data: [CityData], completion: @escaping (Bool) -> Void) {
-        persistentContainer.performBackgroundTask { context in
+        syncQueue.sync { [weak context] in
+            guard let context else { return }
+
             data.forEach { data in
                 let city = CityCoreData(context: context)
                 city.id = data.id
@@ -51,11 +60,12 @@ extension CDStorageManager {
     }
     //MARK: Read
     func fetch(completion: @escaping ([CityData]?) -> Void) {
-        persistentContainer.performBackgroundTask { context in
-            let fetchRequest:
-            NSFetchRequest<CityCoreData> = CityCoreData.fetchRequest()
+        syncQueue.sync { [weak context] in
+            guard let context else { return }
+
+            let fetchRequest = CityCoreData.fetchRequest()
             let fetchResult = try? context.fetch(fetchRequest)
-            
+
             let data = fetchResult?.map {city in
                 CityData(id: city.id,
                          name: city.name ?? "",
@@ -69,15 +79,17 @@ extension CDStorageManager {
             }
         }
     }
-    
+
     func fetchData(with id: Int, completion: @escaping (CityData?) -> Void) {
-        persistentContainer.performBackgroundTask { context in
-            let fetchRequest:
-            NSFetchRequest<CityCoreData> = CityCoreData.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %@",
-                                                 String(id))
+        syncQueue.sync { [weak context] in
+            guard let context else { return }
+
+            let fetchRequest = CityCoreData.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", String(id))
+
             let fetchResult = try? context.fetch(fetchRequest)
             let city = fetchResult?.first
+
             DispatchQueue.main.async {
                 if let city {
                     completion(CityData(id: city.id,
@@ -92,17 +104,17 @@ extension CDStorageManager {
             }
         }
     }
-    
-    func fetchCitySearch(with searchText: String?, completion: @escaping ([CityData]) -> Void) {
-        let fetchRequest:
-        NSFetchRequest<CityCoreData> = CityCoreData.fetchRequest()
+
+    func fetchCitySearch(with searchText: String, completion: @escaping ([CityData]) -> Void) {
+        let fetchRequest = CityCoreData.fetchRequest()
         let nameDescriptor = NSSortDescriptor(key: "name", ascending: true)
         fetchRequest.sortDescriptors = [nameDescriptor]
         fetchRequest.fetchBatchSize = 20
-        guard let searchText = searchText else { return }
         fetchRequest.predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchText.lowercased())
+
         let asyncFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { request in
             guard let result = request.finalResult else { return }
+
             let data = result.map { city in
                 return CityData(id: city.id,
                                 name: city.name ?? "",
@@ -111,64 +123,70 @@ extension CDStorageManager {
                                 coordinates: Coordinates(latitude: city.lat,
                                                          longitude: city.lon))
             }
+
             DispatchQueue.main.async {
                 completion(data)
+            }
         }
-    }
+
         do {
             try context.execute(asyncFetchRequest)
         } catch {
             completion([])
         }
-}
-        //MARK: Delete
-        func removeAllData(completion: @escaping (Bool) -> Void) {
-            persistentContainer.performBackgroundTask { context in
-                let fetchRequest:
-                NSFetchRequest<CityCoreData> = CityCoreData.fetchRequest()
-                let fetchResult = try? context.fetch(fetchRequest)
-                
-                fetchResult?.forEach { data in
-                    context.delete(data)
-                }
-            }
-            do {
-                try context.save()
-                DispatchQueue.main.async {
-                    completion(true)
-                }
-            } catch {
-                print("Error saving to CoreData")
-                DispatchQueue.main.async {
-                    completion(false)
-                }
+    }
+
+    //MARK: Delete
+    func removeAllData(completion: @escaping (Bool) -> Void) {
+        syncQueue.sync { [weak context] in
+            guard let context else { return }
+
+            let fetchRequest = CityCoreData.fetchRequest()
+            let fetchResult = try? context.fetch(fetchRequest)
+
+            fetchResult?.forEach { data in
+                context.delete(data)
             }
         }
-        
-        func remove(_ id: Int, completion: @escaping (Bool) -> Void) {
-            persistentContainer.performBackgroundTask { context in
-                let fetchRequest:
-                NSFetchRequest<CityCoreData> = CityCoreData.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "id == %@",
-                                                     String(id))
-                let fetchResult = try? context.fetch(fetchRequest)
-                
-                fetchResult?.forEach { data in
-                    context.delete(data)
-                }
+        do {
+            try context.save()
+
+            DispatchQueue.main.async {
+                completion(true)
             }
-            do {
-                try context.save()
-                DispatchQueue.main.async {
-                    completion(true)
-                }
-            } catch {
-                print("Error saving to CoreData")
-                DispatchQueue.main.async {
-                    completion(false)
-                }
+        } catch {
+            print("Error saving to CoreData")
+
+            DispatchQueue.main.async {
+                completion(false)
             }
         }
-    
-    
+    }
+
+    func remove(_ id: Int, completion: @escaping (Bool) -> Void) {
+        syncQueue.sync { [weak context] in
+            guard let context else { return }
+
+            let fetchRequest = CityCoreData.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", String(id))
+            let fetchResult = try? context.fetch(fetchRequest)
+
+            fetchResult?.forEach { data in
+                context.delete(data)
+            }
+        }
+        do {
+            try context.save()
+
+            DispatchQueue.main.async {
+                completion(true)
+            }
+        } catch {
+            print("Error saving to CoreData")
+
+            DispatchQueue.main.async {
+                completion(false)
+            }
+        }
+    }
 }

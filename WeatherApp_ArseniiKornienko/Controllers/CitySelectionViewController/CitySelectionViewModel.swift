@@ -11,6 +11,7 @@ import SnapKit
 
 protocol CitySelectionViewModelInput {
     var output: CitySelectionViewModelOutput? { get set }
+
     func getData(forced: Bool)
     func getForecastForCity(with id: Int?)
 }
@@ -30,19 +31,27 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
     
     weak var output: CitySelectionViewModelOutput?
     var storageManager = StorageManager()
-    var selectedCityList = CityListProviderImpl.shared.selectedCityList
+    var selectedCityList: [CityData] {
+        CityListProviderImpl.shared.selectedCityList
+    }
     private var weatherProvider: WeatherProvider?
     
     init(weatherProvider: WeatherProvider) {
         self.weatherProvider = weatherProvider
         self.weatherProvider?.delegate = self
+
         prepareSections(with: selectedCityList.map(\.weatherData))
         getDataForCityList(for: selectedCityList, forced: false)
+
+        CityListProviderImpl.shared.delegate = self
     }
     
     func getDataForCityList(for list: [CityData], forced: Bool) {
+        guard !list.isEmpty else { return }
+
         weatherProvider?.getDataForCityList(list, forced: forced) { [weak self] data in
             guard let self else { return }
+
             let sortedData = selectedCityList.compactMap { data[$0.id] ?? $0.weatherData }
             prepareSections(with: sortedData)
         }
@@ -69,7 +78,6 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
 }
 
 extension CitySelectionViewModel: WeatherProviderDelegate {
-    
     func setAlertMessage(_ message: String) {
         output?.errorMessage = message
     }
@@ -80,4 +88,9 @@ extension CitySelectionViewModel: WeatherProviderDelegate {
     }
 }
 
+extension CitySelectionViewModel: CityListProviderDelegate {
+    func locationWasReceive() {
+        getDataForCityList(for: selectedCityList, forced: true)
+    }
+}
 

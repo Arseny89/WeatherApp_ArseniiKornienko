@@ -37,6 +37,6 @@ final class CitySearchViewModel: CitySearchViewModelInput {
     }
     
     func select(_ city: CityData) {
-        cityListProvider.addCity(city: city)
+        cityListProvider.addCity(city: city) 
     }
 }

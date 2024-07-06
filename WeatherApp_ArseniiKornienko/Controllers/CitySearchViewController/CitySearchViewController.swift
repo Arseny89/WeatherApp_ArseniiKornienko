@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 protocol CitySearchViewControllerDelegate {
-    func reloadData()
+    func select(_ city: CityData)
 }
 final class CitySearchViewController: UIViewController {
     var viewModel: CitySearchViewModelInput!
@@ -75,7 +75,7 @@ extension CitySearchViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel.select(cityList[indexPath.row])
-        delegate?.reloadData()
+        delegate?.select(cityList[indexPath.row])
         dismiss(animated: true)
     }
 }

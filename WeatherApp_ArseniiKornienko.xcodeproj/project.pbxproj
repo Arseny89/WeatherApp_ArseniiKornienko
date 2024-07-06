@@ -41,7 +41,6 @@
 		0E887B1A2C1D49D300AB7502 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B192C1D49D300AB7502 /* BaseViewController.swift */; };
 		0E887B1C2C21205200AB7502 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B1B2C21205200AB7502 /* StorageManager.swift */; };
 		0E887B1E2C2561D500AB7502 /* GroupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B1D2C2561D500AB7502 /* GroupResponse.swift */; };
-		0E887B212C2A268600AB7502 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B1F2C2A268600AB7502 /* CoreData.xcdatamodeld */; };
 		0E887B292C2A48F900AB7502 /* CDStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B282C2A48F900AB7502 /* CDStorageManager.swift */; };
 		0E887B2B2C2A512A00AB7502 /* CityCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B2A2C2A512A00AB7502 /* CityCoreData.swift */; };
 		0E887B362C2D027C00AB7502 /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887B352C2D027C00AB7502 /* LocationProvider.swift */; };
@@ -51,6 +50,7 @@
 		0ED012B82BE76181005D48D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0ED012B72BE76181005D48D7 /* Assets.xcassets */; };
 		0ED012BB2BE76181005D48D7 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 0ED012BA2BE76181005D48D7 /* Base */; };
 		0EF824852BEF4FA70033BF6C /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EF824842BEF4FA70033BF6C /* WebViewController.swift */; };
+		7724D2462C34229F0079B31D /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7724D2442C34229F0079B31D /* CoreData.xcdatamodeld */; };
 		C9B37056B823BA0D632C4B5A /* libPods-WeatherApp_ArseniiKornienko.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D63EC1E798885B71B93FC98 /* libPods-WeatherApp_ArseniiKornienko.a */; };
 /* End PBXBuildFile section */
 
@@ -106,7 +106,6 @@
 		0E887B192C1D49D300AB7502 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		0E887B1B2C21205200AB7502 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		0E887B1D2C2561D500AB7502 /* GroupResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupResponse.swift; sourceTree = "<group>"; };
-		0E887B202C2A268600AB7502 /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
 		0E887B282C2A48F900AB7502 /* CDStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDStorageManager.swift; sourceTree = "<group>"; };
 		0E887B2A2C2A512A00AB7502 /* CityCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityCoreData.swift; sourceTree = "<group>"; };
 		0E887B352C2D027C00AB7502 /* LocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
@@ -122,6 +121,7 @@
 		0EF824842BEF4FA70033BF6C /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		1D63EC1E798885B71B93FC98 /* libPods-WeatherApp_ArseniiKornienko.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeatherApp_ArseniiKornienko.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6594C6C4CD40C1CE610B416A /* Pods-WeatherApp_ArseniiKornienko.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp_ArseniiKornienko.release.xcconfig"; path = "Target Support Files/Pods-WeatherApp_ArseniiKornienko/Pods-WeatherApp_ArseniiKornienko.release.xcconfig"; sourceTree = "<group>"; };
+		7724D2452C34229F0079B31D /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
 		7F736783E8D6A5215176A6D1 /* Pods-WeatherApp_ArseniiKornienko.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp_ArseniiKornienko.debug.xcconfig"; path = "Target Support Files/Pods-WeatherApp_ArseniiKornienko/Pods-WeatherApp_ArseniiKornienko.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -314,7 +314,7 @@
 				0ED012BC2BE76181005D48D7 /* Info.plist */,
 				0E887AF22C16783700AB7502 /* Config.plist */,
 				0E887AF82C168AD000AB7502 /* city_list.json */,
-				0E887B1F2C2A268600AB7502 /* CoreData.xcdatamodeld */,
+				7724D2442C34229F0079B31D /* CoreData.xcdatamodeld */,
 			);
 			path = WeatherApp_ArseniiKornienko;
 			sourceTree = "<group>";
@@ -515,13 +515,13 @@
 				0E816D3E2BEB2562007CC983 /* CitySelectionViewController.swift in Sources */,
 				0E7649FA2BEACA500052E3F2 /* BottomView.swift in Sources */,
 				0E4B6A202C04650F00058097 /* CitySearchViewController.swift in Sources */,
+				7724D2462C34229F0079B31D /* CoreData.xcdatamodeld in Sources */,
 				0E887B2B2C2A512A00AB7502 /* CityCoreData.swift in Sources */,
 				0E887B132C1D000400AB7502 /* APIDataProvider.swift in Sources */,
 				0E11F5112BFAF39E00D82550 /* MOCKDataProvider.swift in Sources */,
 				0E816D402BEB3806007CC983 /* CityWeatherCell.swift in Sources */,
 				0E4B6A3B2C10F43200058097 /* WeatherProvider.swift in Sources */,
 				0E510DC02BF49018007EB1A8 /* DetailedWeatherViewController.swift in Sources */,
-				0E887B212C2A268600AB7502 /* CoreData.xcdatamodeld in Sources */,
 				0E887B032C16AC7500AB7502 /* ForecastResponse.swift in Sources */,
 				0E887B362C2D027C00AB7502 /* LocationProvider.swift in Sources */,
 				0E4B6A302C08544900058097 /* WeatherViewModel.swift in Sources */,
@@ -877,14 +877,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		0E887B1F2C2A268600AB7502 /* CoreData.xcdatamodeld */ = {
+		7724D2442C34229F0079B31D /* CoreData.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				0E887B202C2A268600AB7502 /* CoreData.xcdatamodel */,
+				7724D2452C34229F0079B31D /* CoreData.xcdatamodel */,
 			);
-			currentVersion = 0E887B202C2A268600AB7502 /* CoreData.xcdatamodel */;
+			currentVersion = 7724D2452C34229F0079B31D /* CoreData.xcdatamodel */;
 			name = CoreData.xcdatamodeld;
-			path = "/Users/arsenijkornienko/Documents/xCode projects/WeatherApp_ArseniiKornienko/WeatherApp_ArseniiKornienko/CoreData.xcdatamodeld";
+			path = /Users/viktor/Downloads/WeatherApp_ArseniiKornienko/WeatherApp_ArseniiKornienko/CoreData.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
