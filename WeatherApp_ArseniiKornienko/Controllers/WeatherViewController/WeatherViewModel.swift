@@ -65,7 +65,7 @@ final class WeatherViewModel: WeatherViewModelInput {
         }
     }
     
-    private var weatherData: CityWeatherData = .emptyData
+    private var weatherData: CityWeatherData
     weak var output: WeatherViewModelOutput?
     
     init(with weatherData: CityWeatherData?) {

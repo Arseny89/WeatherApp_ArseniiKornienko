@@ -23,7 +23,6 @@ final class LocationProvider: NSObject {
     }
     
     weak var delegate: LocationProviderDelegate?
-    var currentLocation: Coordinates?
     private let locationManager = CLLocationManager()
     
     override init() {
@@ -73,11 +72,12 @@ final class LocationProvider: NSObject {
 extension LocationProvider: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, 
                          didUpdateLocations locations: [CLLocation]) {
-        guard let coordinate = locations.last?.coordinate else { return }
-        
-        currentLocation = Coordinates(latitude: coordinate.latitude, 
-                                      longitude: coordinate.longitude)
-        delegate?.setCurrentLocation(coordinates: currentLocation)
+            guard let coordinate = locations.last?.coordinate else { return }
+            
+            delegate?.setCurrentLocation(
+                coordinates: Coordinates(latitude: coordinate.latitude,
+                                         longitude: coordinate.longitude)
+            )
     }
     
     func locationManager(_ manager: CLLocationManager, 
