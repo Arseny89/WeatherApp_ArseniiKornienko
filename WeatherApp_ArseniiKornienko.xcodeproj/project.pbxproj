@@ -353,6 +353,8 @@
 			dependencies = (
 			);
 			name = WeatherApp_ArseniiKornienko;
+			packageProductDependencies = (
+			);
 			productName = WeatherApp_ArseniiKornienko;
 			productReference = 0ED012AB2BE76180005D48D7 /* WeatherApp_ArseniiKornienko.app */;
 			productType = "com.apple.product-type.application";
@@ -425,6 +427,8 @@
 				Base,
 			);
 			mainGroup = 0ED012A22BE76180005D48D7;
+			packageReferences = (
+			);
 			productRefGroup = 0ED012AC2BE76180005D48D7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
