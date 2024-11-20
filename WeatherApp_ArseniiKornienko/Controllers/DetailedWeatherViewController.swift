@@ -15,7 +15,7 @@ final class DetailedWeatherViewController: UIViewController {
         
         var text: String {
             switch self {
-            case .title: return "Погодные условия"
+            case .title: return "Weather conditions"
             }
         }
     }
