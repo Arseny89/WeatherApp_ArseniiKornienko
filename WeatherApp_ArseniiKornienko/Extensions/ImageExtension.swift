@@ -44,5 +44,6 @@ extension UIImage {
         case clouds = "clouds"
         case starNight = "starNight"
         case cloudsGrey = "cloudsGrey"
+        case rainDay = "rainDay"
     }
 }
