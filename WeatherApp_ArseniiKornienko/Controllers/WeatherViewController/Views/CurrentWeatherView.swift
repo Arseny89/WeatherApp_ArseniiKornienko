@@ -19,21 +19,23 @@ final class CurrentWeatherView: UIView {
         let backgroundImage: UIImage
     }
     
-    let titleLabel = UILabel()
+    let locationNameLabel = UILabel()
     let currentTemp = UILabel()
-    let subtitleLabel = UILabel()
+    let isMyLocationLabel = UILabel()
     let descriptionLabel = UILabel()
     let tempLimits = UILabel()
     let hiddenLabel = UILabel()
-    private let stackView  = UIStackView()
+    let topStackView = UIStackView()
+    let lowerStackView  = UIStackView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        setupStackView()
+        setupTopStackView()
         setupTitleLabel()
         setupSubtitleLabel()
         setupHiddenLabel()
+        setupLowerStackView()
         setupCurrentTemp()
         setupDescriptionLabel()
         setupTempLimits()
@@ -44,8 +46,8 @@ final class CurrentWeatherView: UIView {
     }
     
     func setupCurrentWeather(_ data: CityWeatherData) {
-        titleLabel.text = data.titleData.title
-        subtitleLabel.text = data.titleData.subtitle
+        locationNameLabel.text = data.titleData.title
+        isMyLocationLabel.text = data.titleData.subtitle?.uppercased()
         descriptionLabel.text = data.titleData.description
         guard let maxTemp = data.titleData.maxTemp?.formattedTemp(),
               let minTemp = data.titleData.minTemp?.formattedTemp(),
@@ -55,62 +57,47 @@ final class CurrentWeatherView: UIView {
         }
         hiddenLabel.text = "\(temp) | \(data.titleData.description ?? "")"
         currentTemp.text = temp
-        tempLimits.text = "Макс.: \(maxTemp), Мин.: \(minTemp)"
+        tempLimits.text = "H.: \(maxTemp), L.: \(minTemp)"
     }
     
-    private func setupStackView() {
-        addSubview(stackView)
-        stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
+    private func setupTopStackView() {
+        addSubview(topStackView)
+        topStackView.axis = .vertical
+        topStackView.distribution = .fill
         
-        stackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        topStackView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.top.equalToSuperview()
+        }
+    }
+    
+    private func setupLowerStackView() {
+        addSubview(lowerStackView)
+        lowerStackView.axis = .vertical
+        lowerStackView.distribution = .fill
+        lowerStackView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.top.equalTo(hiddenLabel)
+            make.bottom.equalToSuperview()
         }
     }
     
     private func setupTitleLabel() {
-        stackView.addArrangedSubview(titleLabel)
-        titleLabel.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
-        titleLabel.textColor = .white
-        titleLabel.textAlignment = .center
-        titleLabel.snp.makeConstraints { make in
-            make.height.equalTo(30)
-        }
+        topStackView.addArrangedSubview(isMyLocationLabel)
+        locationNameLabel.font = UIFont.systemFont(ofSize: 30, weight: .medium)
+        locationNameLabel.textColor = .white
+        locationNameLabel.textAlignment = .center
     }
     
     private func setupSubtitleLabel() {
-        stackView.addArrangedSubview(subtitleLabel)
-        subtitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
-        subtitleLabel.textColor = .white
-        subtitleLabel.textAlignment = .center
-        subtitleLabel.snp.makeConstraints { make in
-            make.height.equalTo(25)
-        }
-    }
-    
-    private func setupCurrentTemp() {
-        stackView.addArrangedSubview(currentTemp)
-        currentTemp.textColor = .white
-        currentTemp.font = UIFont.systemFont(ofSize: 100, weight: .ultraLight)
-        currentTemp.textAlignment = .center
-    }
-    
-    private func setupDescriptionLabel() {
-        stackView.addArrangedSubview(descriptionLabel)
-        descriptionLabel.font = UIFont.systemFont(ofSize: 25, weight: .medium)
-        descriptionLabel.textColor = .white
-        descriptionLabel.textAlignment = .center
-    }
-    
-    private func setupTempLimits() {
-        stackView.addArrangedSubview(tempLimits)
-        tempLimits.font = UIFont.systemFont(ofSize: 25, weight: .medium)
-        tempLimits.textColor = .white
-        tempLimits.textAlignment = .center
+        topStackView.addArrangedSubview(locationNameLabel)
+        isMyLocationLabel.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        isMyLocationLabel.textColor = .white
+        isMyLocationLabel.textAlignment = .center
     }
     
     private func setupHiddenLabel() {
-        stackView.addArrangedSubview(hiddenLabel)
+        topStackView.addArrangedSubview(hiddenLabel)
         hiddenLabel.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         hiddenLabel.textColor = .white
         hiddenLabel.textAlignment = .center
@@ -118,5 +105,29 @@ final class CurrentWeatherView: UIView {
         hiddenLabel.snp.makeConstraints { make in
             make.height.equalTo(20)
         }
+    }
+    
+    private func setupCurrentTemp() {
+        lowerStackView.addArrangedSubview(currentTemp)
+        currentTemp.textColor = .white
+        currentTemp.font = UIFont.systemFont(ofSize: 80, weight: .light)
+        currentTemp.textAlignment = .center
+        currentTemp.snp.makeConstraints { make in
+            make.height.equalTo(80)
+        }
+    }
+    
+    private func setupDescriptionLabel() {
+        lowerStackView.addArrangedSubview(descriptionLabel)
+        descriptionLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        descriptionLabel.textColor = .white.withAlphaComponent(0.8)
+        descriptionLabel.textAlignment = .center
+    }
+    
+    private func setupTempLimits() {
+        lowerStackView.addArrangedSubview(tempLimits)
+        tempLimits.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        tempLimits.textColor = .white
+        tempLimits.textAlignment = .center
     }
 }
