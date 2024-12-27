@@ -63,6 +63,7 @@ struct HourlyWeatherItem: Decodable {
     let main: WeatherItem
     let date: Date
     let weather: [WeatherConditions]
+    let dateUnix: Double?
     
     enum CodingKeys: String, CodingKey {
         case main
@@ -75,6 +76,7 @@ struct HourlyWeatherItem: Decodable {
         let dateUnix = try container.decode(Double.self, forKey: .dateUnix)
         self.date = Date(timeIntervalSince1970: dateUnix)
         self.weather = try container.decode([WeatherConditions].self, forKey: .weather)
+        self.dateUnix = dateUnix
     }
 }
 

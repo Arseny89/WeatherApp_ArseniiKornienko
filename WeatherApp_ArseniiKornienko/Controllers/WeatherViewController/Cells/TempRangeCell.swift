@@ -36,17 +36,16 @@ final class TempRangeCell: UITableViewCell {
         dayView.subviews.forEach { $0.removeFromSuperview() }
         let view = DayRangeView()
         view.setupDayRange(data)
-        let maxTempDiff = data.maxTemp - data.maxDayTemp
-        let minTempDiff = data.minDayTemp - data.minTemp
-        let maxOffset: Double
-        let minOffset: Double
+        let maxTempDiff = abs(data.maxTemp - data.maxDayTemp)
         view.weekBar.backgroundColor = weekBarColor
-        maxOffset = maxTempDiff > 0 ? maxTempDiff / data.maxDayTemp : 0
-        minOffset = minTempDiff > 0 ? minTempDiff / data.minDayTemp : 0
+        let weekTempRange = abs(data.maxTemp - data.minTemp)
+        let dayTempRange = abs(data.maxDayTemp - data.minDayTemp)
+        let widthMultiplier = dayTempRange / weekTempRange
+        let trailingMultiplier = 1 - maxTempDiff / weekTempRange
         
         view.dayBar.snp.remakeConstraints { make in
-            make.trailing.equalToSuperview().multipliedBy(1 - maxOffset)
-            make.width.equalToSuperview().multipliedBy(1 - minOffset - maxOffset)
+            make.trailing.equalToSuperview().multipliedBy(trailingMultiplier)
+            make.width.equalToSuperview().multipliedBy(widthMultiplier)
             make.height.equalToSuperview()
             make.verticalEdges.equalToSuperview()
         }
@@ -188,7 +187,9 @@ extension TempRangeCell {
             dayBar.layer.cornerRadius = 2
             dayBar.snp.makeConstraints { make in
                 make.verticalEdges.equalToSuperview()
-                make.leading.trailing.equalToSuperview()
+                make.centerX.equalToSuperview()
+                make.trailing.equalToSuperview()
+                make.leading.equalToSuperview()
             }
         }
         

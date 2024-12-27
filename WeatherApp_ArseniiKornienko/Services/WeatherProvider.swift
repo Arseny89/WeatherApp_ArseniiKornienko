@@ -67,19 +67,15 @@ final class WeatherProviderImpl: WeatherProvider {
     func prepareCityWeatherData(for id: Int) -> CityWeatherData? {
         guard let weatherData = weatherCache[id] else { return nil }
         
-        let title =  id == .currentCityId ? "My Location" : weatherData.name
-        let subtitle = id == .currentCityId
-        ? weatherData.name
-        ?? "\(weatherData.coordinates.latitude) \(weatherData.coordinates.longitude)"
-        : nil
-        
+        let title =  weatherData.name ?? "\(weatherData.coordinates.latitude) \(weatherData.coordinates.longitude)"
+        let subtitle = id == .currentCityId ? "My Location" : nil
         let titleData = TitleData(title: title,
                                   subtitle: subtitle,
                                   currentTemp: weatherData.main.temp,
                                   description: weatherData.weather.first?.description.capitalized,
                                   minTemp: weatherData.main.minTemp,
                                   maxTemp: weatherData.main.maxTemp,
-                                  backgroundImage: UIImage(image: .sunSky))
+                                  backgroundImage: weatherData.weather.first?.visual.image)
         
         return CityWeatherData(id: id,
                                titleData: titleData,
@@ -98,7 +94,7 @@ final class WeatherProviderImpl: WeatherProvider {
             dateFormatter.timeZone = forecast.city.timezone
             
             return DayTempData(date: item.date,
-                               icon: item.weather.first?.icon.image.withRenderingMode(.alwaysOriginal),
+                               icon: item.weather.first?.visual.icon.withRenderingMode(.alwaysOriginal),
                                temp: item.main.temp,
                                time: dateFormatter.string(from: item.date))
         }
@@ -173,34 +169,36 @@ final class WeatherProviderImpl: WeatherProvider {
         var tempData: [Int: [HourlyWeatherItem]] = [:]
         forecast.list.forEach { item in
             let day = calendar.component(.day, from: item.date)
+
+                if var dates = tempData[day] {
+                    dates.append(item)
+                    tempData[day] = dates
+                } else {
+                    tempData[day] = [item]
+                }
             
-            if var dates = tempData[day]{
-                dates.append(item)
-                tempData[day] = dates
-            } else {
-                tempData[day] = [item]
-            }
         }
-        
         let minTemp = forecast.list.map { $0.main.minTemp }.min() ?? 0
         let maxTemp = forecast.list.map { $0.main.maxTemp }.max() ?? 1
-        
         let dayData = tempData
             .sorted { $0.key < $1.key }
             .map { key, items in
                 let minDayTemp = items.map { $0.main.minTemp }.min() ?? 0
                 let maxDayTemp = items.map { $0.main.maxTemp }.max() ?? 1
                 
+                let todayMinTemp = minTemp + abs(weatherData.main.temp - minTemp) / 2
+                let todayMaxTemp = maxTemp - abs(maxTemp - weatherData.main.temp) / 2
                 let todayKey = calendar.component(.day, from: Date())
                 if key == todayKey {
                     return TempRangeData(day: "Today",
-                                         icon: weatherData.weather.first?.icon.image
+                                         icon: weatherData.weather.first?.visual.icon
                         .withRenderingMode(.alwaysOriginal),
-                                         minDayTemp: minDayTemp,
-                                         maxDayTemp: maxDayTemp,
-                                         minTemp: minTemp, // Data not available
-                                         maxTemp: maxTemp, // Data not available
-                                         currentTemp: weatherData.main.temp
+                                         minDayTemp: todayMinTemp,
+                                         maxDayTemp: todayMaxTemp,
+                                         minTemp: minTemp,
+                                         maxTemp: maxTemp,
+                                         currentTemp: weatherData.main.temp,
+                                         dateUnix: items.first?.dateUnix
                     )
                 } else {
                     let dateFormatter = DateFormatter()
@@ -208,16 +206,17 @@ final class WeatherProviderImpl: WeatherProvider {
                     dateFormatter.timeZone = forecast.city.timezone
                     
                     return TempRangeData(day: dateFormatter.string(from: items.first?.date ?? Date()),
-                                         icon: items.first?.weather.first?.icon.image
+                                         icon: items.first?.weather.first?.visual.icon
                         .withRenderingMode(.alwaysOriginal),
                                          minDayTemp: minDayTemp,
                                          maxDayTemp: maxDayTemp,
                                          minTemp: minTemp,
                                          maxTemp: maxTemp,
-                                         currentTemp: nil)
+                                         currentTemp: nil,
+                                         dateUnix: items.first?.dateUnix)
                 }
             }
-        return dayData
+        return dayData.sorted { $0.dateUnix ?? 0 < $1.dateUnix ?? 0 }
     }
     
     @objc func notificate() {

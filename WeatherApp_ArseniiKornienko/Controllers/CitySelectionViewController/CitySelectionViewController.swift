@@ -61,7 +61,6 @@ final class CitySelectionViewController: UIViewController {
         setupNavigationBar()
         setupCityCollectionView()
         createDataSource()
-        reloadDataSource()
     }
     
     func sceneWillEnterForeground() {
@@ -110,6 +109,7 @@ final class CitySelectionViewController: UIViewController {
         cityCollectionView.backgroundColor = .clear
         cityCollectionView.delegate = self
         cityCollectionView.registerCell(CityWeatherCell.self)
+        cityCollectionView.showsVerticalScrollIndicator = false
         cityCollectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.bottom.equalToSuperview()
@@ -125,7 +125,6 @@ final class CitySelectionViewController: UIViewController {
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.modalPresentationStyle = .fullScreen
         self.present(navigationController, animated: true)
-        errorMessage = ""
     }
     
     private func setupSearchController() -> UISearchController {
@@ -158,18 +157,21 @@ final class CitySelectionViewController: UIViewController {
     private func createCitySection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
-            heightDimension: .absolute(120)
+            heightDimension: .absolute(100)
         )
         let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
             heightDimension: .fractionalHeight(1)
         )
+        
         let layoutGroup = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
             subitems: [layoutItem]
         )
         
+        layoutGroup.interItemSpacing = NSCollectionLayoutSpacing.fixed(20)
+
         let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
         return layoutSection
     }

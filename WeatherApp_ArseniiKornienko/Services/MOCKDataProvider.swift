@@ -39,6 +39,7 @@ struct TempRangeData: Hashable {
     let minTemp: Double
     let maxTemp: Double
     let currentTemp: Double?
+    let dateUnix: Double?
 }
 
 private let sunIcon = UIImage(icon: .sunMax)?.withRenderingMode(.alwaysOriginal) ?? UIImage.checkmark
