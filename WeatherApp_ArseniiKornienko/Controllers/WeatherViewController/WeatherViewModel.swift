@@ -20,6 +20,7 @@ protocol WeatherViewModelOutput: AnyObject {
     
     func setupCurrentWeatherView(with data: CityWeatherData)
     func setupBackgroundImage(with data: CityWeatherData?)
+    func setupCellColor(with data: CityWeatherData)
     func reloadData()
 }
 
@@ -81,16 +82,16 @@ final class WeatherViewModel: WeatherViewModelInput {
     func viewDidLoad() {
         output?.setupCurrentWeatherView(with: weatherData)
         output?.setupBackgroundImage(with: weatherData)
+        output?.setupCellColor(with: weatherData)
         prepareDataSource(from: weatherData)
     }
     
     private func prepareDataSource(from weatherData: CityWeatherData) {
         guard let tempRangeData = weatherData.tempRangeData else { return }
         var forecastItems: [Item] = tempRangeData.map { .tempRange(data: $0) }
-        
         forecastItems.insert(
-            .title(data: TitleCell.InputData(title: Constants.tempRange.title,
-                                             icon: Constants.tempRange.icon)),
+            .title(data: TitleCell.InputData(title: WeatherViewElements.tempRange.title,
+                                             icon: WeatherViewElements.tempRange.icon)),
             at: 0
         )
         
@@ -98,8 +99,8 @@ final class WeatherViewModel: WeatherViewModelInput {
             Section(icon: nil,
                     title: nil,
                     items: [
-                        .title(data: TitleCell.InputData(title: Constants.dayTemp.title,
-                                                         icon: Constants.dayTemp.icon)),
+                        .title(data: TitleCell.InputData(title: WeatherViewElements.dayTemp.title,
+                                                         icon: WeatherViewElements.dayTemp.icon)),
                         .dayTemp(data: weatherData.dayTempData ?? [DayTempData.emptyData])
                     ])
             ,Section(icon: nil,
