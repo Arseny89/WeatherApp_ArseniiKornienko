@@ -11,11 +11,17 @@ import UIKit
 struct WeatherConditions: Decodable {
     let main: String
     let description: String
-    let icon: Icon
+    let visual: Conditions
+    
+    enum CodingKeys: String, CodingKey {
+        case main
+        case description
+        case visual = "icon"
+    }
 }
 
 extension WeatherConditions {
-    enum Icon: String, Decodable {
+    enum Conditions: String, Decodable {
         case clearSkyDay = "01d"
         case clearSkyNight = "01n"
         case fewCloudsDay = "02d"
@@ -35,11 +41,11 @@ extension WeatherConditions {
         case mistDay = "50d"
         case mistNight = "50n"
         
-        var image: UIImage {
+        var icon: UIImage {
             switch self {
             case .clearSkyDay: return UIImage(icon: .sunMax) ?? UIImage.checkmark
             case .clearSkyNight: return UIImage(icon: .moonStars) ?? UIImage.checkmark
-            case .fewCloudsDay: return UIImage(icon: .moonStars) ?? UIImage.checkmark
+            case .fewCloudsDay: return UIImage(icon: .cloudSun) ?? UIImage.checkmark
             case .fewCloudsNight: return UIImage(icon: .cloudMoon) ?? UIImage.checkmark
             case .scatteredCloudsDay,
                     .brokenCloudsDay,
@@ -56,6 +62,29 @@ extension WeatherConditions {
             case .mistDay,
                     .mistNight: return UIImage(icon: .mist) ?? UIImage.checkmark
                 
+            }
+        }
+        
+        var image: UIImage {
+            switch self {
+            case .clearSkyDay: return UIImage(image: .sunSky) ?? UIImage.checkmark
+            case .clearSkyNight: return UIImage(image: .starNight) ?? UIImage.checkmark
+            case .fewCloudsDay,
+                    .scatteredCloudsDay,
+                    .brokenCloudsDay: return UIImage(image: .clouds) ?? UIImage.checkmark
+            case .fewCloudsNight,
+                    .brokenCloudsNight,
+                    .scatteredCloudsNight: return UIImage(image: .cloudNight) ?? UIImage.checkmark
+            case .showerRainDay,
+                    .rainDay: return UIImage(image: .rainDay) ?? UIImage.checkmark
+            case .rainNight,
+                    .showerRainNight: return UIImage(image: .rainDay) ?? UIImage.checkmark
+            case .thunderstormDay,
+                    .thunderstormNight: return UIImage(image: .clouds) ?? UIImage.checkmark
+            case .snowDay,
+                    .snowNight: return UIImage(image: .clouds) ?? UIImage.checkmark
+            case .mistDay,
+                    .mistNight: return UIImage(image: .clouds) ?? UIImage.checkmark
             }
         }
     }
