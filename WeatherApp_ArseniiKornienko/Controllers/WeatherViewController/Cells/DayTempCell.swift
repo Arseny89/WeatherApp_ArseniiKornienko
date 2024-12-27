@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class DayTempCell: UITableViewCell {
+class DayTempCell: UITableViewCell {
     struct InputData {
         var icon: UIImage?
         let temp: Int
@@ -38,9 +38,6 @@ final class DayTempCell: UITableViewCell {
             let view = HourWeatherView()
             view.setupHourWeather(data)
             stackView.addArrangedSubview(view)
-            if index == 0 {
-                stackView.setCustomSpacing(10, after: view)
-            }
         }
     }
     
@@ -60,7 +57,7 @@ final class DayTempCell: UITableViewCell {
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(100)
+            make.height.greaterThanOrEqualTo(100)
             make.bottom.equalToSuperview()
         }
     }
@@ -68,6 +65,7 @@ final class DayTempCell: UITableViewCell {
     private func setupStackView() {
         scrollView.addSubview(stackView)
         stackView.distribution = .fillEqually
+        stackView.spacing = 20
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
