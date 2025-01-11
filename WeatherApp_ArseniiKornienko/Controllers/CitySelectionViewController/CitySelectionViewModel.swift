@@ -46,7 +46,7 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
         guard !list.isEmpty else { return }
         weatherProvider?.getDataForCityList(list, forced: forced) { [weak self] data in
             guard let self else { return }
-            let sortedData = selectedCityList.compactMap { data[$0.id] ?? $0.weatherData }
+            let sortedData = selectedCityList.compactMap { data[$0.id] }
             prepareSections(with: sortedData)
         }
     }
@@ -57,7 +57,7 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
         weatherProvider?.getForecastForCity(for: cityData) { [weak self] data in
             guard let self else { return }
             
-            let sortedData = selectedCityList.compactMap { data[$0.id] ?? $0.weatherData }
+            let sortedData = selectedCityList.compactMap { data[$0.id] }
             prepareSections(with: sortedData)
         }
     }
@@ -78,7 +78,7 @@ extension CitySelectionViewModel: WeatherProviderDelegate {
     }
     
     func setCurrentWeather(_ currentWeather: [Int: CityWeatherData]) {
-        let sortedData = selectedCityList.compactMap { currentWeather[$0.id] ?? $0.weatherData }
+        let sortedData = selectedCityList.compactMap { currentWeather[$0.id] }
         prepareSections(with: sortedData)
     }
 }

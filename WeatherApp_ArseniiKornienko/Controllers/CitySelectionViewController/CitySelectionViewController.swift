@@ -185,7 +185,8 @@ extension CitySelectionViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if currentCityData ==  nil {
+        if currentCityData ==  nil,
+            sections.first?.items.count == cityListProvider.selectedCityList.count {
             currentCityData = sections[0].items[0]
         }
     }
