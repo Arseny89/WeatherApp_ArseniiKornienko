@@ -13,14 +13,12 @@ final class CitySelectionViewController: UIViewController {
     typealias Section = CitySelectionViewModel.Section
     private enum Constants {
         case infoButtonTitle
-        case url
         case title
         case searchBarTitle
         
         var text: String {
             switch self {
             case .infoButtonTitle: return "Show info"
-            case .url: return "https://www.meteoinfo.ru/t-scale"
             case .title: return "Weather"
             case .searchBarTitle: return "Search for a city or airport"
             }
@@ -34,9 +32,9 @@ final class CitySelectionViewController: UIViewController {
         }
     }
     
-    private var currentCityData: CityWeatherData? {
+    private var currentLocationData: CityWeatherData? {
         didSet {
-            presentCityWeather(with: currentCityData)
+            presentCityWeather(with: currentLocationData)
         }
     }
     
@@ -49,8 +47,7 @@ final class CitySelectionViewController: UIViewController {
     private let cityTableView = UITableView()
     private let locationProvider = LocationProvider()
     private let cityListProvider: CityListProvider = CityListProviderImpl.shared
-    private var isFirstPresentation = true
-    private var weatherData: CityWeatherData?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -92,14 +89,6 @@ final class CitySelectionViewController: UIViewController {
             cell.setupCityWeather(item.titleData)
             return cell
         }
-    }
-    
-    private func onInfoButtonTap() {
-        guard let url = URL(string: Constants.url.text) else { return }
-        let webViewController = WebViewController()
-        let viewController = UINavigationController(rootViewController: webViewController)
-        webViewController.openUrl(url)
-        self.present(viewController, animated: true)
     }
     
     private func setupCityCollectionView() {
@@ -185,9 +174,10 @@ extension CitySelectionViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if currentCityData ==  nil,
-            sections.first?.items.count == cityListProvider.selectedCityList.count {
-            currentCityData = sections[0].items[0]
+        if currentLocationData == nil,
+            sections.first?.items.count == cityListProvider.selectedCityList.count,
+           sections.first?.items.first?.dayTempData != nil {
+            currentLocationData = sections[0].items[0]
         }
     }
 }

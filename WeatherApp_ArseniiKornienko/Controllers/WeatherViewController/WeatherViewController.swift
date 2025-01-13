@@ -37,10 +37,7 @@ class WeatherViewController: BaseViewController {
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let scrollView = UIScrollView()
     private let titleView = UIView()
-    private let topView = UIView()
     private var weekBarColor = UIColor()
-    private var prevLocation = CGFloat()
-    private var totalScroll = CGFloat()
     private var stickyTableHeader = StickyTableHeader()
     
     override func viewDidLoad() {
