@@ -36,7 +36,7 @@ final class APIDataProvider {
         let url = endpointProvider.getURL(for: endpoint)
         let request = URLRequest(url: url)
             URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error {
+                if error != nil {
                     errorHandler(.connectivityError)
                 } else {
                     guard let data,
