@@ -12,7 +12,6 @@ import SnapKit
 protocol CitySelectionViewModelInput {
     var output: CitySelectionViewModelOutput? { get set }
     func getData(forced: Bool)
-    func getForecastForCity(with id: Int?)
 }
 
 protocol CitySelectionViewModelOutput: AnyObject {
@@ -46,17 +45,6 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
         guard !list.isEmpty else { return }
         weatherProvider?.getDataForCityList(list, forced: forced) { [weak self] data in
             guard let self else { return }
-            let sortedData = selectedCityList.compactMap { data[$0.id] }
-            prepareSections(with: sortedData)
-        }
-    }
-    
-    func getForecastForCity(with id: Int?) {
-        guard let id, let cityData = selectedCityList.first(where: { $0.id == id }) else { return }
-        
-        weatherProvider?.getForecastForCity(for: cityData) { [weak self] data in
-            guard let self else { return }
-            
             let sortedData = selectedCityList.compactMap { data[$0.id] }
             prepareSections(with: sortedData)
         }

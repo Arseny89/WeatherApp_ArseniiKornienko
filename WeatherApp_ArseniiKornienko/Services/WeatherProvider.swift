@@ -17,8 +17,6 @@ protocol WeatherProvider {
     var delegate: WeatherProviderDelegate? { get set }
     func getDataForCityList(_ data: [CityData], forced: Bool, 
                             completionHandler: @escaping ([Int: CityWeatherData]) -> Void)
-    func getForecastForCity(for data: CityData,
-                            completionHandler: @escaping ([Int: CityWeatherData]) -> Void)
     func appMovedToBackground()
 }
 
@@ -40,6 +38,7 @@ final class WeatherProviderImpl: WeatherProvider {
         
         return weatherDataCache.isEmpty || nextUploadDate < Date()
     }
+    
     func appMovedToBackground() {
         notificationCenter.addObserver(
             self, selector: #selector(notificate),
@@ -48,7 +47,24 @@ final class WeatherProviderImpl: WeatherProvider {
         )
     }
     
-    func getData<T: Decodable>(for coordinates: Coordinates, response: T.Type,
+    func getDataForCityList(_ list: [CityData],
+                            forced: Bool,
+                            completionHandler: @escaping ([Int: CityWeatherData]) -> Void) {
+        if isNeedUploadNewWeatherData || forced {
+            var cityListWeather: [Int: CityWeatherData] = [:]
+            list.forEach { data in
+                getDataForCity(from: data) { cityWeather in
+                    cityListWeather[data.id] = cityWeather
+                    completionHandler(cityListWeather)
+                }
+            }
+            storageManager.set(Date(), .weatherUploadDate)
+        } else {
+            delegate?.setCurrentWeather(weatherDataCache)
+        }
+    }
+    
+    private func getData<T: Decodable>(for coordinates: Coordinates, response: T.Type,
                                completion: @escaping (T) -> Void,
                                errorHandler: @escaping (AppError) -> Void?) {
         let endpoint: Endpoint
@@ -64,7 +80,7 @@ final class WeatherProviderImpl: WeatherProvider {
                              errorHandler: errorHandler)
     }
     
-    func prepareCityWeatherData(for id: Int) -> CityWeatherData? {
+    private func prepareCityWeatherData(for id: Int) -> CityWeatherData? {
         guard let weatherData = weatherCache[id] else { return nil }
         
         let title =  weatherData.name ?? "\(weatherData.coordinates.latitude) \(weatherData.coordinates.longitude)"
@@ -80,10 +96,10 @@ final class WeatherProviderImpl: WeatherProvider {
         return CityWeatherData(id: id,
                                titleData: titleData,
                                dayTempData: prepareDayTempData(for: forecastCache[id]),
-                               tempRangeData: prepareDayData(for: forecastCache[id], and: weatherCache[id]!))
+                               tempRangeData: prepareDayData(for: forecastCache[id], and: weatherData))
     }
     
-    func prepareDayTempData(for forecast: ForecastResponse?) -> [DayTempData]? {
+    private func prepareDayTempData(for forecast: ForecastResponse?) -> [DayTempData]? {
         guard let forecast else { return nil }
         
         var calendar = Calendar.current
@@ -112,56 +128,7 @@ final class WeatherProviderImpl: WeatherProvider {
             }
     }
     
-    func getDataForCityList(_ list: [CityData], 
-                            forced: Bool,
-                            completionHandler: @escaping ([Int: CityWeatherData]) -> Void) {
-        if isNeedUploadNewWeatherData || forced {
-            var cityListWeather: [Int: CityWeatherData] = [:]
-           list.forEach { data in
-                getData(for: data.coordinates, response: ForecastResponse.self) { [weak self] forecast in
-                    guard let self else { return }
-                    
-                    forecastCache[data.id] = forecast
-                } errorHandler: { [weak self] error in
-                    guard let self else { return }
-                    let errorMessage = error.description
-                    delegate?.setAlertMessage(errorMessage)
-                }
-                
-                getData(for: data.coordinates,
-                        response: CurrentWeatherResponse.self) { [weak self] currentWeather in
-                    guard let self else { return }
-                    
-                    weatherCache[data.id] = currentWeather
-                    let weatherData = prepareCityWeatherData(for: data.id)
-                    cityListWeather[data.id] = weatherData
-                    completionHandler(cityListWeather)
-                    
-                } errorHandler: { [weak self] error in
-                    guard let self else { return }
-                    let errorMessage = error.description
-                    delegate?.setAlertMessage(errorMessage)
-                }
-            }
-            storageManager.set(Date(), .weatherUploadDate)
-        } else {
-            delegate?.setCurrentWeather(weatherDataCache)
-        }
-    }
-    
-    func getForecastForCity(for data: CityData, completionHandler: @escaping ([Int: CityWeatherData]) -> Void) {
-        getData(for: data.coordinates ,
-                response: ForecastResponse.self) { [weak self] forecast in
-            guard let self else { return }
-            forecastCache[data.id] = forecast
-        } errorHandler: { [weak self] error in
-            guard let self else { return }
-            let errorMessage = error.description
-            delegate?.setAlertMessage(errorMessage)
-        }
-    }
-
-    func prepareDayData(for forecast: ForecastResponse?, and weatherData: CurrentWeatherResponse) -> [TempRangeData]? {
+    private func prepareDayData(for forecast: ForecastResponse?, and weatherData: CurrentWeatherResponse) -> [TempRangeData]? {
         guard let forecast else { return nil }
         var calendar = Calendar.current
         calendar.timeZone = forecast.city.timezone
@@ -217,6 +184,33 @@ final class WeatherProviderImpl: WeatherProvider {
                 }
             }
         return dayData.sorted { $0.dateUnix ?? 0 < $1.dateUnix ?? 0 }
+    }
+    
+    private func getDataForCity(from data: CityData, completionHandler: @escaping (CityWeatherData) -> Void) {
+        var cityWeather: CityWeatherData = .emptyData
+        getData(for: data.coordinates,
+                response: ForecastResponse.self) { [weak self] forecast in
+            guard let self else { return }
+            
+            forecastCache[data.id] = forecast
+            
+            getData(for: data.coordinates,
+                    response: CurrentWeatherResponse.self) { [weak self] currentWeather in
+                guard let self else { return }
+                
+                weatherCache[data.id] = currentWeather
+                cityWeather = prepareCityWeatherData(for: data.id) ?? .emptyData
+                completionHandler(cityWeather)
+            } errorHandler: { [weak self] error in
+                guard let self else { return }
+                let errorMessage = error.description
+                delegate?.setAlertMessage(errorMessage)
+            }
+        } errorHandler: { [weak self] error in
+            guard let self else { return }
+            let errorMessage = error.description
+            delegate?.setAlertMessage(errorMessage)
+        }
     }
     
     @objc func notificate() {
