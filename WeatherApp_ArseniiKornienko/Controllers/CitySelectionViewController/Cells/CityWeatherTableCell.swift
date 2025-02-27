@@ -1,14 +1,14 @@
 //
-//  CityWeatherView.swift
+//  CityWeatherTableCell.swift
 //  WeatherApp_ArseniiKornienko
 //
-//  Created by Арсений Корниенко on 5/7/24.
+//  Created by Арсений Корниенко on 1/21/25.
 //
 
 import UIKit
 import SnapKit
 
-final class CityWeatherCell: UICollectionViewCell {
+final class CityWeatherTableCell: UITableViewCell {
     
     var tapAction: (() -> Void)?
     private let titleLabel = UILabel()
@@ -19,10 +19,10 @@ final class CityWeatherCell: UICollectionViewCell {
     private let backgroundImage = UIImageView()
     private let titleStackView = UIStackView()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setupCityWeatherView()
+        setupCellAppearance()
         setupBackgroundImage()
         setupTitleStackView()
         setupTitleLabel()
@@ -48,11 +48,8 @@ final class CityWeatherCell: UICollectionViewCell {
         backgroundImage.image = data.backgroundImage
     }
     
-    private func setupCityWeatherView() {
-        layer.cornerRadius = 15
-        snp.makeConstraints { make in
-            make.height.equalTo(100)
-        }
+    private func setupCellAppearance() {
+        contentView.layer.backgroundColor = UIColor.black.cgColor
     }
     
     private func setupBackgroundImage() {

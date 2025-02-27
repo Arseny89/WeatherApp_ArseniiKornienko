@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import WebKit
 
 final class CitySelectionViewController: UIViewController {
     typealias Section = CitySelectionViewModel.Section
@@ -28,7 +27,7 @@ final class CitySelectionViewController: UIViewController {
     var viewModel: CitySelectionViewModelInput?
     var sections: [Section] = [] {
         didSet {
-            reloadDataSource()
+            reloadTableData()
         }
     }
     
@@ -40,11 +39,10 @@ final class CitySelectionViewController: UIViewController {
     
     var errorMessage: String = ""
     private var cityID: Int?
-    private var dataSource: UICollectionViewDiffableDataSource<Section, CityWeatherData>?
-    private var snapshot: NSDiffableDataSourceSnapshot<Section, CityWeatherData>! = nil
-    private var cityCollectionView: UICollectionView?
+    private var tableDataSource: UITableViewDiffableDataSource<Section, CityWeatherData>?
+    private var tableSnapshot: NSDiffableDataSourceSnapshot<Section, CityWeatherData>! = nil
     private let citySearchViewController = CitySearchViewController()
-    private let cityTableView = UITableView()
+    private var cityTableView: UITableView?
     private let locationProvider = LocationProvider()
     private let cityListProvider: CityListProvider = CityListProviderImpl.shared
     
@@ -56,8 +54,7 @@ final class CitySelectionViewController: UIViewController {
         viewModel?.output = self
         setupLocationProvider()
         setupNavigationBar()
-        setupCityCollectionView()
-        createDataSource()
+        setupCityTableView()
     }
     
     func sceneWillEnterForeground() {
@@ -69,37 +66,29 @@ final class CitySelectionViewController: UIViewController {
         locationProvider.getCurrentLocation()
     }
     
-    private func reloadDataSource() {
-        snapshot = NSDiffableDataSourceSnapshot<Section, CityWeatherData>()
-        snapshot.appendSections(sections)
+    private func reloadTableData() {
+        tableSnapshot = NSDiffableDataSourceSnapshot<Section, CityWeatherData>()
+        tableSnapshot.appendSections(sections)
         for section in sections {
-            snapshot.appendItems(section.items, toSection: section)
+            tableSnapshot.appendItems(section.items, toSection: section)
         }
-        dataSource?.apply(snapshot)
+        tableDataSource?.apply(tableSnapshot, animatingDifferences: true)
+        cityTableView?.reloadData()
     }
     
-    private func createDataSource() {
-        guard let cityCollectionView else { return }
-        dataSource = UICollectionViewDiffableDataSource<Section, CityWeatherData>(
-            collectionView: cityCollectionView
-        ) { [weak self] collectionView, indexPath, itemIdentifier in
-            guard let self else { return UICollectionViewCell() }
-            let item = sections[indexPath.section].items[indexPath.row]
-            let cell = collectionView.dequeueCell(CityWeatherCell.self, for: indexPath)
-            cell.setupCityWeather(item.titleData)
-            return cell
-        }
-    }
-    
-    private func setupCityCollectionView() {
-        cityCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
-        guard let cityCollectionView else { return }
-        view.addSubview(cityCollectionView)
-        cityCollectionView.backgroundColor = .clear
-        cityCollectionView.delegate = self
-        cityCollectionView.registerCell(CityWeatherCell.self)
-        cityCollectionView.showsVerticalScrollIndicator = false
-        cityCollectionView.snp.makeConstraints { make in
+    private func setupCityTableView() {
+        cityTableView = UITableView(frame: .zero, style: .grouped)
+        guard let cityTableView else { return }
+        view.addSubview(cityTableView)
+        cityTableView.backgroundColor = .clear
+        cityTableView.delegate = self
+        cityTableView.dataSource = self
+        cityTableView.rowHeight = 100
+        cityTableView.registerCell(CityWeatherTableCell.self)
+        cityTableView.showsVerticalScrollIndicator = false
+        cityTableView.sectionFooterHeight = 0
+        cityTableView.sectionHeaderHeight = 10
+        cityTableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.bottom.equalToSuperview()
             make.horizontalEdges.equalToSuperview().inset(16)
@@ -137,50 +126,89 @@ final class CitySelectionViewController: UIViewController {
         citySearchViewController.delegate = self
         navigationItem.hidesSearchBarWhenScrolling = false
     }
-    
-    private func createCompositionalLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout(section: createCitySection())
-        return layout
-    }
-    
-    private func createCitySection() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .absolute(100)
-        )
-        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .fractionalHeight(1)
-        )
-        
-        let layoutGroup = NSCollectionLayoutGroup.vertical(
-            layoutSize: groupSize,
-            subitems: [layoutItem]
-        )
-        
-        layoutGroup.interItemSpacing = NSCollectionLayoutSpacing.fixed(20)
-
-        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
-        return layoutSection
-    }
 }
 
-//MARK: CityCollectionView Delegate
-extension CitySelectionViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedCity = sections[indexPath.section].items[indexPath.row]
+//MARK: CityTableView Delegate
+extension CitySelectionViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedCity = sections[indexPath.row].items[indexPath.section]
         presentCityWeather(with: selectedCity)
     }
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if currentLocationData == nil,
-            sections.first?.items.count == cityListProvider.selectedCityList.count,
+           sections.first?.items.count == cityListProvider.selectedCityList.count,
            sections.first?.items.first?.dayTempData != nil {
             currentLocationData = sections[0].items[0]
         }
     }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        if sections[indexPath.row].items[indexPath.section].id == .currentCityId {
+            return nil
+        }
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "") {[weak self] action, view, completionHandler in
+            guard let self else { return }
+            tableView.beginUpdates()
+            tableView.deleteSections([indexPath.section], with: .automatic)
+            viewModel?.deleteCity(for: sections[indexPath.row].items[indexPath.section].id!)
+            tableSnapshot = NSDiffableDataSourceSnapshot<Section, CityWeatherData>()
+            tableSnapshot.appendSections(sections)
+            for section in sections {
+                tableSnapshot.appendItems(section.items, toSection: section)
+            }
+            completionHandler(true)
+            tableView.endUpdates()
+        }
+        let deleteButtonView = DeleteButtonView(frame: CGRect(x: 0,
+                                                              y: 0,
+                                                              width: tableView.frame.width,
+                                                              height: tableView.rowHeight))
+        
+        let renderer = UIGraphicsImageRenderer(bounds: deleteButtonView.bounds)
+        let deleteButtonImage = renderer.image { context in
+            deleteButtonView.layer.render(in: context.cgContext)
+        }
+        
+        deleteAction.image = UIImage(icon: .trash)
+        deleteAction.backgroundColor = UIColor(patternImage: deleteButtonImage)
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
+    }
 }
+
+//MARK: CityTableViewDataSource Delegate
+extension CitySelectionViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        guard let numberOfSections = sections.first?.items.count else { return 0 }
+        return numberOfSections
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard !sections.isEmpty else {
+            return UITableViewCell()
+        }
+        let cell = tableView.dequeue(CityWeatherTableCell.self, for: indexPath)
+        cell.setupCityWeather(sections[indexPath.row].items[indexPath.section].titleData)
+        cell.layer.cornerRadius = 15
+        cell.clipsToBounds = true
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = UIColor.clear
+        return headerView
+    }
+}
+
 //MARK: ViewModel delegate
 extension CitySelectionViewController: CitySelectionViewModelOutput {
 }

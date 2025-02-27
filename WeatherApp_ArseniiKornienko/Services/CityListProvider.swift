@@ -33,7 +33,7 @@ class CityListProviderImpl: CityListProvider {
         get {
             var cityList: [CityData] = StorageManager().object(for: .cityList) ?? []
             if !cityList.contains(where: { $0.id == .currentCityId}), let currentPlace {
-                cityList.append(currentPlace)
+                cityList.insert(currentPlace, at: 0)
             }
             return cityList
         }
@@ -70,7 +70,9 @@ class CityListProviderImpl: CityListProvider {
     
     
     func addCity(city: CityData) {
-        selectedCityList.append(city)
+        if !selectedCityList.contains(where: { $0.id == city.id }) {
+            selectedCityList.append(city)
+        }
         storageManager.set(selectedCityList, StorageKey.cityList)
     }
     

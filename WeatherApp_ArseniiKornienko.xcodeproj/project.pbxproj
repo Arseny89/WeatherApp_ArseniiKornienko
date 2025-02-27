@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0E11F5112BFAF39E00D82550 /* MOCKDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */; };
+		0E384B742D40A4AE00EC470E /* CityWeatherTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E384B732D40A4AE00EC470E /* CityWeatherTableCell.swift */; };
 		0E4B6A1E2C04377300058097 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E4B6A1D2C04377300058097 /* UIColorExtension.swift */; };
 		0E4B6A202C04650F00058097 /* CitySearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E4B6A1F2C04650F00058097 /* CitySearchViewController.swift */; };
 		0E4B6A222C05930800058097 /* SelectedCityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E4B6A212C05930800058097 /* SelectedCityViewController.swift */; };
@@ -22,8 +23,8 @@
 		0E7649F02BE765320052E3F2 /* TempRangeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7649EF2BE765320052E3F2 /* TempRangeCell.swift */; };
 		0E7649F22BE765440052E3F2 /* CurrentWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7649F12BE765440052E3F2 /* CurrentWeatherView.swift */; };
 		0E7649FA2BEACA500052E3F2 /* BottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7649F92BEACA500052E3F2 /* BottomView.swift */; };
+		0E77A9122D53326B00C5E189 /* DeleteButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E77A9112D53326900C5E189 /* DeleteButtonView.swift */; };
 		0E816D3E2BEB2562007CC983 /* CitySelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E816D3D2BEB2562007CC983 /* CitySelectionViewController.swift */; };
-		0E816D402BEB3806007CC983 /* CityWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E816D3F2BEB3806007CC983 /* CityWeatherCell.swift */; };
 		0E887AF32C16783700AB7502 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0E887AF22C16783700AB7502 /* Config.plist */; };
 		0E887AF52C167A5B00AB7502 /* APIEndpointProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E887AF42C167A5B00AB7502 /* APIEndpointProvider.swift */; };
 		0E887AF92C168AD000AB7502 /* city_list.json in Resources */ = {isa = PBXBuildFile; fileRef = 0E887AF82C168AD000AB7502 /* city_list.json */; };
@@ -72,6 +73,7 @@
 
 /* Begin PBXFileReference section */
 		0E11F5102BFAF39E00D82550 /* MOCKDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MOCKDataProvider.swift; sourceTree = "<group>"; };
+		0E384B732D40A4AE00EC470E /* CityWeatherTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityWeatherTableCell.swift; sourceTree = "<group>"; };
 		0E4B6A1D2C04377300058097 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		0E4B6A1F2C04650F00058097 /* CitySearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitySearchViewController.swift; sourceTree = "<group>"; };
 		0E4B6A212C05930800058097 /* SelectedCityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedCityViewController.swift; sourceTree = "<group>"; };
@@ -82,12 +84,13 @@
 		0E4B6A362C0EECC900058097 /* UICollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionView.swift; sourceTree = "<group>"; };
 		0E4B6A3A2C10F43200058097 /* WeatherProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherProvider.swift; sourceTree = "<group>"; };
 		0E510DC22BF72D89007EB1A8 /* ImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtension.swift; sourceTree = "<group>"; };
+		0E5A9D902D3A1EAF0049DCFD /* WeatherApp_ArseniiKornienkoRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeatherApp_ArseniiKornienkoRelease.entitlements; sourceTree = "<group>"; };
 		0E7649ED2BE7651E0052E3F2 /* DayTempCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTempCell.swift; sourceTree = "<group>"; };
 		0E7649EF2BE765320052E3F2 /* TempRangeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempRangeCell.swift; sourceTree = "<group>"; };
 		0E7649F12BE765440052E3F2 /* CurrentWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherView.swift; sourceTree = "<group>"; };
 		0E7649F92BEACA500052E3F2 /* BottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomView.swift; sourceTree = "<group>"; };
+		0E77A9112D53326900C5E189 /* DeleteButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteButtonView.swift; sourceTree = "<group>"; };
 		0E816D3D2BEB2562007CC983 /* CitySelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitySelectionViewController.swift; sourceTree = "<group>"; };
-		0E816D3F2BEB3806007CC983 /* CityWeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityWeatherCell.swift; sourceTree = "<group>"; };
 		0E887AF22C16783700AB7502 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		0E887AF42C167A5B00AB7502 /* APIEndpointProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpointProvider.swift; sourceTree = "<group>"; };
 		0E887AF82C168AD000AB7502 /* city_list.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = city_list.json; sourceTree = "<group>"; };
@@ -225,6 +228,7 @@
 				0E816D3D2BEB2562007CC983 /* CitySelectionViewController.swift */,
 				0E4B6A332C0EAF6600058097 /* CitySelectionViewModel.swift */,
 				0E4B6A352C0EB07200058097 /* Cells */,
+				0E5242F12D6EBF43001C6560 /* Views */,
 			);
 			path = CitySelectionViewController;
 			sourceTree = "<group>";
@@ -232,9 +236,17 @@
 		0E4B6A352C0EB07200058097 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				0E816D3F2BEB3806007CC983 /* CityWeatherCell.swift */,
+				0E384B732D40A4AE00EC470E /* CityWeatherTableCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		0E5242F12D6EBF43001C6560 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0E77A9112D53326900C5E189 /* DeleteButtonView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		0E887AFC2C1699F400AB7502 /* CitySearchViewController */ = {
@@ -291,6 +303,7 @@
 		0ED012AD2BE76180005D48D7 /* WeatherApp_ArseniiKornienko */ = {
 			isa = PBXGroup;
 			children = (
+				0E5A9D902D3A1EAF0049DCFD /* WeatherApp_ArseniiKornienkoRelease.entitlements */,
 				0E887B182C1D49AC00AB7502 /* BaseComponents */,
 				0ED012AE2BE76180005D48D7 /* AppDelegate.swift */,
 				0ED012B02BE76180005D48D7 /* SceneDelegate.swift */,
@@ -508,13 +521,14 @@
 				0E816D3E2BEB2562007CC983 /* CitySelectionViewController.swift in Sources */,
 				0E7649FA2BEACA500052E3F2 /* BottomView.swift in Sources */,
 				0E4B6A202C04650F00058097 /* CitySearchViewController.swift in Sources */,
+				0E384B742D40A4AE00EC470E /* CityWeatherTableCell.swift in Sources */,
 				0E887B2B2C2A512A00AB7502 /* CityCoreData.swift in Sources */,
 				0E887B132C1D000400AB7502 /* APIDataProvider.swift in Sources */,
 				0E11F5112BFAF39E00D82550 /* MOCKDataProvider.swift in Sources */,
-				0E816D402BEB3806007CC983 /* CityWeatherCell.swift in Sources */,
 				0E4B6A3B2C10F43200058097 /* WeatherProvider.swift in Sources */,
 				0E887B212C2A268600AB7502 /* CoreData.xcdatamodeld in Sources */,
 				0E887B032C16AC7500AB7502 /* ForecastResponse.swift in Sources */,
+				0E77A9122D53326B00C5E189 /* DeleteButtonView.swift in Sources */,
 				0E887B362C2D027C00AB7502 /* LocationProvider.swift in Sources */,
 				0E4B6A302C08544900058097 /* WeatherViewModel.swift in Sources */,
 				0E887AFB2C16935900AB7502 /* CityListProvider.swift in Sources */,
@@ -697,6 +711,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 46T5R84CPV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherApp_ArseniiKornienko/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
@@ -728,8 +743,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WeatherApp_ArseniiKornienko/WeatherApp_ArseniiKornienkoRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 46T5R84CPV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WeatherApp_ArseniiKornienko/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";

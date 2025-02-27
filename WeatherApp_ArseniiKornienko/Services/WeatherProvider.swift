@@ -25,8 +25,6 @@ final class WeatherProviderImpl: WeatherProvider {
     var weatherCache: [Int: CurrentWeatherResponse] = [:]
     var weatherDataCache: [Int: CityWeatherData] = [:]
     var forecastCache: [Int: ForecastResponse] = [:]
-    var currentCityWeather: CityWeatherData?
-    var currentCityList: [Int: CityWeatherData] = [:]
     private let storageManager = StorageManager()
     private let dataProvider = APIDataProvider()
     private var notificationCenter = NotificationCenter.default
@@ -52,11 +50,16 @@ final class WeatherProviderImpl: WeatherProvider {
                             completionHandler: @escaping ([Int: CityWeatherData]) -> Void) {
         if isNeedUploadNewWeatherData || forced {
             var cityListWeather: [Int: CityWeatherData] = [:]
+            let group = DispatchGroup()
             list.forEach { data in
+                group.enter()
                 getDataForCity(from: data) { cityWeather in
                     cityListWeather[data.id] = cityWeather
-                    completionHandler(cityListWeather)
+                    group.leave()
                 }
+            }
+            group.notify(queue: .main) {
+                completionHandler(cityListWeather)
             }
             storageManager.set(Date(), .weatherUploadDate)
         } else {
