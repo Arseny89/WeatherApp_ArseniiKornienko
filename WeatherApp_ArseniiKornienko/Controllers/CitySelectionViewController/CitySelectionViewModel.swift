@@ -12,6 +12,7 @@ import SnapKit
 protocol CitySelectionViewModelInput {
     var output: CitySelectionViewModelOutput? { get set }
     func getData(forced: Bool)
+    func deleteCity(for id: Int)
 }
 
 protocol CitySelectionViewModelOutput: AnyObject {
@@ -21,7 +22,7 @@ protocol CitySelectionViewModelOutput: AnyObject {
 
 extension CitySelectionViewModel {
     struct Section: Hashable {
-        let items: [CityWeatherData]
+        var items: [CityWeatherData]
     }
 }
 
@@ -30,15 +31,16 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
     weak var output: CitySelectionViewModelOutput?
     var storageManager = StorageManager()
     var selectedCityList: [CityData] {
-        CityListProviderImpl.shared.selectedCityList
+        cityListProvider.selectedCityList
     }
+    private var cityListProvider = CityListProviderImpl.shared
     private var weatherProvider: WeatherProvider?
     
     init(weatherProvider: WeatherProvider) {
         self.weatherProvider = weatherProvider
         self.weatherProvider?.delegate = self
         getDataForCityList(for: selectedCityList, forced: false)
-        CityListProviderImpl.shared.delegate = self
+        cityListProvider.delegate = self
     }
     
     func getDataForCityList(for list: [CityData], forced: Bool) {
@@ -52,6 +54,12 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
     
     func getData(forced: Bool) {
         getDataForCityList(for: selectedCityList, forced: forced)
+    }
+    
+    func deleteCity(for id: Int) {
+        guard let cityData = selectedCityList.first(where: {$0.id == id}) else { return }
+        cityListProvider.delete(cityData)
+        output?.sections[0].items.removeAll(where: { $0.id == id })
     }
     
     private func prepareSections(with data: [CityWeatherData]) {
